@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Core - public templates</title>
+    <meta name="description" content="Public Core templates with a Discord-style live preview.">
+    <meta name="theme-color" content="#0c0e12">
+    <meta property="og:title" content="Core - public templates">
+    <meta property="og:description" content="Choose a public Core template and inspect roles, categories and channels before applying it.">
+    <meta property="og:image" content="../assets/hero-core.webp">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../assets/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="Core">
+        <img src="../assets/core-mark.png" alt="" width="36" height="36">
+        <span>Core</span>
+      </a>
+
+      <div class="header-navs">
+        <nav class="site-tabs" aria-label="Site pages">
+          <a href="../" data-i18n="nav.home">Главная</a>
+          <a class="is-active" href="./" data-i18n="nav.templates">Шаблоны</a>
+        </nav>
+
+        <nav class="main-nav" aria-label="Template page sections">
+          <a href="#templates" data-i18n="nav.catalog">Каталог</a>
+        </nav>
+      </div>
+
+      <div class="header-actions">
+        <div class="language-switcher" role="group" aria-label="Language">
+          <button type="button" class="language-button is-active" data-lang="ru" aria-pressed="true">RU</button>
+          <button type="button" class="language-button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" class="language-button" data-lang="ua" aria-pressed="false">UA</button>
+          <button type="button" class="language-button" data-lang="de" aria-pressed="false">DE</button>
+        </div>
+        <a class="header-server" data-i18n="nav.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Сервер</a>
+        <a class="header-invite" data-i18n="nav.add" href="https://discord.com/oauth2/authorize?client_id=1499785495264104688&permissions=8&integration_type=0&scope=bot+applications.commands">Добавить</a>
+      </div>
+    </header>
+
+    <main id="top" class="templates-page">
+      <section class="section templates-page-hero">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow" data-i18n="templates.eyebrow">Публичные шаблоны</p>
+          <h1 data-i18n="templates.pageTitle">Выбери заготовку и посмотри структуру.</h1>
+        </div>
+        <a class="button secondary" href="../" data-i18n="templates.backHome">На главную</a>
+      </section>
+
+      <section class="section templates-section" id="templates">
+        <div class="template-gallery-toolbar" data-reveal>
+          <div>
+            <span data-i18n="templates.sourceLabel">Источник</span>
+            <strong data-template-api-status data-i18n="templates.loading">Загружаю шаблоны...</strong>
+          </div>
+          <button type="button" class="gallery-refresh" data-template-refresh data-i18n="templates.refresh">Обновить</button>
+        </div>
+
+        <div class="template-browser" data-template-browser data-reveal>
+          <div class="template-gallery" data-template-gallery aria-live="polite">
+            <article class="template-list-item is-loading" aria-hidden="true">
+              <div class="template-list-button">
+                <span class="template-list-mark"></span>
+                <span class="template-list-copy">
+                  <strong></strong>
+                  <p></p>
+                </span>
+                <span class="template-list-meta"></span>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="template-preview-panel" data-template-preview-panel aria-hidden="true">
+          <div class="template-preview-backdrop" data-template-close></div>
+          <div class="template-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="template-modal-title">
+            <div data-template-preview>
+              <div class="template-empty">
+                <strong data-i18n="templates.selectHint">Выбери заготовку слева, чтобы открыть структуру.</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Core</span>
+      <span data-i18n="footer.text">Built for cleaner Discord servers.</span>
+      <a class="footer-link" data-i18n="footer.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Official server</a>
+    </footer>
+
+    <script src="../assets/site-config.js"></script>
+    <script src="../assets/app.js"></script>
+  </body>
+</html>

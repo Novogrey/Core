@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Core - Discord server builder</title>
+    <meta name="description" content="Core helps Discord server owners use public templates, import and export server layouts, preview changes and roll back safely.">
+    <meta name="theme-color" content="#0c0e12">
+    <meta property="og:title" content="Core - Discord server builder">
+    <meta property="og:description" content="Public Discord templates, server layout import/export, preview and one-hour rollback.">
+    <meta property="og:image" content="assets/hero-core.webp">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="assets/favicon.png">
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Core">
+        <img src="assets/core-mark.png" alt="" width="36" height="36">
+        <span>Core</span>
+      </a>
+
+      <div class="header-navs">
+        <nav class="site-tabs" aria-label="Site pages">
+          <a class="is-active" href="#top" data-i18n="nav.home">Главная</a>
+          <a href="templates/" data-i18n="nav.templates">Шаблоны</a>
+        </nav>
+
+        <nav class="main-nav" aria-label="Home page sections">
+          <a href="#commands" data-i18n="nav.commands">Команды</a>
+          <a href="#preview" data-i18n="nav.preview">Превью</a>
+          <a href="#safety" data-i18n="nav.safety">Откат</a>
+        </nav>
+      </div>
+
+      <div class="header-actions">
+        <div class="language-switcher" role="group" aria-label="Language">
+          <button type="button" class="language-button is-active" data-lang="ru" aria-pressed="true">RU</button>
+          <button type="button" class="language-button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" class="language-button" data-lang="ua" aria-pressed="false">UA</button>
+          <button type="button" class="language-button" data-lang="de" aria-pressed="false">DE</button>
+        </div>
+        <a class="header-server" data-i18n="nav.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Сервер</a>
+        <a class="header-invite" data-i18n="nav.add" href="https://discord.com/oauth2/authorize?client_id=1499785495264104688&permissions=8&integration_type=0&scope=bot+applications.commands">Добавить</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-content" data-reveal>
+          <p class="eyebrow" data-i18n="hero.eyebrow">Core for Discord</p>
+          <h1 data-i18n="hero.title">Сервер готов быстрее.</h1>
+          <p class="hero-copy" data-i18n="hero.copy">Core помогает владельцу сервера быстро поставить готовую структуру, перенести оформление через JSON и проверить всё перед применением.</p>
+          <div class="hero-actions">
+            <a class="button primary" data-i18n="hero.add" href="https://discord.com/oauth2/authorize?client_id=1499785495264104688&permissions=8&integration_type=0&scope=bot+applications.commands">Добавить Core</a>
+            <a class="button secondary" data-i18n="hero.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Официальный сервер</a>
+            <a class="button secondary" data-i18n="hero.commands" href="#commands">Посмотреть команды</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section commands-section" id="commands">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow" data-i18n="commands.eyebrow">Доступные команды</p>
+          <h2 data-i18n="commands.title">Выбери команду и посмотри, что она делает.</h2>
+          <p data-i18n="commands.copy">Команды работают на серверах, где Core добавлен с нужными правами. Опасные действия требуют подтверждения владельца сервера.</p>
+        </div>
+
+        <div class="command-shell" data-reveal>
+          <div class="command-list" role="tablist" aria-label="Core commands">
+            <button type="button" class="command-button is-active" data-command="templateList" role="tab" aria-selected="true" aria-controls="command-detail">
+              <code>/template list</code>
+              <span>Список шаблонов</span>
+            </button>
+            <button type="button" class="command-button" data-command="templatePreview" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/template preview</code>
+              <span>Превью шаблона</span>
+            </button>
+            <button type="button" class="command-button" data-command="templateSend" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/template send</code>
+              <span>Применить шаблон</span>
+            </button>
+            <button type="button" class="command-button" data-command="serverExport" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/server-export</code>
+              <span>Экспорт JSON</span>
+            </button>
+            <button type="button" class="command-button" data-command="serverImport" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/server-import</code>
+              <span>Импорт JSON</span>
+            </button>
+            <button type="button" class="command-button" data-command="serverRollback" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/server-rollback</code>
+              <span>Откат</span>
+            </button>
+          </div>
+
+          <div class="command-panel" id="command-detail" role="tabpanel" aria-live="polite">
+            <p class="panel-kicker" data-i18n="commands.selected">Выбрана команда</p>
+            <div class="live-simulation" aria-hidden="true">
+              <div class="sim-row sim-user-row">
+                <div class="sim-avatar" data-sim-owner-avatar>U</div>
+                <div class="sim-bubble">
+                  <span class="sim-name" data-sim-owner>Владелец</span>
+                  <div class="slash-input">
+                    <span class="slash-icon">/</span>
+                    <code class="command-name typed-command" data-typed-command>template list</code>
+                    <span class="typing-cursor"></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sim-row sim-bot-row">
+                <div class="sim-avatar sim-core">C</div>
+                <div class="sim-bubble sim-bot-bubble">
+                  <span class="sim-name" data-sim-bot>Core</span>
+                  <div class="sim-status" data-sim-status>Core выполняет команду...</div>
+                  <div class="sim-card">
+                    <div class="sim-card-head">
+                      <strong data-sim-card-title>Публичные шаблоны</strong>
+                      <small data-sim-card-meta>templates</small>
+                    </div>
+                    <p data-sim-card-copy>Core показывает доступные заготовки.</p>
+                    <div class="sim-artifact" data-sim-artifact></div>
+                    <div class="sim-actions" data-sim-actions></div>
+                    <div class="sim-progress">
+                      <div class="sim-progress-line">
+                        <span></span>
+                        <p data-command-step="0">Читает папку публичных шаблонов</p>
+                        <i></i>
+                      </div>
+                      <div class="sim-progress-line">
+                        <span></span>
+                        <p data-command-step="1">Собирает названия и описания</p>
+                        <i></i>
+                      </div>
+                      <div class="sim-progress-line">
+                        <span></span>
+                        <p data-command-step="2">Отправляет список владельцу сервера</p>
+                        <i></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h3 class="command-title">Показывает публичные шаблоны</h3>
+            <p class="command-description">Core выводит доступные заготовки, которые можно посмотреть или применить на сервере.</p>
+            <p class="command-result">На выходе владелец видит короткий список доступных публичных заготовок.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section benefit-section" id="benefits">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow" data-i18n="benefits.eyebrow">Что умеет Core</p>
+          <h2 data-i18n="benefits.title">Быстрый старт без ручной сборки каждого канала.</h2>
+        </div>
+
+        <div class="benefit-grid">
+          <article class="benefit-card" data-reveal>
+            <span class="benefit-icon">01</span>
+            <h3 data-i18n="benefits.build.title">Ставит шаблон</h3>
+            <p data-i18n="benefits.build.copy">Выбирай публичную заготовку и применяй готовые категории, каналы, роли и права под новый сервер.</p>
+          </article>
+          <article class="benefit-card" data-reveal>
+            <span class="benefit-icon">02</span>
+            <h3 data-i18n="benefits.transfer.title">Переносит структуру</h3>
+            <p data-i18n="benefits.transfer.copy">Экспортируй настройки сервера в JSON и импортируй их там, где нужно повторить оформление.</p>
+          </article>
+          <article class="benefit-card" data-reveal>
+            <span class="benefit-icon">03</span>
+            <h3 data-i18n="benefits.protect.title">Показывает заранее</h3>
+            <p data-i18n="benefits.protect.copy">Перед применением владелец видит превью ролей, категорий и каналов, а затем подтверждает действие.</p>
+          </article>
+          <article class="benefit-card" data-reveal>
+            <span class="benefit-icon">04</span>
+            <h3 data-i18n="benefits.restore.title">Даёт путь назад</h3>
+            <p data-i18n="benefits.restore.copy">Перед импортом Core сохраняет временный снимок, чтобы владелец мог откатить изменения в течение часа.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section preview-section" id="preview">
+        <div class="section-heading centered" data-reveal>
+          <p class="eyebrow" data-i18n="preview.eyebrow">Как это выглядит</p>
+          <h2 data-i18n="preview.title">Структура появляется сразу</h2>
+          <p data-i18n="preview.copy">Core создаёт понятные места для приветствия, правил, объявлений, общения, медиа и служебных каналов, если они есть в выбранном шаблоне.</p>
+        </div>
+
+        <div class="server-demo" data-reveal>
+          <div class="server-sidebar">
+            <div class="demo-category" data-i18n="demo.category1">Старт</div>
+            <div class="demo-row active"><span>#</span><strong data-i18n="demo.channel1">добро-пожаловать</strong></div>
+            <div class="demo-row"><span>#</span><strong data-i18n="demo.channel2">правила</strong></div>
+            <div class="demo-row"><span>#</span><strong data-i18n="demo.channel3">объявления</strong></div>
+            <div class="demo-category" data-i18n="demo.category2">Общение</div>
+            <div class="demo-row"><span>#</span><strong data-i18n="demo.channel4">чат</strong></div>
+            <div class="demo-row"><span>#</span><strong data-i18n="demo.channel5">медиа</strong></div>
+            <div class="demo-row"><span>vc</span><strong data-i18n="demo.channel6">голосовой</strong></div>
+            <div class="demo-category" data-i18n="demo.category3">Управление</div>
+            <div class="demo-row"><span>#</span><strong data-i18n="demo.channel7">заметки</strong></div>
+            <div class="demo-row"><span>#</span><strong data-i18n="demo.channel8">логи</strong></div>
+          </div>
+
+          <div class="demo-content">
+            <div class="demo-window-bar">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="build-console" aria-hidden="true">
+              <div class="build-console-title" data-i18n="demo.buildTitle">Создание структуры</div>
+              <div class="build-task">
+                <span></span>
+                <p data-i18n="demo.buildStep1">Создаёт категории</p>
+                <i></i>
+              </div>
+              <div class="build-task">
+                <span></span>
+                <p data-i18n="demo.buildStep2">Добавляет каналы</p>
+                <i></i>
+              </div>
+              <div class="build-task">
+                <span></span>
+                <p data-i18n="demo.buildStep3">Расставляет права</p>
+                <i></i>
+              </div>
+              <div class="build-task">
+                <span></span>
+                <p data-i18n="demo.buildStep4">Публикует результат</p>
+                <i></i>
+              </div>
+            </div>
+            <div class="demo-message primary-message">
+              <strong data-i18n="demo.messageTitle">Шаблон применён</strong>
+              <p data-i18n="demo.messageCopy">Каналы, роли и права созданы. Сервер можно настроить дальше или сразу запускать.</p>
+            </div>
+            <div class="demo-pills">
+              <span data-i18n="demo.pill1">Шаблон</span>
+              <span data-i18n="demo.pill2">Превью</span>
+              <span data-i18n="demo.pill3">Импорт</span>
+              <span data-i18n="demo.pill4">Откат</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section safety-section" id="safety">
+        <div class="safety-panel" data-reveal>
+          <div>
+            <p class="eyebrow" data-i18n="safety.eyebrow">Спокойные изменения</p>
+            <h2 data-i18n="safety.title">Можно пробовать смелее</h2>
+            <p data-i18n="safety.copy">Перед применением шаблона Core сохраняет резервное состояние сервера. Если результат не подошёл, владелец может откатиться в течение часа.</p>
+          </div>
+          <div class="safety-list">
+            <div>
+              <span>OK</span>
+              <p data-i18n="safety.item1">Применение и откат доступны владельцу сервера.</p>
+            </div>
+            <div>
+              <span>OK</span>
+              <p data-i18n="safety.item2">Резервная копия хранится ограниченное время.</p>
+            </div>
+            <div>
+              <span>OK</span>
+              <p data-i18n="safety.item3">Если Discord не даёт удалить канал, Core сообщает об этом вместо тихого пропуска.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section final-section">
+        <div class="final-card" data-reveal>
+          <img src="assets/core-mark.png" alt="" width="104" height="104">
+          <h2 data-i18n="final.title">Добавь Core и начни с готовой структуры</h2>
+          <p data-i18n="final.copy">Подходит владельцам сообществ, проектов, игровых серверов и медиа-команд, которым нужен аккуратный Discord без долгой ручной сборки.</p>
+          <div class="final-actions">
+            <a class="button primary" data-i18n="final.add" href="https://discord.com/oauth2/authorize?client_id=1499785495264104688&permissions=8&integration_type=0&scope=bot+applications.commands">Добавить в Discord</a>
+            <a class="button secondary" data-i18n="final.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Официальный сервер</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Core</span>
+      <span data-i18n="footer.text">Built for cleaner Discord servers.</span>
+      <a class="footer-link" data-i18n="footer.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Official server</a>
+    </footer>
+
+    <script src="assets/site-config.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>
