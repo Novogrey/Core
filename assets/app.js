@@ -1722,10 +1722,22 @@ function getTemplateTypeLabel(template, labels) {
 }
 
 function getTemplateRatingLabel(template) {
-  const rating = template?.rating || {};
-  const average = Number(rating.average || 0);
-  const count = Number(rating.count || 0);
+  const rating = template?.rating && typeof template.rating === 'object' ? template.rating : {};
+  const average = Number(rating.average ?? template?.ratingAverage ?? template?.averageRating ?? template?.stars ?? 0);
+  const count = Number(rating.count ?? template?.ratingCount ?? template?.ratingsCount ?? (average > 0 ? 1 : 0));
   return count ? `${average.toFixed(average % 1 ? 1 : 0)} ★ (${count})` : '0 ★';
+}
+
+function withCacheBust(url) {
+  if (!url) return '';
+  try {
+    const parsed = new URL(url, window.location.href);
+    parsed.searchParams.set('_', Date.now().toString(36));
+    return parsed.href;
+  } catch {
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}_=${Date.now().toString(36)}`;
+  }
 }
 
 function getChannelIcon(kind) {
@@ -2208,7 +2220,7 @@ async function loadTemplateGallery() {
   renderTemplateGallery();
 
   try {
-    const response = await fetch(TEMPLATE_API_URL, {
+    const response = await fetch(withCacheBust(TEMPLATE_API_URL), {
       headers: { Accept: 'application/json' },
       cache: 'no-store'
     });
