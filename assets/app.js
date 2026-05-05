@@ -13,6 +13,8 @@ const translations = {
     },
     nav: {
       home: 'Главная',
+      siteLabel: 'Страницы',
+      pageLabel: 'Разделы',
       commands: 'Команды',
       templates: 'Шаблоны',
       preview: 'Превью',
@@ -107,6 +109,102 @@ const translations = {
             'Восстанавливает роли, каналы и настройки'
           ],
           result: 'Если срок не истёк, сервер возвращается к состоянию до последнего крупного изменения.'
+        },
+        rolesJson: {
+          command: '/roles-json',
+          label: 'Роли JSON',
+          title: 'Переносит роли отдельно',
+          description: 'Core экспортирует роли в зашифрованный JSON или создаёт роли из файла и публичного ролевого шаблона.',
+          steps: [
+            'Собирает роли без управляемых ролей ботов',
+            'Шифрует JSON-файл для переноса',
+            'Импортирует роли по имени на новом сервере'
+          ],
+          result: 'Владелец может перенести роли без полного пересоздания структуры сервера.'
+        },
+        rulesImport: {
+          command: '/rules-import',
+          label: 'Правила',
+          title: 'Отправляет шаблон правил',
+          description: 'Команда берёт зашифрованный JSON или публичный шаблон правил и публикует готовое сообщение в выбранный канал.',
+          steps: [
+            'Загружает файл или публичный шаблон',
+            'Проверяет текст и embed-блоки',
+            'Отправляет правила в нужный канал'
+          ],
+          result: 'На сервере появляется готовое сообщение правил без ручного копирования.'
+        },
+        rulesJsonExport: {
+          command: 'ПКМ по сообщению -> Экспорт правил JSON',
+          label: 'Экспорт правил',
+          title: 'Выгружает сообщение правил',
+          description: 'Контекстная команда сохраняет выбранное сообщение с правилами в зашифрованный JSON.',
+          steps: [
+            'Открывается через ПКМ по сообщению',
+            'Берёт текст и embed-блоки',
+            'Отправляет зашифрованный JSON владельцу'
+          ],
+          result: 'Правила можно перенести на другой сервер и импортировать через Core.'
+        },
+        ruleTemplateSuggest: {
+          command: 'ПКМ по сообщению -> Предложить шаблон правил',
+          label: 'Предложить правила',
+          title: 'Отправляет правила на рассмотрение',
+          description: 'Контекстная команда превращает выбранное сообщение в предложение публичного шаблона правил.',
+          steps: [
+            'Открывается через ПКМ по сообщению',
+            'Просит название и описание',
+            'Отправляет зашифрованный JSON на проверку'
+          ],
+          result: 'Разработчик получает предложение с превью и может опубликовать шаблон.'
+        },
+        templateRate: {
+          command: '/template-rate',
+          label: 'Оценка',
+          title: 'Собирает рейтинг шаблонов',
+          description: 'Пользователь ставит от 1 до 5 звёзд серверному, ролевому или правиловому шаблону.',
+          steps: [
+            'Выбирает тип шаблона',
+            'Находит шаблон по названию',
+            'Сохраняет оценку и пересчитывает средний рейтинг'
+          ],
+          result: 'Каталог на сайте может поднимать лучшие заготовки выше.'
+        },
+        templateSuggest: {
+          command: '/template-suggest',
+          label: 'Предложить',
+          title: 'Отправляет шаблон на рассмотрение',
+          description: 'Команда принимает серверный или ролевой JSON и отправляет предложение команде Core в зашифрованном виде.',
+          steps: [
+            'Принимает JSON-файл',
+            'Считает краткие цифры по ролям и каналам',
+            'Отправляет предложение в канал проверки'
+          ],
+          result: 'Автор может предложить шаблон, а разработчик проверит его перед публикацией.'
+        },
+        feedback: {
+          command: '/feedback',
+          label: 'Фидбек',
+          title: 'Отправляет сообщение разработчику',
+          description: 'Команда передаёт отзыв, идею или проблему в приватный канал разработчика Core.',
+          steps: [
+            'Принимает текст от пользователя',
+            'Добавляет автора и сервер',
+            'Отправляет фидбек разработчику'
+          ],
+          result: 'Сообщение доходит до разработчика, не засоряя публичные каналы.'
+        },
+        help: {
+          command: '/help',
+          label: 'Помощь',
+          title: 'Объясняет публичные команды',
+          description: 'Core показывает общий список команд или подробное описание выбранной команды.',
+          steps: [
+            'Открывает список публичных команд',
+            'Показывает назначение и пример использования',
+            'Отправляет ответ только пользователю'
+          ],
+          result: 'Владелец быстро понимает, какая команда нужна для конкретного действия.'
         }
       }
     },
@@ -177,6 +275,15 @@ const translations = {
       typeForum: 'Форум',
       closePreview: 'Закрыть превью',
       summaryTitle: 'Сводка',
+      typeServer: 'Сервер',
+      typeRolesTemplate: 'Роли',
+      typeRulesTemplate: 'Правила',
+      rating: 'Рейтинг',
+      rules: 'Правила',
+      groupServers: 'Серверные шаблоны',
+      groupRoles: 'Шаблоны ролей',
+      groupRules: 'Шаблоны правил',
+      groupEmpty: 'В этом разделе пока пусто.',
       tabSummary: 'Сводка',
       tabPreview: 'Превью',
       copy: 'Копировать',
@@ -239,6 +346,8 @@ const translations = {
     },
     nav: {
       home: 'Home',
+      siteLabel: 'Pages',
+      pageLabel: 'Sections',
       commands: 'Commands',
       templates: 'Templates',
       preview: 'Preview',
@@ -333,6 +442,102 @@ const translations = {
             'Restores roles, channels and settings'
           ],
           result: 'If the window has not expired, the server returns to its state before the last major change.'
+        },
+        rolesJson: {
+          command: '/roles-json',
+          label: 'Roles JSON',
+          title: 'Moves roles separately',
+          description: 'Core exports roles to encrypted JSON or creates roles from a file and public role template.',
+          steps: [
+            'Collects roles without bot-managed roles',
+            'Encrypts the transfer JSON file',
+            'Imports roles by name on the new server'
+          ],
+          result: 'The owner can move roles without rebuilding the whole server structure.'
+        },
+        rulesImport: {
+          command: '/rules-import',
+          label: 'Rules',
+          title: 'Sends a rules template',
+          description: 'The command reads encrypted JSON or a public rules template and posts the ready message into the selected channel.',
+          steps: [
+            'Loads a file or public template',
+            'Checks text and embed blocks',
+            'Sends rules to the target channel'
+          ],
+          result: 'The server gets a ready rules message without manual copying.'
+        },
+        rulesJsonExport: {
+          command: 'Right click message -> Export rules JSON',
+          label: 'Export rules',
+          title: 'Exports a rules message',
+          description: 'This context command saves the selected rules message as encrypted JSON.',
+          steps: [
+            'Opens from a message right click',
+            'Reads text and embed blocks',
+            'Sends encrypted JSON to the owner'
+          ],
+          result: 'Rules can be moved to another server and imported through Core.'
+        },
+        ruleTemplateSuggest: {
+          command: 'Right click message -> Suggest rules template',
+          label: 'Suggest rules',
+          title: 'Submits rules for review',
+          description: 'This context command turns the selected message into a public rules template suggestion.',
+          steps: [
+            'Opens from a message right click',
+            'Asks for name and description',
+            'Sends encrypted JSON for review'
+          ],
+          result: 'The developer receives the suggestion with a preview and can publish the template.'
+        },
+        templateRate: {
+          command: '/template-rate',
+          label: 'Rating',
+          title: 'Collects template ratings',
+          description: 'A user gives 1 to 5 stars to a server, role or rules template.',
+          steps: [
+            'Chooses the template type',
+            'Finds the template by name',
+            'Saves the vote and recalculates the average'
+          ],
+          result: 'The site catalog can show the best presets higher.'
+        },
+        templateSuggest: {
+          command: '/template-suggest',
+          label: 'Suggest',
+          title: 'Submits a template for review',
+          description: 'The command accepts a server or role JSON and sends the suggestion to Core in encrypted form.',
+          steps: [
+            'Accepts the JSON file',
+            'Counts short role and channel stats',
+            'Sends the suggestion to the review channel'
+          ],
+          result: 'Authors can suggest templates and the developer can review them before publication.'
+        },
+        feedback: {
+          command: '/feedback',
+          label: 'Feedback',
+          title: 'Sends a note to the developer',
+          description: 'The command forwards feedback, an idea or an issue to the private Core developer channel.',
+          steps: [
+            'Accepts user text',
+            'Adds the author and server',
+            'Sends feedback to the developer'
+          ],
+          result: 'The message reaches the developer without cluttering public channels.'
+        },
+        help: {
+          command: '/help',
+          label: 'Help',
+          title: 'Explains public commands',
+          description: 'Core shows either the full public command list or details for one selected command.',
+          steps: [
+            'Opens the public command list',
+            'Shows purpose and usage example',
+            'Replies only to the user'
+          ],
+          result: 'The owner quickly finds the command needed for the current task.'
         }
       }
     },
@@ -403,6 +608,15 @@ const translations = {
       typeForum: 'Forum',
       closePreview: 'Close preview',
       summaryTitle: 'Summary',
+      typeServer: 'Server',
+      typeRolesTemplate: 'Roles',
+      typeRulesTemplate: 'Rules',
+      rating: 'Rating',
+      rules: 'Rules',
+      groupServers: 'Server templates',
+      groupRoles: 'Role templates',
+      groupRules: 'Rules templates',
+      groupEmpty: 'This section is empty for now.',
       tabSummary: 'Summary',
       tabPreview: 'Preview',
       copy: 'Copy',
@@ -465,6 +679,8 @@ const translations = {
     },
     nav: {
       home: 'Головна',
+      siteLabel: 'Сторінки',
+      pageLabel: 'Розділи',
       commands: 'Команди',
       templates: 'Шаблони',
       preview: 'Превью',
@@ -559,6 +775,102 @@ const translations = {
             'Відновлює ролі, канали та налаштування'
           ],
           result: 'Якщо строк не минув, сервер повертається до стану перед останньою великою зміною.'
+        },
+        rolesJson: {
+          command: '/roles-json',
+          label: 'Ролі JSON',
+          title: 'Переносить ролі окремо',
+          description: 'Core експортує ролі в зашифрований JSON або створює ролі з файлу і публічного рольового шаблону.',
+          steps: [
+            'Збирає ролі без керованих ролей ботів',
+            'Шифрує JSON-файл для перенесення',
+            'Імпортує ролі за назвою на новому сервері'
+          ],
+          result: 'Власник може перенести ролі без повного перескладання структури сервера.'
+        },
+        rulesImport: {
+          command: '/rules-import',
+          label: 'Правила',
+          title: 'Надсилає шаблон правил',
+          description: 'Команда бере зашифрований JSON або публічний шаблон правил і публікує готове повідомлення в обраний канал.',
+          steps: [
+            'Завантажує файл або публічний шаблон',
+            'Перевіряє текст і embed-блоки',
+            'Надсилає правила в потрібний канал'
+          ],
+          result: 'На сервері з’являється готове повідомлення правил без ручного копіювання.'
+        },
+        rulesJsonExport: {
+          command: 'ПКМ по повідомленню -> Експорт правил JSON',
+          label: 'Експорт правил',
+          title: 'Вивантажує повідомлення правил',
+          description: 'Контекстна команда зберігає обране повідомлення з правилами в зашифрований JSON.',
+          steps: [
+            'Відкривається через ПКМ по повідомленню',
+            'Бере текст і embed-блоки',
+            'Надсилає зашифрований JSON власнику'
+          ],
+          result: 'Правила можна перенести на інший сервер та імпортувати через Core.'
+        },
+        ruleTemplateSuggest: {
+          command: 'ПКМ по повідомленню -> Запропонувати шаблон правил',
+          label: 'Запропонувати правила',
+          title: 'Надсилає правила на розгляд',
+          description: 'Контекстна команда перетворює обране повідомлення на пропозицію публічного шаблону правил.',
+          steps: [
+            'Відкривається через ПКМ по повідомленню',
+            'Просить назву й опис',
+            'Надсилає зашифрований JSON на перевірку'
+          ],
+          result: 'Розробник отримує пропозицію з превью і може опублікувати шаблон.'
+        },
+        templateRate: {
+          command: '/template-rate',
+          label: 'Оцінка',
+          title: 'Збирає рейтинг шаблонів',
+          description: 'Користувач ставить від 1 до 5 зірок серверному, рольовому або правиловому шаблону.',
+          steps: [
+            'Обирає тип шаблону',
+            'Знаходить шаблон за назвою',
+            'Зберігає оцінку і рахує середній рейтинг'
+          ],
+          result: 'Каталог на сайті може піднімати найкращі заготовки вище.'
+        },
+        templateSuggest: {
+          command: '/template-suggest',
+          label: 'Запропонувати',
+          title: 'Надсилає шаблон на розгляд',
+          description: 'Команда приймає серверний або рольовий JSON і надсилає пропозицію команді Core у зашифрованому вигляді.',
+          steps: [
+            'Приймає JSON-файл',
+            'Рахує короткі цифри по ролях і каналах',
+            'Надсилає пропозицію в канал перевірки'
+          ],
+          result: 'Автор може запропонувати шаблон, а розробник перевірить його перед публікацією.'
+        },
+        feedback: {
+          command: '/feedback',
+          label: 'Фідбек',
+          title: 'Надсилає повідомлення розробнику',
+          description: 'Команда передає відгук, ідею або проблему в приватний канал розробника Core.',
+          steps: [
+            'Приймає текст від користувача',
+            'Додає автора і сервер',
+            'Надсилає фідбек розробнику'
+          ],
+          result: 'Повідомлення доходить до розробника, не засмічуючи публічні канали.'
+        },
+        help: {
+          command: '/help',
+          label: 'Допомога',
+          title: 'Пояснює публічні команди',
+          description: 'Core показує загальний список команд або докладний опис обраної команди.',
+          steps: [
+            'Відкриває список публічних команд',
+            'Показує призначення і приклад використання',
+            'Надсилає відповідь тільки користувачу'
+          ],
+          result: 'Власник швидко розуміє, яка команда потрібна для конкретної дії.'
         }
       }
     },
@@ -629,6 +941,15 @@ const translations = {
       typeForum: 'Форум',
       closePreview: 'Закрити превью',
       summaryTitle: 'Зведення',
+      typeServer: 'Сервер',
+      typeRolesTemplate: 'Ролі',
+      typeRulesTemplate: 'Правила',
+      rating: 'Рейтинг',
+      rules: 'Правила',
+      groupServers: 'Серверні шаблони',
+      groupRoles: 'Шаблони ролей',
+      groupRules: 'Шаблони правил',
+      groupEmpty: 'У цьому розділі поки порожньо.',
       tabSummary: 'Зведення',
       tabPreview: 'Превью',
       copy: 'Скопіювати',
@@ -691,6 +1012,8 @@ const translations = {
     },
     nav: {
       home: 'Start',
+      siteLabel: 'Seiten',
+      pageLabel: 'Bereiche',
       commands: 'Befehle',
       templates: 'Vorlagen',
       preview: 'Vorschau',
@@ -785,6 +1108,102 @@ const translations = {
             'Stellt Rollen, Kanäle und Einstellungen wieder her'
           ],
           result: 'Wenn das Zeitfenster noch offen ist, kehrt der Server zum Zustand vor der letzten großen Änderung zurück.'
+        },
+        rolesJson: {
+          command: '/roles-json',
+          label: 'Rollen JSON',
+          title: 'Überträgt Rollen separat',
+          description: 'Core exportiert Rollen in verschlüsseltes JSON oder erstellt Rollen aus einer Datei und einer öffentlichen Rollenvorlage.',
+          steps: [
+            'Sammelt Rollen ohne botverwaltete Rollen',
+            'Verschlüsselt die JSON-Datei',
+            'Importiert Rollen nach Namen auf dem neuen Server'
+          ],
+          result: 'Der Besitzer kann Rollen übertragen, ohne die gesamte Serverstruktur neu zu bauen.'
+        },
+        rulesImport: {
+          command: '/rules-import',
+          label: 'Regeln',
+          title: 'Sendet eine Regelvorlage',
+          description: 'Der Befehl liest verschlüsseltes JSON oder eine öffentliche Regelvorlage und postet die fertige Nachricht in den gewählten Kanal.',
+          steps: [
+            'Lädt Datei oder öffentliche Vorlage',
+            'Prüft Text und Embed-Blöcke',
+            'Sendet Regeln in den Zielkanal'
+          ],
+          result: 'Der Server bekommt eine fertige Regelnachricht ohne manuelles Kopieren.'
+        },
+        rulesJsonExport: {
+          command: 'Rechtsklick auf Nachricht -> Regeln als JSON exportieren',
+          label: 'Regeln exportieren',
+          title: 'Exportiert eine Regelnachricht',
+          description: 'Dieser Kontextbefehl speichert die gewählte Regelnachricht als verschlüsseltes JSON.',
+          steps: [
+            'Öffnet sich per Rechtsklick auf eine Nachricht',
+            'Liest Text und Embed-Blöcke',
+            'Sendet verschlüsseltes JSON an den Besitzer'
+          ],
+          result: 'Regeln können auf einen anderen Server übertragen und über Core importiert werden.'
+        },
+        ruleTemplateSuggest: {
+          command: 'Rechtsklick auf Nachricht -> Regelvorlage vorschlagen',
+          label: 'Regeln vorschlagen',
+          title: 'Reicht Regeln zur Prüfung ein',
+          description: 'Dieser Kontextbefehl macht aus der gewählten Nachricht einen Vorschlag für eine öffentliche Regelvorlage.',
+          steps: [
+            'Öffnet sich per Rechtsklick auf eine Nachricht',
+            'Fragt Name und Beschreibung ab',
+            'Sendet verschlüsseltes JSON zur Prüfung'
+          ],
+          result: 'Der Entwickler erhält den Vorschlag mit Vorschau und kann die Vorlage veröffentlichen.'
+        },
+        templateRate: {
+          command: '/template-rate',
+          label: 'Bewertung',
+          title: 'Sammelt Vorlagenbewertungen',
+          description: 'Ein Nutzer gibt einer Server-, Rollen- oder Regelvorlage 1 bis 5 Sterne.',
+          steps: [
+            'Wählt den Vorlagentyp',
+            'Findet die Vorlage nach Namen',
+            'Speichert die Bewertung und berechnet den Durchschnitt'
+          ],
+          result: 'Der Katalog kann die besten Vorlagen weiter oben anzeigen.'
+        },
+        templateSuggest: {
+          command: '/template-suggest',
+          label: 'Vorschlagen',
+          title: 'Reicht eine Vorlage zur Prüfung ein',
+          description: 'Der Befehl akzeptiert Server- oder Rollen-JSON und sendet den Vorschlag verschlüsselt an Core.',
+          steps: [
+            'Nimmt die JSON-Datei an',
+            'Zählt kurze Rollen- und Kanalstatistiken',
+            'Sendet den Vorschlag in den Prüfkanal'
+          ],
+          result: 'Autoren können Vorlagen vorschlagen und der Entwickler prüft sie vor der Veröffentlichung.'
+        },
+        feedback: {
+          command: '/feedback',
+          label: 'Feedback',
+          title: 'Sendet eine Nachricht an den Entwickler',
+          description: 'Der Befehl leitet Feedback, eine Idee oder ein Problem an den privaten Core-Entwicklerkanal weiter.',
+          steps: [
+            'Nimmt Nutzertext an',
+            'Fügt Autor und Server hinzu',
+            'Sendet Feedback an den Entwickler'
+          ],
+          result: 'Die Nachricht erreicht den Entwickler, ohne öffentliche Kanäle zu füllen.'
+        },
+        help: {
+          command: '/help',
+          label: 'Hilfe',
+          title: 'Erklärt öffentliche Befehle',
+          description: 'Core zeigt entweder die vollständige öffentliche Befehlsliste oder Details zu einem gewählten Befehl.',
+          steps: [
+            'Öffnet die öffentliche Befehlsliste',
+            'Zeigt Zweck und Nutzungsbeispiel',
+            'Antwortet nur dem Nutzer'
+          ],
+          result: 'Der Besitzer findet schnell den passenden Befehl für die aktuelle Aufgabe.'
         }
       }
     },
@@ -855,6 +1274,15 @@ const translations = {
       typeForum: 'Forum',
       closePreview: 'Vorschau schließen',
       summaryTitle: 'Übersicht',
+      typeServer: 'Server',
+      typeRolesTemplate: 'Rollen',
+      typeRulesTemplate: 'Regeln',
+      rating: 'Bewertung',
+      rules: 'Regeln',
+      groupServers: 'Servervorlagen',
+      groupRoles: 'Rollenvorlagen',
+      groupRules: 'Regelvorlagen',
+      groupEmpty: 'Dieser Bereich ist noch leer.',
       tabSummary: 'Übersicht',
       tabPreview: 'Vorschau',
       copy: 'Kopieren',
@@ -1282,6 +1710,24 @@ function getActiveTemplate() {
   return getTemplateByName(templateGalleryState.activeName);
 }
 
+function getTemplateType(template) {
+  return template?.type || 'server';
+}
+
+function getTemplateTypeLabel(template, labels) {
+  const type = getTemplateType(template);
+  if (type === 'roles') return labels.typeRolesTemplate || 'Roles';
+  if (type === 'rules') return labels.typeRulesTemplate || 'Rules';
+  return labels.typeServer || 'Server';
+}
+
+function getTemplateRatingLabel(template) {
+  const rating = template?.rating || {};
+  const average = Number(rating.average || 0);
+  const count = Number(rating.count || 0);
+  return count ? `${average.toFixed(average % 1 ? 1 : 0)} ★ (${count})` : '0 ★';
+}
+
 function getChannelIcon(kind) {
   if (kind === 'voice') return '🔊';
   if (kind === 'announcement') return '📢';
@@ -1292,6 +1738,13 @@ function getChannelIcon(kind) {
 function normalizeHexColor(value) {
   const color = String(value || '').trim();
   return /^#[0-9a-f]{6}$/i.test(color) ? color : '';
+}
+
+function normalizeRoleColor(value) {
+  const hex = normalizeHexColor(value);
+  if (hex) return hex;
+  const numeric = Number(value || 0);
+  return numeric ? `#${numeric.toString(16).padStart(6, '0')}` : '';
 }
 
 function getPreviewChannels(template) {
@@ -1327,11 +1780,10 @@ function renderMiniDiscordPreview(template, labels, limitCategories = 3, limitCh
 
   return `
     <div class="mini-discord">
-      ${categories.slice(0, limitCategories).map((category) => `
+      ${categories.slice(0, limitCategories).map((category, categoryIndex) => `
         <div class="mini-discord-category">
           <span>${escapeHtml(category.name || 'Category')}</span>
           ${(category.channels || []).length ? (category.channels || []).slice(0, limitChannels).map((channel, channelIndex) => {
-            const categoryIndex = categories.indexOf(category);
             const channelKey = `${categoryIndex}:${channelIndex}`;
             const isActive = activeChannel?.key === channelKey;
             const channelContent = `
@@ -1430,21 +1882,70 @@ function renderTemplateCard(template, labels, index) {
       <button class="template-list-button" type="button" data-template-select="${escapeHtml(name)}">
         <span class="template-list-mark">${escapeHtml(initials)}</span>
         <span class="template-list-copy">
-          <small>${escapeHtml(template.serverName || name)}</small>
+          <small>${escapeHtml(getTemplateTypeLabel(template, labels))} · ${escapeHtml(template.serverName || name)}</small>
           <strong>${escapeHtml(displayName)}</strong>
           <p>${escapeHtml(description)}</p>
         </span>
         <span class="template-list-meta">
           <small>${escapeHtml(labels.updated)}</small>
           <b>${updatedAt ? escapeHtml(updatedAt) : '-'}</b>
+          <i>${escapeHtml(getTemplateRatingLabel(template))}</i>
         </span>
       </button>
     </article>
   `;
 }
 
-function renderTemplateModalSummary(template, labels, index = 0) {
+function getTemplateGroups(labels) {
+  return [
+    { type: 'server', title: labels.groupServers || labels.typeServer || 'Server templates' },
+    { type: 'roles', title: labels.groupRoles || labels.typeRolesTemplate || 'Role templates' },
+    { type: 'rules', title: labels.groupRules || labels.typeRulesTemplate || 'Rules templates' }
+  ];
+}
+
+function renderTemplateGroup(group, templates, labels) {
+  const items = templates.filter((template) => getTemplateType(template) === group.type);
+  return `
+    <section class="template-group template-group-${escapeHtml(group.type)}">
+      <div class="template-group-heading">
+        <h2>${escapeHtml(group.title)}</h2>
+        <span>${items.length}</span>
+      </div>
+      <div class="template-group-list">
+        ${items.length
+    ? items.map((template) => renderTemplateCard(template, labels, Math.max(0, templateGalleryState.templates.indexOf(template)))).join('')
+    : `<div class="template-group-empty">${escapeHtml(labels.groupEmpty || labels.empty)}</div>`}
+      </div>
+    </section>
+  `;
+}
+
+function getTemplateMetricItems(template, labels) {
   const counts = template.counts || {};
+  const type = getTemplateType(template);
+  if (type === 'roles') {
+    return [
+      [labels.roles, Number(counts.roles || 0)],
+      [labels.rating, getTemplateRatingLabel(template)]
+    ];
+  }
+  if (type === 'rules') {
+    return [
+      [labels.rules, Number(counts.rules || 0)],
+      [labels.rating, getTemplateRatingLabel(template)]
+    ];
+  }
+  return [
+    [labels.roles, Number(counts.roles || 0)],
+    [labels.categories, Number(counts.categories || 0)],
+    [labels.textChannels, Number(counts.textChannels || 0)],
+    [labels.voiceChannels, Number(counts.voiceChannels || 0)],
+    [labels.rating, getTemplateRatingLabel(template)]
+  ];
+}
+
+function renderTemplateModalSummary(template, labels, index = 0) {
   const name = template.name || 'core-template';
   const displayName = getTemplateDisplayName(template);
   const description = template.description || labels.noDescription;
@@ -1466,10 +1967,10 @@ function renderTemplateModalSummary(template, labels, index = 0) {
       </div>
       <div class="template-modal-meta">
         <span><small>${escapeHtml(labels.updated)}</small><b>${updatedAt ? escapeHtml(updatedAt) : '-'}</b></span>
-        <span><small>${escapeHtml(labels.roles)}</small><b>${Number(counts.roles || 0)}</b></span>
-        <span><small>${escapeHtml(labels.categories)}</small><b>${Number(counts.categories || 0)}</b></span>
-        <span><small>${escapeHtml(labels.textChannels)}</small><b>${Number(counts.textChannels || 0)}</b></span>
-        <span><small>${escapeHtml(labels.voiceChannels)}</small><b>${Number(counts.voiceChannels || 0)}</b></span>
+        <span><small>${escapeHtml(getTemplateTypeLabel(template, labels))}</small><b>${escapeHtml(template.name || '-')}</b></span>
+        ${getTemplateMetricItems(template, labels).map(([label, value]) => `
+          <span><small>${escapeHtml(label)}</small><b>${escapeHtml(value)}</b></span>
+        `).join('')}
       </div>
       <div class="template-modal-command">
         <small>${escapeHtml(labels.commandLabel)}</small>
@@ -1493,6 +1994,9 @@ function renderTemplateModalSummary(template, labels, index = 0) {
 }
 
 function renderDiscordPreviewWindow(template, labels) {
+  if (getTemplateType(template) === 'roles') return renderRolesPreviewWindow(template, labels);
+  if (getTemplateType(template) === 'rules') return renderRulesPreviewWindow(template, labels);
+
   const displayName = getTemplateDisplayName(template);
   const roles = template.preview?.roles || [];
 
@@ -1513,7 +2017,7 @@ function renderDiscordPreviewWindow(template, labels) {
         </div>
         <div class="discord-preview-content">
           <div class="discord-preview-channel-list">
-            ${renderMiniDiscordPreview(template, labels, 12, 16, { interactive: true })}
+            ${renderMiniDiscordPreview(template, labels, 999, 999, { interactive: true })}
           </div>
           <aside class="discord-channel-settings">
             ${renderChannelSettings(getActivePreviewChannel(template), labels)}
@@ -1527,6 +2031,77 @@ function renderDiscordPreviewWindow(template, labels) {
               </p>
             `).join('') : `<p><span>${escapeHtml(labels.noChannels)}</span></p>`}
           </aside>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRolesPreviewWindow(template, labels) {
+  const displayName = getTemplateDisplayName(template);
+  const roles = template.preview?.roles || [];
+  return `
+    <div class="discord-preview-window template-roles-preview">
+      <aside class="discord-preview-sidebar">
+        <div class="discord-preview-guild">${escapeHtml(makeTemplateInitials(displayName))}</div>
+        <strong>${escapeHtml(displayName)}</strong>
+        <span>${escapeHtml(labels.typeRolesTemplate || 'Roles')}</span>
+      </aside>
+      <div class="discord-preview-main">
+        <div class="discord-preview-topbar">
+          <div>
+            <span>@</span>
+            <strong>${escapeHtml(displayName)}</strong>
+          </div>
+          <small>${escapeHtml(template.command || `/roles-json import template:${template.name}`)}</small>
+        </div>
+        <div class="roles-preview-list">
+          ${roles.length ? roles.map((role) => `
+            <div class="roles-preview-row">
+              <i style="${normalizeRoleColor(role.color) ? `background:${normalizeRoleColor(role.color)}` : ''}"></i>
+              <strong>${escapeHtml(role.name)}</strong>
+              <span>${escapeHtml(role.permissions || '0')}</span>
+            </div>
+          `).join('') : `<div class="mini-discord-empty">${escapeHtml(labels.noChannels)}</div>`}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRulesPreviewWindow(template, labels) {
+  const displayName = getTemplateDisplayName(template);
+  const rules = template.preview?.rules || {};
+  const content = rules.content || template.description || labels.noDescription;
+  return `
+    <div class="discord-preview-window template-rules-preview">
+      <aside class="discord-preview-sidebar">
+        <div class="discord-preview-guild">${escapeHtml(makeTemplateInitials(displayName))}</div>
+        <strong>${escapeHtml(displayName)}</strong>
+        <span>${escapeHtml(labels.typeRulesTemplate || 'Rules')}</span>
+      </aside>
+      <div class="discord-preview-main">
+        <div class="discord-preview-topbar">
+          <div>
+            <span>#</span>
+            <strong>${escapeHtml(labels.rules || 'Rules')}</strong>
+          </div>
+          <small>${escapeHtml(template.command || `/rules-import template:${template.name}`)}</small>
+        </div>
+        <div class="rules-message-preview">
+          <div class="rules-message-author">
+            <span>C</span>
+            <strong>Core</strong>
+          </div>
+          <div class="rules-message-body">
+            ${escapeHtml(content).split(/\r?\n/).map((line) => `<p>${line || '&nbsp;'}</p>`).join('')}
+            ${(rules.embeds || []).map((embed) => `
+              <div class="rules-embed-preview">
+                ${embed.title ? `<strong>${escapeHtml(embed.title)}</strong>` : ''}
+                ${embed.description ? `<p>${escapeHtml(embed.description)}</p>` : ''}
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </div>
@@ -1608,8 +2183,8 @@ function renderTemplateGallery() {
     return;
   }
 
-  gallery.innerHTML = templateGalleryState.templates
-    .map((template, index) => renderTemplateCard(template, labels, index))
+  gallery.innerHTML = getTemplateGroups(labels)
+    .map((group) => renderTemplateGroup(group, templateGalleryState.templates, labels))
     .join('');
 
   if (status) {
@@ -1711,7 +2286,15 @@ function renderSimulationArtifact(mode) {
 
 function renderSimulation(panel, item, lang) {
   const copy = getSimulationCopy(lang);
-  const mode = copy.modes[activeCommand] || copy.modes.templateList;
+  const mode = copy.modes[activeCommand] || {
+    status: item.title,
+    meta: item.command,
+    cardTitle: item.command,
+    copy: item.description,
+    type: 'list',
+    rows: item.steps || [],
+    actions: []
+  };
 
   const owner = panel.querySelector('[data-sim-owner]');
   const ownerAvatar = panel.querySelector('[data-sim-owner-avatar]');
@@ -1772,12 +2355,14 @@ function renderCommandPanel(dictionary, animate = true) {
   if (!item || !panel) return;
 
   const typedCommand = panel.querySelector('[data-typed-command]');
+  const slashIcon = panel.querySelector('.slash-icon');
   const title = panel.querySelector('.command-title');
   const description = panel.querySelector('.command-description');
   const result = panel.querySelector('.command-result');
   if (title) title.textContent = item.title;
   if (description) description.textContent = item.description;
   if (result) result.textContent = item.result;
+  if (slashIcon) slashIcon.textContent = item.command.startsWith('/') ? '/' : '⋯';
   renderSimulation(panel, item, currentLanguage);
 
   panel.querySelectorAll('[data-command-step]').forEach((step, index) => {
@@ -1940,6 +2525,7 @@ document.querySelector('[data-template-gallery]')?.addEventListener('click', (ev
 
   templateGalleryState.activeName = templateName;
   templateGalleryState.activeChannelKey = '';
+  templateGalleryState.activeTab = 'summary';
   renderTemplateGallery();
 });
 

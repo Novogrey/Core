@@ -103,19 +103,40 @@ button {
 }
 
 .header-navs {
-  display: grid;
-  justify-items: center;
-  gap: 6px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
   min-width: 0;
   flex: 1 1 auto;
 }
 
-.site-tabs {
-  gap: 4px;
-  padding: 4px;
+.nav-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 5px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(13, 17, 23, 0.82);
+  background: rgba(10, 15, 22, 0.78);
+}
+
+.nav-group > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 8px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted-2);
+  font-size: 0.7rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.site-tabs {
+  gap: 4px;
 }
 
 .site-tabs a {
@@ -133,40 +154,30 @@ button {
 
 .site-tabs a:hover,
 .site-tabs a.is-active {
-  color: #101216;
-  background: var(--orange);
+  color: #071015;
+  background: var(--cyan);
 }
 
 .main-nav {
-  gap: 18px;
+  gap: 4px;
   color: var(--muted);
   font-size: 0.86rem;
 }
 
 .main-nav a {
   position: relative;
-  padding: 4px 0;
+  min-height: 32px;
+  padding: 7px 11px;
+  border-radius: 6px;
 }
 
 .main-nav a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 3px;
-  height: 2px;
-  background: var(--cyan);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 180ms ease;
+  content: none;
 }
 
 .main-nav a:hover {
   color: var(--text);
-}
-
-.main-nav a:hover::after {
-  transform: scaleX(1);
+  background: rgba(255, 255, 255, 0.055);
 }
 
 .header-actions {
@@ -375,7 +386,7 @@ button {
 
 .command-shell {
   display: grid;
-  grid-template-columns: minmax(260px, 0.74fr) minmax(360px, 1.26fr);
+  grid-template-columns: minmax(360px, 0.9fr) minmax(360px, 1.1fr);
   gap: 0;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -386,6 +397,7 @@ button {
 
 .command-list {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-content: start;
   gap: 8px;
   padding: 16px;
@@ -397,8 +409,8 @@ button {
   display: grid;
   gap: 4px;
   width: 100%;
-  min-height: 68px;
-  padding: 12px;
+  min-height: 64px;
+  padding: 10px;
   border: 1px solid transparent;
   border-radius: 8px;
   color: var(--muted);
@@ -421,9 +433,12 @@ button {
 
 .command-button code,
 .command-name {
+  overflow: hidden;
   color: var(--cyan);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.92rem;
+  font-size: 0.86rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .command-button span {
@@ -1031,7 +1046,53 @@ body.is-template-modal-open {
 .template-gallery {
   display: grid;
   grid-template-columns: 1fr;
+  gap: 22px;
+}
+
+.template-group {
+  display: grid;
   gap: 10px;
+}
+
+.template-group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.template-group-heading h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.template-group-heading span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  background: #111720;
+  font-weight: 900;
+}
+
+.template-group-list {
+  display: grid;
+  gap: 10px;
+}
+
+.template-group-empty {
+  padding: 14px 16px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .template-browser {
@@ -1149,6 +1210,9 @@ body.is-template-modal-open {
 }
 
 [data-template-preview] {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  height: 100%;
   min-height: 0;
   overflow: hidden;
 }
@@ -1180,6 +1244,9 @@ body.is-template-modal-open {
     "meta  meta    meta";
   gap: 12px 14px;
   align-items: center;
+  min-height: 0;
+  max-height: 30vh;
+  overflow: auto;
   padding: 18px;
   border-bottom: 1px solid var(--line);
   background:
@@ -1225,7 +1292,7 @@ body.is-template-modal-open {
 
 .template-modal-meta {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
   gap: 6px;
 }
 
@@ -1441,6 +1508,13 @@ body.is-template-modal-open {
 .template-list-meta b {
   color: var(--text);
   font-size: 0.9rem;
+}
+
+.template-list-meta i {
+  color: var(--orange);
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 900;
 }
 
 .template-card {
@@ -1759,6 +1833,7 @@ body.is-template-modal-open {
   display: grid;
   grid-template-columns: 86px minmax(0, 1fr);
   min-height: 620px;
+  overflow: hidden;
   background: #11141b;
 }
 
@@ -1847,15 +1922,18 @@ body.is-template-modal-open {
 .discord-preview-content {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 220px 190px;
+  min-height: 0;
   min-height: 566px;
 }
 
 .template-modal-preview .discord-preview-content {
+  height: 100%;
   min-height: 0;
 }
 
 .discord-preview-channel-list {
   overflow: auto;
+  min-height: 0;
   padding: 14px 0;
 }
 
@@ -1889,6 +1967,7 @@ body.is-template-modal-open {
 
 .discord-channel-settings {
   overflow: auto;
+  min-height: 0;
   padding: 14px;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   background: #101620;
@@ -1941,9 +2020,98 @@ body.is-template-modal-open {
 
 .discord-preview-roles {
   overflow: auto;
+  min-height: 0;
   padding: 14px;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   background: #0d1117;
+}
+
+.roles-preview-list,
+.rules-message-preview {
+  overflow: auto;
+  min-height: 0;
+  padding: 18px;
+}
+
+.roles-preview-list {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.roles-preview-row {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) minmax(90px, auto);
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.065);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.roles-preview-row i {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--muted-2);
+}
+
+.roles-preview-row strong,
+.roles-preview-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roles-preview-row span {
+  color: var(--muted-2);
+  font-size: 0.76rem;
+}
+
+.rules-message-preview {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.rules-message-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rules-message-author span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #071015;
+  background: var(--cyan);
+  font-weight: 950;
+}
+
+.rules-message-body {
+  max-width: 760px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: #151b24;
+}
+
+.rules-message-body p {
+  margin: 0 0 8px;
+  white-space: pre-wrap;
+}
+
+.rules-embed-preview {
+  margin-top: 12px;
+  padding: 12px;
+  border-left: 3px solid var(--orange);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.18);
 }
 
 .discord-preview-roles h4 {
@@ -2669,8 +2837,13 @@ body.is-template-modal-open {
   .header-navs {
     order: 3;
     width: 100%;
-    justify-items: start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
     gap: 8px;
+  }
+
+  .nav-group {
+    width: 100%;
   }
 
   .site-tabs,

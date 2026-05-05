@@ -21,16 +21,13 @@
       </a>
 
       <div class="header-navs">
-        <nav class="site-tabs" aria-label="Site pages">
-          <a class="is-active" href="#top" data-i18n="nav.home">Главная</a>
-          <a href="templates/" data-i18n="nav.templates">Шаблоны</a>
-        </nav>
-
-        <nav class="main-nav" aria-label="Home page sections">
-          <a href="#commands" data-i18n="nav.commands">Команды</a>
-          <a href="#preview" data-i18n="nav.preview">Превью</a>
-          <a href="#safety" data-i18n="nav.safety">Откат</a>
-        </nav>
+        <div class="nav-group">
+          <span data-i18n="nav.siteLabel">Страницы</span>
+          <nav class="site-tabs" aria-label="Site pages">
+            <a class="is-active" href="#top" data-i18n="nav.home">Главная</a>
+            <a href="templates/" data-i18n="nav.templates">Шаблоны</a>
+          </nav>
+        </div>
       </div>
 
       <div class="header-actions">
@@ -91,6 +88,38 @@
             <button type="button" class="command-button" data-command="serverRollback" role="tab" aria-selected="false" aria-controls="command-detail">
               <code>/server-rollback</code>
               <span>Откат</span>
+            </button>
+            <button type="button" class="command-button" data-command="rolesJson" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/roles-json</code>
+              <span>Роли JSON</span>
+            </button>
+            <button type="button" class="command-button" data-command="rulesImport" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/rules-import</code>
+              <span>Правила</span>
+            </button>
+            <button type="button" class="command-button" data-command="rulesJsonExport" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>ПКМ: rules JSON</code>
+              <span>Экспорт правил</span>
+            </button>
+            <button type="button" class="command-button" data-command="ruleTemplateSuggest" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>ПКМ: suggest rules</code>
+              <span>Предложить правила</span>
+            </button>
+            <button type="button" class="command-button" data-command="templateRate" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/template-rate</code>
+              <span>Оценка</span>
+            </button>
+            <button type="button" class="command-button" data-command="templateSuggest" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/template-suggest</code>
+              <span>Предложить</span>
+            </button>
+            <button type="button" class="command-button" data-command="feedback" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/feedback</code>
+              <span>Фидбек</span>
+            </button>
+            <button type="button" class="command-button" data-command="help" role="tab" aria-selected="false" aria-controls="command-detail">
+              <code>/help</code>
+              <span>Помощь</span>
             </button>
           </div>
 
