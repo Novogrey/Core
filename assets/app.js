@@ -17,7 +17,6 @@ const translations = {
       pageLabel: 'Разделы',
       commands: 'Команды',
       templates: 'Шаблоны',
-      rules: 'Правила',
       symbols: 'Символы',
       emoji: 'Emoji',
       preview: 'Превью',
@@ -289,6 +288,7 @@ const translations = {
       groupEmpty: 'В этом разделе пока пусто.',
       tabSummary: 'Сводка',
       tabPreview: 'Превью',
+      tabEditor: 'Редактор',
       copy: 'Копировать',
       copied: 'Скопировано',
       yes: 'Да',
@@ -353,7 +353,6 @@ const translations = {
       pageLabel: 'Sections',
       commands: 'Commands',
       templates: 'Templates',
-      rules: 'Rules',
       symbols: 'Symbols',
       emoji: 'Emoji',
       preview: 'Preview',
@@ -625,6 +624,7 @@ const translations = {
       groupEmpty: 'This section is empty for now.',
       tabSummary: 'Summary',
       tabPreview: 'Preview',
+      tabEditor: 'Editor',
       copy: 'Copy',
       copied: 'Copied',
       yes: 'Yes',
@@ -689,7 +689,6 @@ const translations = {
       pageLabel: 'Розділи',
       commands: 'Команди',
       templates: 'Шаблони',
-      rules: 'Правила',
       symbols: 'Символи',
       emoji: 'Emoji',
       preview: 'Превью',
@@ -961,6 +960,7 @@ const translations = {
       groupEmpty: 'У цьому розділі поки порожньо.',
       tabSummary: 'Зведення',
       tabPreview: 'Превью',
+      tabEditor: 'Редактор',
       copy: 'Скопіювати',
       copied: 'Скопійовано',
       yes: 'Так',
@@ -1025,7 +1025,6 @@ const translations = {
       pageLabel: 'Bereiche',
       commands: 'Befehle',
       templates: 'Vorlagen',
-      rules: 'Regeln',
       symbols: 'Symbole',
       emoji: 'Emoji',
       preview: 'Vorschau',
@@ -1297,6 +1296,7 @@ const translations = {
       groupEmpty: 'Dieser Bereich ist noch leer.',
       tabSummary: 'Übersicht',
       tabPreview: 'Vorschau',
+      tabEditor: 'Editor',
       copy: 'Kopieren',
       copied: 'Kopiert',
       yes: 'Ja',
@@ -2387,6 +2387,37 @@ function getActivePreviewChannel(template) {
   return channels.find((channel) => channel.key === templateGalleryState.activeChannelKey) || channels[0] || null;
 }
 
+function getRuleTemplateMessages(template) {
+  const previewMessages = template.preview?.messages;
+  if (Array.isArray(previewMessages) && previewMessages.length) return previewMessages;
+  if (template.preview?.rules) return [template.preview.rules];
+  if (Array.isArray(template.data?.messages) && template.data.messages.length) return template.data.messages;
+  if (template.data?.message) return [template.data.message];
+  return [{ content: template.description || '', embeds: [] }];
+}
+
+function renderRuleTemplateEditor(template, labels) {
+  return `
+    <div class="template-rule-editor-shell">
+      <div
+        data-template-rule-editor
+        data-editor-title="${escapeHtml(getTemplateDisplayName(template))}"
+        aria-label="${escapeHtml(labels.tabEditor || 'Editor')}"
+      ></div>
+    </div>
+  `;
+}
+
+function hydrateRuleTemplateEditor(template) {
+  const root = document.querySelector('[data-template-rule-editor]');
+  if (!root || !window.CoreMessageEditor?.init) return;
+  window.CoreMessageEditor.init(root, {
+    initialMessages: getRuleTemplateMessages(template),
+    title: getTemplateDisplayName(template),
+    username: 'Core'
+  });
+}
+
 function renderMiniDiscordPreview(template, labels, limitCategories = 3, limitChannels = 5, options = {}) {
   const categories = template.preview?.categories || [];
   const interactive = Boolean(options.interactive);
@@ -2689,8 +2720,7 @@ function renderRolesPreviewWindow(template, labels) {
 
 function renderRulesPreviewWindow(template, labels) {
   const displayName = getTemplateDisplayName(template);
-  const rules = template.preview?.rules || {};
-  const content = rules.content || template.description || labels.noDescription;
+  const messages = getRuleTemplateMessages(template);
   return `
     <div class="discord-preview-window template-rules-preview">
       <aside class="discord-preview-sidebar">
@@ -2707,19 +2737,28 @@ function renderRulesPreviewWindow(template, labels) {
           <small>${escapeHtml(template.command || `/rules-import template:${template.name}`)}</small>
         </div>
         <div class="rules-message-preview">
-          <div class="rules-message-author">
-            <span>C</span>
-            <strong>Core</strong>
-          </div>
-          <div class="rules-message-body">
-            ${escapeHtml(content).split(/\r?\n/).map((line) => `<p>${line || '&nbsp;'}</p>`).join('')}
-            ${(rules.embeds || []).map((embed) => `
-              <div class="rules-embed-preview">
-                ${embed.title ? `<strong>${escapeHtml(embed.title)}</strong>` : ''}
-                ${embed.description ? `<p>${escapeHtml(embed.description)}</p>` : ''}
+          ${messages.map((message, index) => `
+            <article class="rules-message-preview-item">
+              <div class="rules-message-author">
+                <span>C</span>
+                <strong>Core</strong>
+                <small>${message.components?.length ? 'Components V2' : `message ${index + 1}`}</small>
               </div>
-            `).join('')}
-          </div>
+              <div class="rules-message-body">
+                ${message.content
+    ? escapeHtml(message.content).split(/\r?\n/).map((line) => `<p>${line || '&nbsp;'}</p>`).join('')
+    : ''}
+                ${(message.embeds || []).map((embed) => `
+                  <div class="rules-embed-preview">
+                    ${embed.title ? `<strong>${escapeHtml(embed.title)}</strong>` : ''}
+                    ${embed.description ? `<p>${escapeHtml(embed.description)}</p>` : ''}
+                    ${embed.fields?.length ? `<small>${embed.fields.length} fields</small>` : ''}
+                  </div>
+                `).join('')}
+                ${message.components?.length ? `<div class="rules-embed-preview"><strong>Components V2</strong><p>${escapeHtml(message.components.length)} blocks</p></div>` : ''}
+              </div>
+            </article>
+          `).join('')}
         </div>
       </div>
     </div>
@@ -2755,21 +2794,29 @@ function renderTemplatePreviewPanel() {
   }
 
   const templateIndex = Math.max(0, templateGalleryState.templates.findIndex((item) => item.name === template.name));
+  const isRulesTemplate = getTemplateType(template) === 'rules';
+  const activeTab = isRulesTemplate && templateGalleryState.activeTab === 'editor'
+    ? 'editor'
+    : templateGalleryState.activeTab;
   preview.innerHTML = `
-    <div class="template-modal-body${templateGalleryState.activeTab === 'preview' ? ' is-tab-preview' : ''}">
+    <div class="template-modal-body${activeTab === 'preview' ? ' is-tab-preview' : ''}${activeTab === 'editor' ? ' is-tab-editor' : ''}">
       <div class="template-modal-tabs">
-        <button class="template-modal-tab${templateGalleryState.activeTab === 'summary' ? ' is-active' : ''}" type="button" data-modal-tab="summary">${escapeHtml(labels.tabSummary)}</button>
-        <button class="template-modal-tab${templateGalleryState.activeTab === 'preview' ? ' is-active' : ''}" type="button" data-modal-tab="preview">${escapeHtml(labels.tabPreview)}</button>
+        <button class="template-modal-tab${activeTab === 'summary' ? ' is-active' : ''}" type="button" data-modal-tab="summary">${escapeHtml(labels.tabSummary)}</button>
+        <button class="template-modal-tab${activeTab === 'preview' ? ' is-active' : ''}" type="button" data-modal-tab="preview">${escapeHtml(labels.tabPreview)}</button>
+        ${isRulesTemplate ? `<button class="template-modal-tab${activeTab === 'editor' ? ' is-active' : ''}" type="button" data-modal-tab="editor">${escapeHtml(labels.tabEditor || 'Editor')}</button>` : ''}
         <button class="template-preview-close" type="button" data-template-close aria-label="${escapeHtml(labels.closePreview)}">&times;</button>
       </div>
       <div class="template-modal-summary-wrap">
         ${renderTemplateModalSummary(template, labels, templateIndex)}
         <div class="template-modal-preview">
-          ${renderDiscordPreviewWindow(template, labels)}
+          ${isRulesTemplate && activeTab === 'editor'
+    ? renderRuleTemplateEditor(template, labels)
+    : renderDiscordPreviewWindow(template, labels)}
         </div>
       </div>
     </div>
   `;
+  if (isRulesTemplate && activeTab === 'editor') hydrateRuleTemplateEditor(template);
 }
 
 function renderTemplateGallery() {
@@ -3152,7 +3199,7 @@ document.querySelector('[data-template-gallery]')?.addEventListener('click', (ev
 
   templateGalleryState.activeName = templateName;
   templateGalleryState.activeChannelKey = '';
-  templateGalleryState.activeTab = 'summary';
+  templateGalleryState.activeTab = getTemplateType(getTemplateByName(templateName)) === 'rules' ? 'editor' : 'summary';
   renderTemplateGallery();
 });
 
