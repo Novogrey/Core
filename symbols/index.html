@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Core - public templates</title>
-    <meta name="description" content="Public Core templates with a Discord-style live preview.">
+    <title>Core - symbols</title>
+    <meta name="description" content="Copy useful symbols for Discord server names, channels, roles and messages.">
     <meta name="theme-color" content="#0c0e12">
-    <meta property="og:title" content="Core - public templates">
-    <meta property="og:description" content="Choose a public Core template and inspect roles, categories and channels before applying it.">
+    <meta property="og:title" content="Core - symbols">
+    <meta property="og:description" content="A fast symbol picker for Discord servers.">
     <meta property="og:image" content="../assets/hero-core.webp">
     <meta property="og:type" content="website">
     <link rel="icon" href="../assets/favicon.png">
@@ -25,9 +25,9 @@
           <span data-i18n="nav.siteLabel">Страницы</span>
           <nav class="site-tabs" aria-label="Site pages">
             <a href="../" data-i18n="nav.home">Главная</a>
-            <a class="is-active" href="./" data-i18n="nav.templates">Шаблоны</a>
+            <a href="../templates/" data-i18n="nav.templates">Шаблоны</a>
             <a href="../rules/" data-i18n="nav.rules">Правила</a>
-            <a href="../symbols/" data-i18n="nav.symbols">Символы</a>
+            <a class="is-active" href="./" data-i18n="nav.symbols">Символы</a>
             <a href="../emoji/" data-i18n="nav.emoji">Emoji</a>
           </nav>
         </div>
@@ -45,48 +45,37 @@
       </div>
     </header>
 
-    <main id="top" class="templates-page">
-      <section class="section templates-page-hero">
+    <main id="top" class="tool-page">
+      <section class="section tool-hero">
         <div class="section-heading" data-reveal>
-          <p class="eyebrow" data-i18n="templates.eyebrow">Публичные шаблоны</p>
-          <h1 data-i18n="templates.pageTitle">Выбери заготовку и посмотри структуру.</h1>
+          <p class="eyebrow" data-tool-eyebrow>Copy tools</p>
+          <h1 data-tool-title>Символы для Discord</h1>
+          <p data-tool-copy>Найди стрелки, рамки, звёзды, валюты и другие символы. Нажми на любой знак, чтобы скопировать его.</p>
         </div>
-        <a class="button secondary" href="../" data-i18n="templates.backHome">На главную</a>
+        <a class="button secondary" href="../emoji/" data-tool-switch>Emoji</a>
       </section>
 
-      <section class="section templates-section" id="templates">
-        <div class="template-gallery-toolbar" data-reveal>
-          <div>
-            <span data-i18n="templates.sourceLabel">Источник</span>
-            <strong data-template-api-status data-i18n="templates.loading">Загружаю шаблоны...</strong>
+      <section class="section copy-tool-section">
+        <div class="copy-tool-panel" data-copy-tool="symbols" data-reveal>
+          <div class="copy-tool-toolbar">
+            <label>
+              <span data-tool-search-label>Поиск</span>
+              <input type="search" data-tool-search autocomplete="off" placeholder="arrow, star, heart">
+            </label>
+            <strong data-tool-count>0</strong>
           </div>
-          <button type="button" class="gallery-refresh" data-template-refresh data-i18n="templates.refresh">Обновить</button>
-        </div>
 
-        <div class="template-browser" data-template-browser data-reveal>
-          <div class="template-gallery" data-template-gallery aria-live="polite">
-            <article class="template-list-item is-loading" aria-hidden="true">
-              <div class="template-list-button">
-                <span class="template-list-mark"></span>
-                <span class="template-list-copy">
-                  <strong></strong>
-                  <p></p>
-                </span>
-                <span class="template-list-meta"></span>
-              </div>
-            </article>
-          </div>
-        </div>
+          <div class="copy-tool-tabs" data-tool-tabs></div>
 
-        <div class="template-preview-panel" data-template-preview-panel aria-hidden="true">
-          <div class="template-preview-backdrop" data-template-close></div>
-          <div class="template-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="template-modal-title">
-            <div data-template-preview>
-              <div class="template-empty">
-                <strong data-i18n="templates.selectHint">Выбери заготовку слева, чтобы открыть структуру.</strong>
-              </div>
+          <div class="copy-tool-recent" data-tool-recent-wrap hidden>
+            <div class="copy-tool-heading">
+              <h2 data-tool-recent-title>Недавние</h2>
             </div>
+            <div class="copy-token-grid" data-tool-recent></div>
           </div>
+
+          <div class="copy-tool-results" data-tool-grid></div>
+          <div class="copy-toast" data-copy-toast aria-live="polite"></div>
         </div>
       </section>
     </main>

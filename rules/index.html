@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Core - rules webhook editor</title>
+    <meta name="description" content="Create multi-message Discord rules, edit embeds, validate Discord limits and send them through a webhook.">
+    <meta name="theme-color" content="#0c0e12">
+    <meta property="og:title" content="Core - rules webhook editor">
+    <meta property="og:description" content="Multi-message Discord rules editor with webhook sending and Discord limit validation.">
+    <meta property="og:image" content="../assets/hero-core.webp">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../assets/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="Core">
+        <img src="../assets/core-mark.png" alt="" width="36" height="36">
+        <span>Core</span>
+      </a>
+
+      <div class="header-navs">
+        <div class="nav-group">
+          <span data-i18n="nav.siteLabel">Страницы</span>
+          <nav class="site-tabs" aria-label="Site pages">
+            <a href="../" data-i18n="nav.home">Главная</a>
+            <a href="../templates/" data-i18n="nav.templates">Шаблоны</a>
+            <a class="is-active" href="./" data-i18n="nav.rules">Правила</a>
+            <a href="../symbols/" data-i18n="nav.symbols">Символы</a>
+            <a href="../emoji/" data-i18n="nav.emoji">Emoji</a>
+          </nav>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="language-switcher" role="group" aria-label="Language">
+          <button type="button" class="language-button is-active" data-lang="ru" aria-pressed="true">RU</button>
+          <button type="button" class="language-button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" class="language-button" data-lang="ua" aria-pressed="false">UA</button>
+          <button type="button" class="language-button" data-lang="de" aria-pressed="false">DE</button>
+        </div>
+        <a class="header-server" data-i18n="nav.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Сервер</a>
+        <a class="header-invite" data-i18n="nav.add" href="https://discord.com/oauth2/authorize?client_id=1499785495264104688&permissions=8&integration_type=0&scope=bot+applications.commands">Добавить</a>
+      </div>
+    </header>
+
+    <main id="top" class="tool-page">
+      <section class="section tool-hero rules-hero">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">Rules webhook</p>
+          <h1>Собери правила в несколько сообщений.</h1>
+          <p>Редактируй текст, embed, цвет, изображения и отправляй готовый набор через Discord webhook. Лимиты Discord считаются до отправки.</p>
+        </div>
+        <a class="button secondary" href="../templates/">Шаблоны</a>
+      </section>
+
+      <section class="section rules-editor-section">
+        <div class="rules-editor" data-rules-editor data-reveal>
+          <div class="rules-panel rules-settings">
+            <div class="rules-panel-heading">
+              <span>Webhook</span>
+              <strong data-rules-status>Готово</strong>
+            </div>
+
+            <label class="rules-field">
+              <span>Discord webhook URL</span>
+              <input type="url" data-rules-webhook placeholder="https://discord.com/api/webhooks/...">
+            </label>
+
+            <div class="rules-two">
+              <label class="rules-field">
+                <span>Имя вебхука</span>
+                <input type="text" data-rules-username maxlength="80" placeholder="Core">
+              </label>
+              <label class="rules-field">
+                <span>Аватар вебхука</span>
+                <input type="url" data-rules-avatar placeholder="https://...">
+              </label>
+            </div>
+
+            <div class="rules-actions">
+              <button type="button" class="button primary" data-rules-send>Отправить</button>
+              <button type="button" class="button secondary" data-rules-export>Экспорт JSON</button>
+              <label class="button secondary rules-file-button">
+                Импорт JSON
+                <input type="file" data-rules-import accept="application/json,.json">
+              </label>
+            </div>
+
+            <div class="rules-limit-list" data-rules-limits></div>
+            <div class="rules-alert" data-rules-alert hidden></div>
+          </div>
+
+          <div class="rules-panel rules-message-list">
+            <div class="rules-panel-heading">
+              <span>Сообщения</span>
+              <button type="button" data-rules-add>Добавить</button>
+            </div>
+            <div class="rules-message-buttons" data-rules-messages></div>
+          </div>
+
+          <div class="rules-panel rules-edit-panel">
+            <div class="rules-panel-heading">
+              <span data-rules-current-title>Сообщение 1</span>
+              <div class="rules-mini-actions">
+                <button type="button" data-rules-duplicate>Дубль</button>
+                <button type="button" data-rules-delete>Удалить</button>
+              </div>
+            </div>
+
+            <label class="rules-field">
+              <span>Текст сообщения</span>
+              <textarea data-rules-content maxlength="2000" rows="8" placeholder="# Правила сервера&#10;&#10;1. Уважай участников."></textarea>
+            </label>
+
+            <label class="rules-check">
+              <input type="checkbox" data-rules-embed-enabled checked>
+              <span>Embed в этом сообщении</span>
+            </label>
+
+            <div class="rules-embed-editor" data-rules-embed-editor>
+              <div class="rules-two">
+                <label class="rules-field">
+                  <span>Цвет embed</span>
+                  <input type="color" data-rules-color value="#44b8de">
+                </label>
+                <label class="rules-field">
+                  <span>Заголовок</span>
+                  <input type="text" data-rules-title maxlength="256" placeholder="Правила сервера">
+                </label>
+              </div>
+
+              <label class="rules-field">
+                <span>Описание embed</span>
+                <textarea data-rules-description maxlength="4096" rows="10" placeholder="Опиши правила здесь."></textarea>
+              </label>
+
+              <div class="rules-two">
+                <label class="rules-field">
+                  <span>Автор</span>
+                  <input type="text" data-rules-author maxlength="256" placeholder="Core">
+                </label>
+                <label class="rules-field">
+                  <span>Footer</span>
+                  <input type="text" data-rules-footer maxlength="2048" placeholder="Обновлено сегодня">
+                </label>
+              </div>
+
+              <div class="rules-two">
+                <label class="rules-field">
+                  <span>Thumbnail URL</span>
+                  <input type="url" data-rules-thumbnail placeholder="https://...">
+                </label>
+                <label class="rules-field">
+                  <span>Image URL</span>
+                  <input type="url" data-rules-image placeholder="https://...">
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="rules-panel rules-preview-panel">
+            <div class="rules-panel-heading">
+              <span>Превью</span>
+              <strong data-rules-count>1 сообщение</strong>
+            </div>
+            <div class="rules-preview" data-rules-preview></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Core</span>
+      <span data-i18n="footer.text">Built for cleaner Discord servers.</span>
+      <a class="footer-link" data-i18n="footer.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Official server</a>
+    </footer>
+
+    <script src="../assets/site-config.js"></script>
+    <script src="../assets/app.js"></script>
+    <script src="../assets/rules-editor.js"></script>
+  </body>
+</html>

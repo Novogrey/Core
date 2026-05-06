@@ -17,6 +17,9 @@ const translations = {
       pageLabel: 'Разделы',
       commands: 'Команды',
       templates: 'Шаблоны',
+      rules: 'Правила',
+      symbols: 'Символы',
+      emoji: 'Emoji',
       preview: 'Превью',
       safety: 'Откат',
       catalog: 'Каталог',
@@ -350,6 +353,9 @@ const translations = {
       pageLabel: 'Sections',
       commands: 'Commands',
       templates: 'Templates',
+      rules: 'Rules',
+      symbols: 'Symbols',
+      emoji: 'Emoji',
       preview: 'Preview',
       safety: 'Rollback',
       catalog: 'Catalog',
@@ -683,6 +689,9 @@ const translations = {
       pageLabel: 'Розділи',
       commands: 'Команди',
       templates: 'Шаблони',
+      rules: 'Правила',
+      symbols: 'Символи',
+      emoji: 'Emoji',
       preview: 'Превью',
       safety: 'Відкат',
       catalog: 'Каталог',
@@ -1016,6 +1025,9 @@ const translations = {
       pageLabel: 'Bereiche',
       commands: 'Befehle',
       templates: 'Vorlagen',
+      rules: 'Regeln',
+      symbols: 'Symbole',
+      emoji: 'Emoji',
       preview: 'Vorschau',
       safety: 'Rollback',
       catalog: 'Katalog',
@@ -1352,6 +1364,331 @@ const templateGalleryState = {
   activeTab: 'summary'
 };
 
+const copyToolState = {
+  activeCategory: 'all',
+  query: ''
+};
+
+function copyToken(value, keywords = '') {
+  return { value, keywords, label: keywords };
+}
+
+function listTokens(values, keywords = '') {
+  return String(values || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((value) => copyToken(value, keywords));
+}
+
+function rangeTokens(start, end, keywords = '', blocked = []) {
+  const blockedSet = new Set(blocked);
+  const items = [];
+
+  for (let codePoint = start; codePoint <= end; codePoint += 1) {
+    if (blockedSet.has(codePoint)) continue;
+    items.push(copyToken(String.fromCodePoint(codePoint), keywords));
+  }
+
+  return items;
+}
+
+function copyVisualKey(value) {
+  return String(value || '').normalize('NFC').replace(/[\uFE0E\uFE0F]/g, '');
+}
+
+function emojiCodePoints(value, options = {}) {
+  const points = [];
+
+  for (const symbol of String(value || '').normalize('NFC')) {
+    const codePoint = symbol.codePointAt(0);
+    if (options.stripVariant && (codePoint === 0xFE0E || codePoint === 0xFE0F)) continue;
+    points.push(codePoint.toString(16));
+  }
+
+  return points.join('-');
+}
+
+function emojiImageToken(value, label = '') {
+  const primary = emojiCodePoints(value);
+  const fallback = emojiCodePoints(value, { stripVariant: true });
+  const base = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
+
+  return {
+    value,
+    label,
+    keywords: label,
+    image: primary ? `${base}${primary}.svg` : '',
+    fallbackImage: fallback && fallback !== primary ? `${base}${fallback}.svg` : ''
+  };
+}
+
+function isRegionalFlagEmoji(value) {
+  const points = Array.from(String(value || ''), (symbol) => symbol.codePointAt(0));
+  return points.length === 2 && points.every((point) => point >= 0x1F1E6 && point <= 0x1F1FF);
+}
+
+function emojiDisplayToken(value, label = '') {
+  return isRegionalFlagEmoji(value)
+    ? emojiImageToken(value, label)
+    : copyToken(value, label);
+}
+
+function uniqueCopyTokens(items, options = {}) {
+  const seen = new Set();
+
+  return items.filter((item) => {
+    const value = String(item?.value || '').trim();
+    if (!value) return false;
+
+    const key = options.visual ? copyVisualKey(value) : value.normalize('NFC');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    item.value = value.normalize('NFC');
+    return true;
+  });
+}
+
+function externalCopyGroups(groups) {
+  if (!Array.isArray(groups)) return [];
+
+  return groups
+    .map((group) => ({
+      key: group.key,
+      items: uniqueCopyTokens((group.items || []).map((item) => {
+        if (Array.isArray(item)) return emojiDisplayToken(item[0], `${item[1] || ''} ${group.key}`);
+        return emojiDisplayToken(item.value, `${item.label || item.keywords || ''} ${group.key}`);
+      }), { visual: true })
+    }))
+    .filter((group) => group.key && group.items.length);
+}
+
+const copyToolTranslations = {
+  ru: {
+    all: 'Все',
+    copied: 'Скопировано',
+    empty: 'Ничего не найдено.',
+    count: '{count} элементов',
+    recentTitle: 'Недавние',
+    searchLabel: 'Поиск',
+    symbols: {
+      eyebrow: 'Инструмент копирования',
+      title: 'Символы для Discord',
+      copy: 'Найди стрелки, рамки, звёзды, валюты и другие символы. Нажми на любой знак, чтобы скопировать его.',
+      searchPlaceholder: 'arrow, star, heart',
+      switchLabel: 'Emoji',
+      categories: {
+        popular: 'Популярные',
+        arrows: 'Стрелки',
+        frames: 'Рамки и линии',
+        blocks: 'Блоки',
+        shapes: 'Фигуры',
+        math: 'Математика',
+        currency: 'Валюты',
+        letters: 'Буквы',
+        marks: 'Знаки',
+        technical: 'Технические',
+        music: 'Музыка',
+        cards: 'Карты',
+        zodiac: 'Зодиак'
+      }
+    },
+    emoji: {
+      eyebrow: 'Инструмент копирования',
+      title: 'Emoji для Discord',
+      copy: 'Выбирай emoji для объявлений, ролей, каналов и сообщений. Нажми на любой emoji, чтобы скопировать его.',
+      searchPlaceholder: 'smile, game, flag',
+      switchLabel: 'Символы',
+      categories: {
+        smileys: 'Эмоции',
+        people: 'Люди',
+        nature: 'Природа',
+        food: 'Еда',
+        activities: 'Активности',
+        travel: 'Места',
+        objects: 'Предметы',
+        symbols: 'Символы',
+        flags: 'Флаги'
+      }
+    }
+  },
+  en: {
+    all: 'All',
+    copied: 'Copied',
+    empty: 'Nothing found.',
+    count: '{count} items',
+    recentTitle: 'Recent',
+    searchLabel: 'Search',
+    symbols: {
+      eyebrow: 'Copy tool',
+      title: 'Symbols for Discord',
+      copy: 'Find arrows, frames, stars, currency signs and other symbols. Click any token to copy it.',
+      searchPlaceholder: 'arrow, star, heart',
+      switchLabel: 'Emoji',
+      categories: {
+        popular: 'Popular',
+        arrows: 'Arrows',
+        frames: 'Frames and lines',
+        blocks: 'Blocks',
+        shapes: 'Shapes',
+        math: 'Math',
+        currency: 'Currency',
+        letters: 'Letters',
+        marks: 'Marks',
+        technical: 'Technical',
+        music: 'Music',
+        cards: 'Cards',
+        zodiac: 'Zodiac'
+      }
+    },
+    emoji: {
+      eyebrow: 'Copy tool',
+      title: 'Emoji for Discord',
+      copy: 'Pick emoji for announcements, roles, channels and messages. Click any emoji to copy it.',
+      searchPlaceholder: 'smile, game, flag',
+      switchLabel: 'Symbols',
+      categories: {
+        smileys: 'Smileys',
+        people: 'People',
+        nature: 'Nature',
+        food: 'Food',
+        activities: 'Activities',
+        travel: 'Places',
+        objects: 'Objects',
+        symbols: 'Symbols',
+        flags: 'Flags'
+      }
+    }
+  },
+  ua: {
+    all: 'Усі',
+    copied: 'Скопійовано',
+    empty: 'Нічого не знайдено.',
+    count: '{count} елементів',
+    recentTitle: 'Недавні',
+    searchLabel: 'Пошук',
+    symbols: {
+      eyebrow: 'Інструмент копіювання',
+      title: 'Символи для Discord',
+      copy: 'Знайди стрілки, рамки, зірки, валюти та інші символи. Натисни на будь-який знак, щоб скопіювати його.',
+      searchPlaceholder: 'arrow, star, heart',
+      switchLabel: 'Emoji',
+      categories: {
+        popular: 'Популярні',
+        arrows: 'Стрілки',
+        frames: 'Рамки та лінії',
+        blocks: 'Блоки',
+        shapes: 'Фігури',
+        math: 'Математика',
+        currency: 'Валюти',
+        letters: 'Літери',
+        marks: 'Знаки',
+        technical: 'Технічні',
+        music: 'Музика',
+        cards: 'Карти',
+        zodiac: 'Зодіак'
+      }
+    },
+    emoji: {
+      eyebrow: 'Інструмент копіювання',
+      title: 'Emoji для Discord',
+      copy: 'Обирай emoji для оголошень, ролей, каналів і повідомлень. Натисни на будь-який emoji, щоб скопіювати його.',
+      searchPlaceholder: 'smile, game, flag',
+      switchLabel: 'Символи',
+      categories: {
+        smileys: 'Емоції',
+        people: 'Люди',
+        nature: 'Природа',
+        food: 'Їжа',
+        activities: 'Активності',
+        travel: 'Місця',
+        objects: 'Предмети',
+        symbols: 'Символи',
+        flags: 'Прапори'
+      }
+    }
+  },
+  de: {
+    all: 'Alle',
+    copied: 'Kopiert',
+    empty: 'Nichts gefunden.',
+    count: '{count} Elemente',
+    recentTitle: 'Zuletzt',
+    searchLabel: 'Suche',
+    symbols: {
+      eyebrow: 'Kopierwerkzeug',
+      title: 'Symbole für Discord',
+      copy: 'Finde Pfeile, Rahmen, Sterne, Währungszeichen und andere Symbole. Klicke auf ein Zeichen, um es zu kopieren.',
+      searchPlaceholder: 'arrow, star, heart',
+      switchLabel: 'Emoji',
+      categories: {
+        popular: 'Beliebt',
+        arrows: 'Pfeile',
+        frames: 'Rahmen und Linien',
+        blocks: 'Blöcke',
+        shapes: 'Formen',
+        math: 'Mathe',
+        currency: 'Währungen',
+        letters: 'Buchstaben',
+        marks: 'Zeichen',
+        technical: 'Technisch',
+        music: 'Musik',
+        cards: 'Karten',
+        zodiac: 'Zodiak'
+      }
+    },
+    emoji: {
+      eyebrow: 'Kopierwerkzeug',
+      title: 'Emoji für Discord',
+      copy: 'Wähle Emoji für Ankündigungen, Rollen, Kanäle und Nachrichten. Klicke auf ein Emoji, um es zu kopieren.',
+      searchPlaceholder: 'smile, game, flag',
+      switchLabel: 'Symbole',
+      categories: {
+        smileys: 'Smileys',
+        people: 'Menschen',
+        nature: 'Natur',
+        food: 'Essen',
+        activities: 'Aktivitäten',
+        travel: 'Orte',
+        objects: 'Objekte',
+        symbols: 'Symbole',
+        flags: 'Flaggen'
+      }
+    }
+  }
+};
+
+const officialEmojiGroups = externalCopyGroups(window.CORE_EMOJI_GROUPS);
+
+const copyToolData = {
+  symbols: [
+    { key: 'popular', items: uniqueCopyTokens(listTokens('★ ☆ ✦ ✧ ✩ ✪ ✯ ✰ ✓ ✔ ✘ ✚ ❤ ❥ ❖ ◆ ◇ ● ○ ◉ ◎ ▬ ▰ ▱ ▸ ◂ ⌁ ⌘ ⌬ ⌾ ⍟', 'popular star check heart shape discord'), { visual: true }) },
+    { key: 'arrows', items: uniqueCopyTokens([...listTokens('← ↑ → ↓ ↔ ↕ ⇐ ⇒ ⇑ ⇓ ⇔ ➜ ➝ ➞ ➟ ➤ ↪ ↩ ⟶ ⟵ ⟷', 'arrow direction'), ...rangeTokens(0x2190, 0x21FF, 'arrow direction'), ...rangeTokens(0x27F0, 0x27FF, 'arrow direction'), ...rangeTokens(0x2900, 0x297F, 'arrow direction')], { visual: true }) },
+    { key: 'frames', items: uniqueCopyTokens([...listTokens('─ ━ │ ┃ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ ╔ ╗ ╚ ╝ ═ ║ ╬ ╭ ╮ ╰ ╯', 'frame line border box unix'), ...rangeTokens(0x2500, 0x257F, 'frame line border box unicode')], { visual: true }) },
+    { key: 'blocks', items: uniqueCopyTokens([...rangeTokens(0x2580, 0x259F, 'block shade progress'), ...rangeTokens(0x2801, 0x28FF, 'braille dots pattern')], { visual: true }) },
+    { key: 'shapes', items: uniqueCopyTokens([...rangeTokens(0x25A0, 0x25FF, 'shape geometric circle square triangle'), ...rangeTokens(0x1F780, 0x1F7FF, 'shape geometric symbol')], { visual: true }) },
+    { key: 'math', items: uniqueCopyTokens([...listTokens('± × ÷ = ≠ ≈ ≤ ≥ √ ∞ ∑ ∏ π ∆ ∇ ∂ ∫ ∴ ∵ ∝', 'math formula'), ...rangeTokens(0x2200, 0x22FF, 'math operator'), ...rangeTokens(0x27C0, 0x27EF, 'math symbol'), ...rangeTokens(0x2980, 0x29FF, 'math bracket'), ...rangeTokens(0x2A00, 0x2AFF, 'math operator')], { visual: true }) },
+    { key: 'currency', items: uniqueCopyTokens([...listTokens('$ € £ ¥ ₴ ₽ ₿ ₩ ₹ ₺ ₫ ₪ ₦ ₱ ¢', 'currency money'), ...rangeTokens(0x20A0, 0x20CF, 'currency money')], { visual: true }) },
+    { key: 'letters', items: uniqueCopyTokens([...listTokens('Æ Ø Å Ð Þ Ł Œ ß ᴀ ʙ ᴄ ᴅ ᴇ ғ ɢ ʜ ɪ ᴊ ᴋ ʟ ᴍ ɴ ᴏ ᴘ ʀ ᴛ ᴜ ᴠ ᴡ ʏ ᴢ', 'letter font small caps'), ...rangeTokens(0x1D00, 0x1D7F, 'letter phonetic small caps'), ...rangeTokens(0x2100, 0x214F, 'letterlike symbol'), ...rangeTokens(0x24B6, 0x24E9, 'circled letter')], { visual: true }) },
+    { key: 'marks', items: uniqueCopyTokens([...listTokens('© ® ™ § ¶ † ‡ • ‣ ⁂ ※ № ℹ ⓘ ⓧ ⓥ', 'mark legal info bullet'), ...rangeTokens(0x2030, 0x205E, 'punctuation mark'), ...rangeTokens(0x2700, 0x27BF, 'dingbat mark')], { visual: true }) },
+    { key: 'technical', items: uniqueCopyTokens([...rangeTokens(0x2300, 0x23FF, 'technical command symbol'), ...rangeTokens(0x2400, 0x2426, 'control picture technical')], { visual: true }) },
+    { key: 'music', items: uniqueCopyTokens([...listTokens('♩ ♪ ♫ ♬ ♭ ♮ ♯ 𝄞 𝄢 𝄫 𝄪', 'music note'), ...rangeTokens(0x1D100, 0x1D1FF, 'music notation')], { visual: true }) },
+    { key: 'cards', items: uniqueCopyTokens([...rangeTokens(0x2660, 0x266F, 'card suit chess'), ...rangeTokens(0x1F0A0, 0x1F0FF, 'playing card tarot')], { visual: true }) },
+    { key: 'zodiac', items: uniqueCopyTokens([...listTokens('♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓', 'zodiac sign'), ...rangeTokens(0x2600, 0x26FF, 'misc symbol zodiac weather')], { visual: true }) }
+  ],
+  emoji: officialEmojiGroups.length ? officialEmojiGroups : [
+    { key: 'smileys', items: uniqueCopyTokens(listTokens('😀 😃 😄 😁 😆 😅 😂 🙂 😉 😊 😎 🤔 🤨 😐 😴 😭 😡 🥳', 'smile face emotion'), { visual: true }) },
+    { key: 'people', items: uniqueCopyTokens(listTokens('👋 👍 👎 👌 🤝 🙌 👏 💪 🫶 🙏 🧠 👑 🛡️ 🧑‍💻 🧑‍🎨 🧑‍🚀 🧑‍🏫', 'people gesture role'), { visual: true }) },
+    { key: 'nature', items: uniqueCopyTokens(listTokens('🔥 ✨ ⚡ ☀️ 🌙 ⭐ 🌟 ❄️ 🌈 🌊 🍀 🌸 🌹 🌻 🌍 🪐', 'nature effect weather'), { visual: true }) },
+    { key: 'food', items: uniqueCopyTokens(listTokens('🍕 🍔 🍟 🌭 🍿 🍩 🍪 🍫 🍰 🍓 🍒 🍉 🍋 ☕ 🧃', 'food drink'), { visual: true }) },
+    { key: 'activities', items: uniqueCopyTokens(listTokens('🎮 🕹️ 🎲 🎯 🏆 🥇 ⚽ 🏀 🎧 🎤 🎬 🎨 🎭 🎸 🎹', 'game activity media'), { visual: true }) },
+    { key: 'travel', items: uniqueCopyTokens(listTokens('🚀 ✈️ 🚗 🚕 🚌 🚲 🛴 🚦 🏠 🏙️ 🏰 🏕️ 🗺️ 🧭', 'travel place'), { visual: true }) },
+    { key: 'objects', items: uniqueCopyTokens(listTokens('📌 📎 📝 📚 📦 💎 🔑 🔒 🔔 📢 📣 🧩 🛠️ ⚙️ 🧪', 'object tool announce'), { visual: true }) },
+    { key: 'symbols', items: uniqueCopyTokens(listTokens('❤️ 🧡 💛 💚 💙 💜 🤍 🖤 ✅ ❌ ⚠️ ⛔ 🔰 ♻️ 🔞 💯', 'symbol heart check warning'), { visual: true }) },
+    { key: 'flags', items: uniqueCopyTokens(listTokens('🏳️ 🏴 🏁 🚩 🇺🇸 🇬🇧 🇩🇪 🇺🇦 🇵🇱 🇫🇷 🇪🇸 🇮🇹 🇯🇵 🇰🇷', 'flag country'), { visual: true }) }
+  ]
+};
+
 const simulationCopy = {
   ru: {
     owner: 'Владелец',
@@ -1668,6 +2005,275 @@ function safeHttpUrl(value) {
   } catch {
     return '';
   }
+}
+
+function getCopyToolRoot() {
+  return document.querySelector('[data-copy-tool]');
+}
+
+function getCopyToolText(kind) {
+  const base = copyToolTranslations[currentLanguage] || copyToolTranslations.en;
+  const fallback = copyToolTranslations.en;
+  return {
+    ...fallback,
+    ...base,
+    [kind]: {
+      ...(fallback[kind] || {}),
+      ...(base[kind] || {})
+    }
+  };
+}
+
+function getCopyToolRecentKey(kind) {
+  return `core-copy-tool-recent-${kind}`;
+}
+
+function readCopyToolRecent(kind) {
+  try {
+    const value = JSON.parse(localStorage.getItem(getCopyToolRecentKey(kind)) || '[]');
+    return Array.isArray(value) ? value.filter(Boolean).slice(0, 24) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCopyToolRecent(kind, value) {
+  const recent = readCopyToolRecent(kind).filter((item) => item !== value);
+  recent.unshift(value);
+  localStorage.setItem(getCopyToolRecentKey(kind), JSON.stringify(recent.slice(0, 24)));
+}
+
+function renderCopyToolRecent(root, kind) {
+  const text = getCopyToolText(kind);
+  const recentWrap = root?.querySelector('[data-tool-recent-wrap]');
+  const recentTitle = root?.querySelector('[data-tool-recent-title]');
+  const recentGrid = root?.querySelector('[data-tool-recent]');
+  if (!recentWrap || !recentGrid) return;
+
+  const recent = readCopyToolRecent(kind);
+  recentWrap.hidden = !recent.length;
+  if (recentTitle) recentTitle.textContent = text.recentTitle;
+  recentGrid.innerHTML = recent.map((value) => renderCopyToken(value, text.copied)).join('');
+}
+
+function getCopyToolCategories(kind) {
+  return copyToolData[kind] || [];
+}
+
+function filterCopyToolItems(items, query) {
+  const normalized = String(query || '').trim().toLowerCase();
+  if (!normalized) return items;
+
+  return items.filter((item) => `${item.value} ${item.label || ''} ${item.keywords}`.toLowerCase().includes(normalized));
+}
+
+function renderCopyToken(token, label) {
+  const value = typeof token === 'object' ? token.value : token;
+  const tokenLabel = typeof token === 'object' ? token.label || token.keywords || token.value : token;
+  const image = typeof token === 'object' ? token.image || '' : '';
+  const fallbackImage = typeof token === 'object' ? token.fallbackImage || '' : '';
+  const fallbackAttribute = fallbackImage ? ` data-fallback-image="${escapeHtml(fallbackImage)}"` : '';
+  const tokenContent = image
+    ? `<img class="copy-token-image" src="${escapeHtml(image)}"${fallbackAttribute} alt="" aria-hidden="true" loading="lazy" decoding="async">`
+    : `<span>${escapeHtml(value)}</span>`;
+
+  return `
+    <button class="copy-token" type="button" data-copy-value="${escapeHtml(value)}" title="${escapeHtml(tokenLabel)}" aria-label="${escapeHtml(label)} ${escapeHtml(value)}">
+      ${tokenContent}
+    </button>
+  `;
+}
+
+function renderCopyToolGroup(category, items, text, toolText) {
+  const categoryTitle = toolText.categories?.[category.key] || category.key;
+  return `
+    <section class="copy-tool-group">
+      <div class="copy-tool-heading">
+        <h2>${escapeHtml(categoryTitle)}</h2>
+        <span>${items.length}</span>
+      </div>
+      <div class="copy-token-grid">
+        ${items.map((item) => renderCopyToken(item, text.copied)).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function renderCopyTool() {
+  const root = getCopyToolRoot();
+  if (!root) return;
+
+  const kind = root.dataset.copyTool || 'symbols';
+  const text = getCopyToolText(kind);
+  const toolText = text[kind] || {};
+  const categories = getCopyToolCategories(kind);
+  const query = copyToolState.query;
+
+  if (copyToolState.activeCategory !== 'all' && !categories.some((category) => category.key === copyToolState.activeCategory)) {
+    copyToolState.activeCategory = 'all';
+  }
+
+  const title = document.querySelector('[data-tool-title]');
+  const eyebrow = document.querySelector('[data-tool-eyebrow]');
+  const copy = document.querySelector('[data-tool-copy]');
+  const switchLink = document.querySelector('[data-tool-switch]');
+  const searchLabel = root.querySelector('[data-tool-search-label]');
+  const search = root.querySelector('[data-tool-search]');
+  const tabs = root.querySelector('[data-tool-tabs]');
+  const grid = root.querySelector('[data-tool-grid]');
+  const count = root.querySelector('[data-tool-count]');
+  const recentWrap = root.querySelector('[data-tool-recent-wrap]');
+  const recentTitle = root.querySelector('[data-tool-recent-title]');
+  const recentGrid = root.querySelector('[data-tool-recent]');
+
+  if (toolText.title) document.title = `Core - ${toolText.title}`;
+  const description = document.querySelector('meta[name="description"]');
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  if (description && toolText.copy) description.setAttribute('content', toolText.copy);
+  if (ogTitle && toolText.title) ogTitle.setAttribute('content', `Core - ${toolText.title}`);
+  if (ogDescription && toolText.copy) ogDescription.setAttribute('content', toolText.copy);
+
+  if (title) title.textContent = toolText.title || '';
+  if (eyebrow) eyebrow.textContent = toolText.eyebrow || '';
+  if (copy) copy.textContent = toolText.copy || '';
+  if (switchLink) switchLink.textContent = toolText.switchLabel || switchLink.textContent;
+  if (searchLabel) searchLabel.textContent = text.searchLabel;
+  if (search) {
+    search.placeholder = toolText.searchPlaceholder || '';
+    if (search.value !== copyToolState.query) search.value = copyToolState.query;
+  }
+  if (recentTitle) recentTitle.textContent = text.recentTitle;
+
+  const activeCategories = copyToolState.activeCategory === 'all'
+    ? categories
+    : categories.filter((category) => category.key === copyToolState.activeCategory);
+  const seenRendered = new Set();
+  const renderedGroups = activeCategories
+    .map((category) => {
+      const items = filterCopyToolItems(category.items, query).filter((item) => {
+        if (copyToolState.activeCategory !== 'all') return true;
+        const key = copyVisualKey(item.value);
+        if (seenRendered.has(key)) return false;
+        seenRendered.add(key);
+        return true;
+      });
+
+      return { category, items };
+    })
+    .filter((group) => group.items.length);
+  const total = renderedGroups.reduce((sum, group) => sum + group.items.length, 0);
+
+  if (tabs) {
+    tabs.innerHTML = [
+      `<button type="button" class="${copyToolState.activeCategory === 'all' ? 'is-active' : ''}" data-tool-category="all">${escapeHtml(text.all)}</button>`,
+      ...categories.map((category) => `
+        <button type="button" class="${copyToolState.activeCategory === category.key ? 'is-active' : ''}" data-tool-category="${escapeHtml(category.key)}">
+          ${escapeHtml(toolText.categories?.[category.key] || category.key)}
+        </button>
+      `)
+    ].join('');
+  }
+
+  if (count) count.textContent = formatText(text.count, { count: total });
+  if (grid) {
+    grid.innerHTML = total
+      ? renderedGroups.map((group) => renderCopyToolGroup(group.category, group.items, text, toolText)).join('')
+      : `<div class="copy-tool-empty">${escapeHtml(text.empty)}</div>`;
+  }
+
+  const recent = readCopyToolRecent(kind);
+  if (recentWrap && recentGrid) {
+    recentWrap.hidden = !recent.length;
+    recentGrid.innerHTML = recent.map((value) => renderCopyToken(value, text.copied)).join('');
+  }
+}
+
+async function copyToolValue(value) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = value;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  textarea.remove();
+}
+
+function showCopyToast(value) {
+  const root = getCopyToolRoot();
+  const toast = document.querySelector('[data-copy-toast]') || root?.querySelector('[data-copy-toast]');
+  if (!toast) return;
+
+  const kind = root.dataset.copyTool || 'symbols';
+  const text = getCopyToolText(kind);
+  toast.textContent = `${text.copied}: ${value}`;
+  toast.classList.remove('is-visible');
+  void toast.offsetWidth;
+  toast.classList.add('is-visible');
+  window.clearTimeout(showCopyToast.timer);
+  showCopyToast.timer = window.setTimeout(() => toast.classList.remove('is-visible'), 2600);
+}
+
+function setupCopyTool() {
+  const root = getCopyToolRoot();
+  if (!root) return;
+
+  const toast = root.querySelector('[data-copy-toast]');
+  if (toast && toast.parentElement !== document.body) {
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'assertive');
+    document.body.appendChild(toast);
+  }
+
+  root.querySelector('[data-tool-search]')?.addEventListener('input', (event) => {
+    copyToolState.query = event.target.value || '';
+    renderCopyTool();
+  });
+
+  root.addEventListener('error', (event) => {
+    const image = event.target.closest?.('.copy-token-image');
+    if (!image) return;
+
+    const fallback = image.dataset.fallbackImage || '';
+    if (fallback && image.src !== fallback) {
+      image.dataset.fallbackImage = '';
+      image.src = fallback;
+      return;
+    }
+
+    image.closest('.copy-token')?.classList.add('is-hidden');
+  }, true);
+
+  root.addEventListener('click', async (event) => {
+    const categoryButton = event.target.closest('[data-tool-category]');
+    if (categoryButton) {
+      copyToolState.activeCategory = categoryButton.dataset.toolCategory || 'all';
+      renderCopyTool();
+      return;
+    }
+
+    const tokenButton = event.target.closest('[data-copy-value]');
+    if (!tokenButton) return;
+
+    const value = tokenButton.dataset.copyValue || '';
+    if (!value) return;
+
+    await copyToolValue(value).catch(() => null);
+    const kind = root.dataset.copyTool || 'symbols';
+    saveCopyToolRecent(kind, value);
+    tokenButton.classList.add('is-copied');
+    showCopyToast(value);
+    renderCopyToolRecent(root, kind);
+    window.clearTimeout(tokenButton.copyStateTimer);
+    tokenButton.copyStateTimer = window.setTimeout(() => tokenButton.classList.remove('is-copied'), 900);
+  });
 }
 
 function formatDateLabel(value) {
@@ -2453,6 +3059,7 @@ function applyLanguageNow(lang, animateCommand = false) {
   renderCommandButtons(dictionary);
   renderCommandPanel(dictionary, animateCommand);
   renderTemplateGallery();
+  renderCopyTool();
   localStorage.setItem('core-site-language', currentLanguage);
 }
 
@@ -2483,6 +3090,12 @@ function setupReveal() {
     return;
   }
 
+  revealItems.forEach((item) => {
+    if (item.matches('.copy-tool-panel')) {
+      item.classList.add('is-visible');
+    }
+  });
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
@@ -2493,7 +3106,9 @@ function setupReveal() {
     threshold: 0.18
   });
 
-  revealItems.forEach((item) => observer.observe(item));
+  revealItems.forEach((item) => {
+    if (!item.classList.contains('is-visible')) observer.observe(item);
+  });
 }
 
 document.querySelectorAll('a[href*="discord.com/oauth2/authorize"]').forEach((link) => {
@@ -2592,6 +3207,7 @@ const defaultLanguage = savedLanguage
       : browserLanguage.startsWith('de') ? 'de'
         : 'en');
 
+setupCopyTool();
 applyLanguage(defaultLanguage, { animate: false, animateCommand: true });
 setupReveal();
 loadTemplateGallery();
