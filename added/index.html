@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="theme-color" content="#0a0c10">
+    <title>Core added to Discord</title>
+    <meta name="description" content="Core has been added to your Discord server.">
+    <link rel="icon" href="../assets/favicon.png">
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0a0c10;
+        --panel: #10151d;
+        --panel-2: #151b25;
+        --line: rgba(255, 255, 255, 0.12);
+        --text: #f5f7fb;
+        --muted: #a7b0bf;
+        --accent: #44b8de;
+        --accent-2: #f2a51a;
+        --ok: #35b46f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        padding: 32px;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          radial-gradient(circle at 18% 22%, rgba(68, 184, 222, 0.14), transparent 32%),
+          radial-gradient(circle at 82% 78%, rgba(242, 165, 26, 0.12), transparent 30%),
+          var(--bg);
+        background-size: 92px 92px, 92px 92px, auto, auto, auto;
+        color: var(--text);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      .language-switcher {
+        position: fixed;
+        top: 18px;
+        right: 18px;
+        z-index: 5;
+        display: inline-flex;
+        gap: 4px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(10, 12, 16, 0.84);
+        padding: 4px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.24);
+      }
+
+      .language-switcher button {
+        min-width: 42px;
+        height: 36px;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font: inherit;
+        font-weight: 900;
+      }
+
+      .language-switcher button.is-active {
+        background: var(--accent-2);
+        color: #0b0d10;
+      }
+
+      main {
+        width: min(820px, 100%);
+      }
+
+      .panel {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(16, 21, 29, 0.92);
+        box-shadow: 0 26px 90px rgba(0, 0, 0, 0.42);
+        animation: enter 520ms ease both;
+      }
+
+      .top {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 18px;
+        align-items: center;
+        padding: clamp(26px, 5vw, 42px);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .mark {
+        width: 68px;
+        height: 68px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: #0d1117;
+        object-fit: contain;
+        padding: 8px;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 10px;
+        color: var(--ok);
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .status::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--ok);
+        box-shadow: 0 0 0 5px rgba(53, 180, 111, 0.13);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 6vw, 4.2rem);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .copy {
+        margin: 18px 0 0;
+        max-width: 690px;
+        color: var(--muted);
+        font-size: 1.04rem;
+      }
+
+      .body {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 18px;
+        padding: clamp(22px, 4vw, 34px);
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(21, 27, 37, 0.72);
+        padding: 20px;
+      }
+
+      h2 {
+        margin: 0 0 14px;
+        font-size: 1rem;
+      }
+
+      ol,
+      ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--muted);
+      }
+
+      li + li {
+        margin-top: 10px;
+      }
+
+      code {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.2);
+        color: var(--text);
+        font: 700 0.95em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        padding: 2px 6px;
+      }
+
+      .details {
+        display: grid;
+        gap: 10px;
+      }
+
+      .detail {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 10px;
+        color: var(--muted);
+      }
+
+      .detail:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .detail strong {
+        color: var(--text);
+        text-align: right;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 0 clamp(22px, 4vw, 34px) clamp(24px, 4vw, 34px);
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 0 18px;
+        color: var(--text);
+        font-weight: 900;
+        text-decoration: none;
+      }
+
+      .button.primary {
+        border-color: transparent;
+        background: var(--accent);
+        color: #071015;
+      }
+
+      .button.secondary {
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .note {
+        margin: 0;
+        padding: 0 clamp(22px, 4vw, 34px) clamp(24px, 4vw, 34px);
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      @keyframes enter {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 760px) {
+        body {
+          padding: 76px 18px 18px;
+        }
+
+        .language-switcher {
+          top: 14px;
+          right: 14px;
+        }
+
+        .top,
+        .body {
+          grid-template-columns: 1fr;
+        }
+
+        .mark {
+          width: 58px;
+          height: 58px;
+        }
+
+        .detail {
+          display: grid;
+        }
+
+        .detail strong {
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="language-switcher" aria-label="Language">
+      <button class="is-active" type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="ru" aria-pressed="false">RU</button>
+      <button type="button" data-lang="ua" aria-pressed="false">UA</button>
+      <button type="button" data-lang="de" aria-pressed="false">DE</button>
+    </div>
+
+    <main>
+      <section class="panel" aria-labelledby="page-title">
+        <div class="top">
+          <img class="mark" src="../assets/core-mark.png" alt="" width="68" height="68">
+          <div>
+            <p class="status" data-i18n="status" data-status>Bot added</p>
+            <h1 id="page-title" data-i18n="title" data-title>Thank you for adding Core.</h1>
+            <p class="copy" data-i18n="copy" data-copy>
+              Core is ready to help with public templates, server import, previews, rollback and useful Discord setup tools.
+            </p>
+          </div>
+        </div>
+
+        <div class="body">
+          <article class="card">
+            <h2 data-i18n="stepsTitle">Recommended next steps</h2>
+            <ol>
+              <li data-i18n-html="step1">Open your Discord server and check that Core appears in the member list.</li>
+              <li data-i18n-html="step2">Run <code>/help</code> to see available public commands.</li>
+              <li data-i18n-html="step3">Review bot permissions before using import, template or rollback commands.</li>
+              <li data-i18n-html="step4">Use templates only after checking the preview and confirmation screen.</li>
+            </ol>
+          </article>
+
+          <article class="card">
+            <h2 data-i18n="detailsTitle">Session details</h2>
+            <div class="details">
+              <div class="detail">
+                <span data-i18n="resultLabel">Result</span>
+                <strong data-result>Authorization completed</strong>
+              </div>
+              <div class="detail">
+                <span data-i18n="permissionsLabel">Permissions</span>
+                <strong data-permissions>Use Discord server settings</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="actions">
+          <a class="button primary" data-i18n="openDiscord" href="https://discord.com/channels/@me">Open Discord</a>
+          <a class="button secondary" data-i18n="supportServer" href="https://discord.gg/FjfZkHEuyv">Support server</a>
+        </div>
+
+        <p class="note" data-i18n="note">
+          You can close this page after Discord opens. If Core does not appear on the server, repeat the invite flow and make sure the correct server was selected.
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const translations = {
+        en: {
+          metaTitle: 'Core added to Discord',
+          metaDescription: 'Core has been added to your Discord server.',
+          status: 'Bot added',
+          title: 'Thank you for adding Core.',
+          copy: 'Core is ready to help with public templates, server import, previews, rollback and useful Discord setup tools.',
+          stepsTitle: 'Recommended next steps',
+          step1: 'Open your Discord server and check that Core appears in the member list.',
+          step2: 'Run <code>/help</code> to see available public commands.',
+          step3: 'Review bot permissions before using import, template or rollback commands.',
+          step4: 'Use templates only after checking the preview and confirmation screen.',
+          detailsTitle: 'Session details',
+          resultLabel: 'Result',
+          permissionsLabel: 'Permissions',
+          resultSuccess: 'Authorization completed',
+          permissionsFallback: 'Use Discord server settings',
+          openDiscord: 'Open Discord',
+          supportServer: 'Support server',
+          note: 'You can close this page after Discord opens. If Core does not appear on the server, repeat the invite flow and make sure the correct server was selected.',
+          errorStatus: 'Authorization stopped',
+          errorTitle: 'Core was not added.',
+          errorCopy: 'Discord did not complete the authorization flow.'
+        },
+        ru: {
+          metaTitle: 'Core добавлен в Discord',
+          metaDescription: 'Core был добавлен на ваш Discord-сервер.',
+          status: 'Бот добавлен',
+          title: 'Спасибо за добавление Core.',
+          copy: 'Core готов помочь с публичными шаблонами, импортом сервера, предпросмотром, откатом и полезными инструментами настройки Discord.',
+          stepsTitle: 'Что сделать дальше',
+          step1: 'Откройте свой Discord-сервер и проверьте, что Core появился в списке участников.',
+          step2: 'Введите <code>/help</code>, чтобы посмотреть доступные публичные команды.',
+          step3: 'Проверьте права бота перед использованием импорта, шаблонов или отката.',
+          step4: 'Применяйте шаблоны только после проверки предпросмотра и экрана подтверждения.',
+          detailsTitle: 'Детали авторизации',
+          resultLabel: 'Результат',
+          permissionsLabel: 'Права',
+          resultSuccess: 'Авторизация завершена',
+          permissionsFallback: 'Проверьте настройки сервера Discord',
+          openDiscord: 'Открыть Discord',
+          supportServer: 'Сервер поддержки',
+          note: 'Эту страницу можно закрыть после открытия Discord. Если Core не появился на сервере, повторите добавление и убедитесь, что выбран правильный сервер.',
+          errorStatus: 'Авторизация остановлена',
+          errorTitle: 'Core не был добавлен.',
+          errorCopy: 'Discord не завершил процесс авторизации.'
+        },
+        ua: {
+          metaTitle: 'Core додано в Discord',
+          metaDescription: 'Core було додано на ваш Discord-сервер.',
+          status: 'Бота додано',
+          title: 'Дякуємо за додавання Core.',
+          copy: 'Core готовий допомогти з публічними шаблонами, імпортом сервера, попереднім переглядом, відкатом і корисними інструментами налаштування Discord.',
+          stepsTitle: 'Що зробити далі',
+          step1: 'Відкрийте свій Discord-сервер і перевірте, що Core зʼявився у списку учасників.',
+          step2: 'Введіть <code>/help</code>, щоб переглянути доступні публічні команди.',
+          step3: 'Перевірте права бота перед використанням імпорту, шаблонів або відкату.',
+          step4: 'Застосовуйте шаблони тільки після перевірки попереднього перегляду та екрана підтвердження.',
+          detailsTitle: 'Деталі авторизації',
+          resultLabel: 'Результат',
+          permissionsLabel: 'Права',
+          resultSuccess: 'Авторизацію завершено',
+          permissionsFallback: 'Перевірте налаштування сервера Discord',
+          openDiscord: 'Відкрити Discord',
+          supportServer: 'Сервер підтримки',
+          note: 'Цю сторінку можна закрити після відкриття Discord. Якщо Core не зʼявився на сервері, повторіть додавання і переконайтеся, що вибрано правильний сервер.',
+          errorStatus: 'Авторизацію зупинено',
+          errorTitle: 'Core не було додано.',
+          errorCopy: 'Discord не завершив процес авторизації.'
+        },
+        de: {
+          metaTitle: 'Core zu Discord hinzugefuegt',
+          metaDescription: 'Core wurde zu Ihrem Discord-Server hinzugefuegt.',
+          status: 'Bot hinzugefuegt',
+          title: 'Danke fuer das Hinzufuegen von Core.',
+          copy: 'Core ist bereit fuer oeffentliche Vorlagen, Server-Import, Vorschauen, Rollback und nuetzliche Discord-Werkzeuge.',
+          stepsTitle: 'Empfohlene naechste Schritte',
+          step1: 'Oeffnen Sie Ihren Discord-Server und pruefen Sie, ob Core in der Mitgliederliste erscheint.',
+          step2: 'Fuehren Sie <code>/help</code> aus, um die oeffentlichen Befehle zu sehen.',
+          step3: 'Pruefen Sie die Bot-Rechte vor Import-, Vorlagen- oder Rollback-Befehlen.',
+          step4: 'Nutzen Sie Vorlagen erst nach Pruefung der Vorschau und des Bestaetigungsfensters.',
+          detailsTitle: 'Sitzungsdetails',
+          resultLabel: 'Ergebnis',
+          permissionsLabel: 'Rechte',
+          resultSuccess: 'Autorisierung abgeschlossen',
+          permissionsFallback: 'Discord-Servereinstellungen pruefen',
+          openDiscord: 'Discord oeffnen',
+          supportServer: 'Support-Server',
+          note: 'Sie koennen diese Seite schliessen, nachdem Discord geoeffnet wurde. Wenn Core nicht auf dem Server erscheint, wiederholen Sie den Invite-Ablauf und waehlen Sie den richtigen Server.',
+          errorStatus: 'Autorisierung gestoppt',
+          errorTitle: 'Core wurde nicht hinzugefuegt.',
+          errorCopy: 'Discord hat den Autorisierungsvorgang nicht abgeschlossen.'
+        }
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      const error = params.get('error');
+      const errorDescription = params.get('error_description');
+      const permissions = params.get('permissions');
+
+      function getInitialLanguage() {
+        const requested = String(params.get('lang') || '').toLowerCase();
+        return translations[requested] ? requested : 'en';
+      }
+
+      function setText(selector, value) {
+        const element = document.querySelector(selector);
+        if (element) element.textContent = value;
+      }
+
+      function applyLanguage(language) {
+        const dictionary = translations[language] || translations.en;
+
+        document.documentElement.lang = language === 'ua' ? 'uk' : language;
+        document.title = dictionary.metaTitle;
+        document.querySelector('meta[name="description"]')?.setAttribute('content', dictionary.metaDescription);
+
+        document.querySelectorAll('[data-i18n]').forEach((element) => {
+          const key = element.dataset.i18n;
+          if (dictionary[key]) element.textContent = dictionary[key];
+        });
+
+        document.querySelectorAll('[data-i18n-html]').forEach((element) => {
+          const key = element.dataset.i18nHtml;
+          if (dictionary[key]) element.innerHTML = dictionary[key];
+        });
+
+        setText('[data-result]', error ? error : dictionary.resultSuccess);
+        setText('[data-permissions]', permissions || dictionary.permissionsFallback);
+
+        if (error) {
+          setText('[data-status]', dictionary.errorStatus);
+          setText('[data-title]', dictionary.errorTitle);
+          setText('[data-copy]', errorDescription || dictionary.errorCopy);
+        }
+
+        document.querySelectorAll('[data-lang]').forEach((button) => {
+          const isActive = button.dataset.lang === language;
+          button.classList.toggle('is-active', isActive);
+          button.setAttribute('aria-pressed', String(isActive));
+        });
+      }
+
+      document.querySelectorAll('[data-lang]').forEach((button) => {
+        button.addEventListener('click', () => applyLanguage(button.dataset.lang || 'en'));
+      });
+
+      applyLanguage(getInitialLanguage());
+    </script>
+  </body>
+</html>
