@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Core - terms</title>
+    <meta name="description" content="Core legal document.">
+    <meta name="theme-color" content="#0c0e12">
+    <meta property="og:title" content="Core - terms">
+    <meta property="og:description" content="Core legal document.">
+    <meta property="og:image" content="../assets/hero-core.webp">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../assets/styles.css">
+  </head>
+  <body data-legal-doc="siteTerms">
+    <header class="navbar">
+      <div class="navbar-container">
+        <a class="logo-section" href="../" aria-label="Core"><img src="../assets/core-mark.png" alt="" class="navbar-avatar" width="40" height="40"><span class="logo">Core</span></a>
+        <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open navigation" aria-controls="core-nav-menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        <ul class="nav-menu" id="core-nav-menu" data-nav-menu>
+          <li class="menu-back-item"><button class="menu-back-btn" type="button" data-menu-close><span aria-hidden="true">←</span><span data-i18n="nav.back">Назад</span></button></li>
+          <li class="nav-item"><a class="nav-link" href="../" data-i18n="nav.home">Главная</a></li>
+          <li class="nav-item"><a class="nav-link" href="../templates/" data-i18n="nav.templates">Шаблоны</a></li>
+          <li class="nav-item"><a class="nav-link" href="../webhooks/" data-i18n="nav.webhooks">Вебхуки</a></li>
+          <li class="nav-item"><a class="nav-link" href="../commands/" data-i18n="nav.help">Справка</a></li>
+          <li class="nav-item has-dropdown language-selector">
+            <button class="dropdown-toggle lang-toggle" type="button" aria-expanded="false"><span data-active-language>RU</span><span class="dropdown-arrow" aria-hidden="true">▾</span></button>
+            <ul class="dropdown-menu dropdown-menu-right language-menu" role="group" aria-label="Language">
+              <li><button type="button" class="language-button is-active" data-lang="ru" aria-pressed="true">RU</button></li>
+              <li><button type="button" class="language-button" data-lang="en" aria-pressed="false">EN</button></li>
+              <li><button type="button" class="language-button" data-lang="ua" aria-pressed="false">UA</button></li>
+              <li><button type="button" class="language-button" data-lang="de" aria-pressed="false">DE</button></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <main data-legal-root></main>
+    <footer class="site-footer">
+      <span>Core</span>
+      <span data-i18n="footer.text">Создан для аккуратных Discord-серверов.</span>
+      <nav class="footer-links" aria-label="Legal">
+        <a class="footer-link" data-i18n="footer.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Официальный сервер</a>
+        <a class="footer-link" data-i18n="footer.sitePrivacy" href="../site-privacy/">Политика сайта</a>
+        <a class="footer-link" data-i18n="footer.siteTerms" href="../site-terms/">Условия сайта</a>
+        <a class="footer-link" data-i18n="footer.botPrivacy" href="../bot-privacy/">Политика бота</a>
+        <a class="footer-link" data-i18n="footer.botTerms" href="../bot-terms/">Условия бота</a>
+      </nav>
+    </footer>
+    <script src="../assets/site-config.js"></script>
+    <script src="../assets/app.js"></script>
+    <script src="../assets/legal.js"></script>
+  </body>
+</html>

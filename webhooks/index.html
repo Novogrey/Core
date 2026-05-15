@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Core - webhook builder</title>
-    <meta name="description" content="Create and send Discord webhook messages with Core-style preview, embeds and link buttons.">
+    <meta name="description" content="Create and send Discord webhook messages with Core-style Components V2 preview.">
     <meta name="theme-color" content="#0c0e12">
     <meta property="og:title" content="Core - webhook builder">
     <meta property="og:description" content="A Core-styled webhook message builder for Discord.">
@@ -102,101 +102,58 @@
     <main id="top" class="tool-page webhook-page">
       <section class="section tool-hero webhook-hero">
         <div class="section-heading" data-reveal>
-          <p class="eyebrow" data-webhook-i18n="eyebrow">Core tools</p>
-          <h1 data-webhook-i18n="title">Создание вебхуков</h1>
-          <p data-webhook-i18n="copy">Собери сообщение, проверь его в Discord-превью и отправь через свой webhook URL. Поддерживаются текст, embeds и только кнопки-ссылки.</p>
+          <p class="eyebrow" data-webhook-i18n="eyebrow">Инструменты Core</p>
+          <h1 data-webhook-i18n="title">Редактор вебхуков</h1>
+          <p data-webhook-i18n="copy">Соберите и отправьте одно или несколько webhook-сообщений. Справа закреплено Discord-превью, слева показаны настройки, список сообщений и фактическое заполнение лимитов.</p>
         </div>
         <a class="button secondary" href="../commands/" data-webhook-i18n="openHelp">Справка по командам</a>
       </section>
 
       <section class="section webhook-section">
-        <div class="webhook-workspace" data-reveal>
-          <form class="webhook-editor" data-webhook-form>
-            <div class="editor-block editor-block-main">
-              <div class="editor-block-heading">
-                <span data-webhook-i18n="connectionLabel">Подключение</span>
-                <strong data-webhook-i18n="connectionTitle">Webhook</strong>
-              </div>
-
-              <label class="field">
-                <span data-webhook-i18n="webhookUrlLabel">Webhook URL</span>
-                <input class="core-input" type="url" data-webhook-url autocomplete="off" placeholder="https://discord.com/api/webhooks/...">
-              </label>
-
-              <div class="field-grid">
-                <label class="field">
-                  <span data-webhook-i18n="usernameLabel">Имя отправителя</span>
-                  <input class="core-input" type="text" data-webhook-username maxlength="80" value="Core">
-                </label>
-                <label class="field">
-                  <span data-webhook-i18n="avatarLabel">Аватар URL</span>
-                  <input class="core-input" type="url" data-webhook-avatar autocomplete="off" placeholder="https://.../avatar.png">
-                </label>
-              </div>
-
-              <label class="field">
-                <span data-webhook-i18n="contentLabel">Текст сообщения</span>
-                <textarea class="core-textarea" data-webhook-content maxlength="2000" rows="7"># Привет!
-Это сообщение отправлено через Core webhook builder.</textarea>
-                <small><b data-content-count>0</b>/2000</small>
-              </label>
-            </div>
-
-            <div class="editor-block">
-              <div class="editor-block-heading">
-                <span data-webhook-i18n="embedsLabel">Embeds</span>
-                <strong data-webhook-i18n="embedsTitle">Карточки сообщения</strong>
-              </div>
-              <div class="embed-list" data-embed-list></div>
-              <button class="editor-action" type="button" data-add-embed data-webhook-i18n="addEmbed">Добавить embed</button>
-            </div>
-
-            <div class="editor-block">
-              <div class="editor-block-heading">
-                <span data-webhook-i18n="linksLabel">Link buttons</span>
-                <strong data-webhook-i18n="linksTitle">Кнопки-ссылки</strong>
-              </div>
-              <div class="link-button-list" data-link-button-list></div>
-              <button class="editor-action" type="button" data-add-link-button data-webhook-i18n="addLinkButton">Добавить ссылку</button>
-            </div>
-
-            <div class="webhook-actions">
-              <button class="button primary" type="submit" data-webhook-i18n="send">Отправить вебхук</button>
-              <button class="button secondary" type="button" data-copy-payload data-webhook-i18n="copyJson">Копировать JSON</button>
-              <button class="button secondary" type="button" data-reset-webhook data-webhook-i18n="reset">Сбросить</button>
-            </div>
-            <p class="webhook-status" data-webhook-status aria-live="polite"></p>
-          </form>
-
-          <aside class="webhook-preview-panel">
-            <div class="discord-webhook-preview">
-              <div class="discord-preview-top">
-                <span>#</span>
-                <strong data-webhook-i18n="previewChannel">webhook-preview</strong>
-              </div>
-              <div class="discord-message-preview">
-                <div class="discord-message-avatar" data-preview-avatar>C</div>
-                <div class="discord-message-main">
-                  <div class="discord-message-head">
-                    <strong data-preview-username>Core</strong>
-                    <span>BOT</span>
-                    <time>Today</time>
-                  </div>
-                  <div class="discord-message-content" data-preview-content></div>
-                  <div class="discord-embed-list" data-preview-embeds></div>
-                  <div class="discord-link-buttons" data-preview-buttons></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="payload-card">
-              <div class="editor-block-heading">
-                <span data-webhook-i18n="payloadLabel">Payload</span>
-                <strong data-webhook-i18n="payloadTitle">JSON</strong>
-              </div>
-              <pre data-payload-preview>{}</pre>
-            </div>
-          </aside>
+        <div class="webhook-message-builder" data-reveal>
+          <div data-message-editor data-editor-kind="webhook" data-editor-title="Webhook builder">
+            <script type="application/json">
+              {
+                "messages": [
+                  {
+                    "flags": 32768,
+                    "components": [
+                      {
+                        "type": 17,
+                        "accent_color": 4503774,
+                        "components": [
+                          {
+                            "type": 10,
+                            "content": "# Рабочее webhook-сообщение\nПодготовьте текст, embed или Components V2 и проверьте результат перед отправкой."
+                          },
+                          {
+                            "type": 14,
+                            "divider": true,
+                            "spacing": 1
+                          },
+                          {
+                            "type": 9,
+                            "components": [
+                              {
+                                "type": 10,
+                                "content": "Секция может содержать основной текст, thumbnail или кнопку-ссылку. Компоненты собираются в том же порядке, в котором Discord получит payload."
+                              }
+                            ],
+                            "accessory": {
+                              "type": 11,
+                              "media": {
+                                "url": "https://cdn.discordapp.com/attachments/1452039397435244677/1458169510447153255/ChatGPT_Image_20_._2025_._17_38_56_1.png"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            </script>
+          </div>
         </div>
       </section>
     </main>
@@ -204,13 +161,20 @@
     <footer class="site-footer">
       <span>Core</span>
       <span data-i18n="footer.text">Создан для аккуратных Discord-серверов.</span>
-      <a class="footer-link" data-i18n="footer.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Официальный сервер</a>
+      <nav class="footer-links" aria-label="Legal">
+        <a class="footer-link" data-i18n="footer.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Официальный сервер</a>
+        <a class="footer-link" data-i18n="footer.sitePrivacy" href="../site-privacy/">Политика сайта</a>
+        <a class="footer-link" data-i18n="footer.siteTerms" href="../site-terms/">Условия сайта</a>
+        <a class="footer-link" data-i18n="footer.botPrivacy" href="../bot-privacy/">Политика бота</a>
+        <a class="footer-link" data-i18n="footer.botTerms" href="../bot-terms/">Условия бота</a>
+      </nav>
     </footer>
 
     <div class="copy-toast webhook-toast" data-webhook-toast aria-live="polite"></div>
 
     <script src="../assets/site-config.js"></script>
     <script src="../assets/app.js"></script>
+    <script src="../assets/rules-editor.js"></script>
     <script src="../assets/webhooks.js"></script>
   </body>
 </html>

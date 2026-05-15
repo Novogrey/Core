@@ -345,7 +345,18 @@ const translations = {
     },
     footer: {
       text: 'Создан для аккуратных Discord-серверов.',
-      server: 'Официальный сервер'
+      contactsTitle: 'Контакты проекта Core',
+      legalTitle: 'Юридическая документация',
+      noticeTitle: 'Правовой статус',
+      notice: 'Core является независимым Discord-ботом и сайтом с публичными инструментами для владельцев серверов. Проект не является юридическим лицом, финансовым сервисом или официальным продуктом Discord Inc.',
+      addBot: 'Добавить бота',
+      commands: 'Справка по командам',
+      copyright: '© 2026 Core. Все права защищены.',
+      server: 'Официальный сервер',
+      sitePrivacy: 'Политика сайта',
+      siteTerms: 'Условия сайта',
+      botPrivacy: 'Политика бота',
+      botTerms: 'Условия бота'
     }
   },
   en: {
@@ -687,7 +698,18 @@ const translations = {
     },
     footer: {
       text: 'Built for cleaner Discord servers.',
-      server: 'Official server'
+      contactsTitle: 'Core project contacts',
+      legalTitle: 'Legal documentation',
+      noticeTitle: 'Legal status',
+      notice: 'Core is an independent Discord bot and website with public tools for server owners. The project is not a legal entity, financial service, or official Discord Inc. product.',
+      addBot: 'Add bot',
+      commands: 'Command help',
+      copyright: '© 2026 Core. All rights reserved.',
+      server: 'Official server',
+      sitePrivacy: 'Site privacy',
+      siteTerms: 'Site terms',
+      botPrivacy: 'Bot privacy',
+      botTerms: 'Bot terms'
     }
   },
   ua: {
@@ -1029,7 +1051,18 @@ const translations = {
     },
     footer: {
       text: 'Створено для акуратних Discord-серверів.',
-      server: 'Офіційний сервер'
+      contactsTitle: 'Контакти проєкту Core',
+      legalTitle: 'Юридична документація',
+      noticeTitle: 'Правовий статус',
+      notice: 'Core є незалежним Discord-ботом і сайтом із публічними інструментами для власників серверів. Проєкт не є юридичною особою, фінансовим сервісом або офіційним продуктом Discord Inc.',
+      addBot: 'Додати бота',
+      commands: 'Довідка команд',
+      copyright: '© 2026 Core. Усі права захищено.',
+      server: 'Офіційний сервер',
+      sitePrivacy: 'Політика сайту',
+      siteTerms: 'Умови сайту',
+      botPrivacy: 'Політика бота',
+      botTerms: 'Умови бота'
     }
   },
   de: {
@@ -1371,7 +1404,18 @@ const translations = {
     },
     footer: {
       text: 'Gebaut für sauberere Discord-Server.',
-      server: 'Offizieller Server'
+      contactsTitle: 'Core Projektkontakte',
+      legalTitle: 'Rechtliche Dokumente',
+      noticeTitle: 'Rechtsstatus',
+      notice: 'Core ist ein unabhängiger Discord-Bot und eine Website mit öffentlichen Werkzeugen für Serverbesitzer. Das Projekt ist keine juristische Person, kein Finanzdienst und kein offizielles Produkt von Discord Inc.',
+      addBot: 'Bot hinzufügen',
+      commands: 'Befehlshilfe',
+      copyright: '© 2026 Core. Alle Rechte vorbehalten.',
+      server: 'Offizieller Server',
+      sitePrivacy: 'Website-Datenschutz',
+      siteTerms: 'Website-Nutzungsbedingungen',
+      botPrivacy: 'Bot-Datenschutz',
+      botTerms: 'Bot-Nutzungsbedingungen'
     }
   }
 };
@@ -3107,6 +3151,8 @@ function applyLanguageNow(lang, animateCommand = false) {
   if (ogTitle) ogTitle.setAttribute('content', dictionary.meta.title);
   if (ogDescription) ogDescription.setAttribute('content', dictionary.meta.description);
 
+  renderSiteFooter(dictionary);
+
   document.querySelectorAll('[data-i18n]').forEach((element) => {
     const value = getNestedValue(dictionary, element.dataset.i18n);
     if (value !== undefined) element.textContent = value;
@@ -3189,6 +3235,124 @@ function closeNavigationMenu() {
   closeOpenDropdowns();
 }
 
+function getRelativeRootPrefix() {
+  const logoHref = document.querySelector('.logo-section')?.getAttribute('href') || '';
+  return logoHref.startsWith('../') ? '../' : '';
+}
+
+function ensureFullNavigationMenu() {
+  const menu = document.querySelector('[data-nav-menu]');
+  if (!menu || menu.querySelector('.nav-item.has-dropdown:not(.language-selector)')) return;
+
+  const prefix = getRelativeRootPrefix();
+  const root = prefix || '';
+  menu.innerHTML = `
+    <li class="menu-back-item">
+      <button class="menu-back-btn" type="button" data-menu-close>
+        <span aria-hidden="true">←</span>
+        <span data-i18n="nav.back">Назад</span>
+      </button>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="${root || '#top'}" data-i18n="nav.home">Главная</a>
+    </li>
+    <li class="nav-item has-dropdown">
+      <button class="dropdown-toggle" type="button" aria-expanded="false">
+        <span data-i18n="nav.templates">Шаблоны</span>
+        <span class="dropdown-arrow" aria-hidden="true">▾</span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-link" href="${prefix}templates/" data-i18n="nav.catalog">Каталог</a></li>
+        <li><a class="dropdown-link" href="${prefix}templates/" data-i18n="templates.groupServers">Серверные шаблоны</a></li>
+        <li><a class="dropdown-link" href="${prefix}templates/" data-i18n="templates.groupRoles">Ролевые шаблоны</a></li>
+        <li><a class="dropdown-link" href="${prefix}templates/" data-i18n="templates.groupRules">Шаблоны правил</a></li>
+      </ul>
+    </li>
+    <li class="nav-item has-dropdown">
+      <button class="dropdown-toggle" type="button" aria-expanded="false">
+        <span data-i18n="nav.tools">Инструменты</span>
+        <span class="dropdown-arrow" aria-hidden="true">▾</span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-link" href="${prefix}symbols/" data-i18n="nav.symbols">Символы</a></li>
+        <li><a class="dropdown-link" href="${prefix}emoji/" data-i18n="nav.emoji">Emoji</a></li>
+        <li><a class="dropdown-link" href="${prefix}webhooks/" data-i18n="nav.webhooks">Вебхуки</a></li>
+      </ul>
+    </li>
+    <li class="nav-item has-dropdown">
+      <button class="dropdown-toggle" type="button" aria-expanded="false">
+        <span data-i18n="nav.commands">Команды</span>
+        <span class="dropdown-arrow" aria-hidden="true">▾</span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-link" href="${prefix}commands/" data-i18n="nav.help">Справка</a></li>
+        <li><a class="dropdown-link" href="${root}#commands" data-i18n="nav.commands">Команды</a></li>
+        <li><a class="dropdown-link" href="${root}#benefits" data-i18n="nav.benefits">Возможности</a></li>
+        <li><a class="dropdown-link" href="${root}#preview" data-i18n="nav.preview">Превью</a></li>
+        <li><a class="dropdown-link" href="${root}#safety" data-i18n="nav.safety">Откат</a></li>
+      </ul>
+    </li>
+    <li class="nav-item has-dropdown">
+      <button class="dropdown-toggle" type="button" aria-expanded="false">
+        <span data-i18n="nav.links">Ссылки</span>
+        <span class="dropdown-arrow" aria-hidden="true">▾</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-right">
+        <li><a class="dropdown-link" data-i18n="nav.server" data-official-server-url href="${OFFICIAL_SERVER_URL}">Сервер</a></li>
+        <li><a class="dropdown-link dropdown-link-accent" data-i18n="nav.add" href="${INVITE_URL}">Добавить</a></li>
+      </ul>
+    </li>
+    <li class="nav-item has-dropdown language-selector">
+      <button class="dropdown-toggle lang-toggle" type="button" aria-expanded="false">
+        <span data-active-language>RU</span>
+        <span class="dropdown-arrow" aria-hidden="true">▾</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-right language-menu" role="group" aria-label="Language">
+        <li><button type="button" class="language-button is-active" data-lang="ru" aria-pressed="true">RU</button></li>
+        <li><button type="button" class="language-button" data-lang="en" aria-pressed="false">EN</button></li>
+        <li><button type="button" class="language-button" data-lang="ua" aria-pressed="false">UA</button></li>
+        <li><button type="button" class="language-button" data-lang="de" aria-pressed="false">DE</button></li>
+      </ul>
+    </li>
+  `;
+}
+
+function renderSiteFooter(dictionary = getDictionary(currentLanguage)) {
+  const footer = document.querySelector('.site-footer');
+  if (!footer) return;
+
+  const prefix = getRelativeRootPrefix();
+  const f = dictionary.footer || getDictionary('ru').footer;
+  footer.innerHTML = `
+    <div class="footer-grid">
+      <section class="footer-brand-block">
+        <strong>Core</strong>
+        <p>${escapeHtml(f.text)}</p>
+      </section>
+      <section class="footer-column">
+        <h2>${escapeHtml(f.contactsTitle || 'Contacts')}</h2>
+        <a class="footer-link" data-official-server-url href="${OFFICIAL_SERVER_URL}">${escapeHtml(f.server)}</a>
+        <a class="footer-link" href="${INVITE_URL}">${escapeHtml(f.addBot || dictionary.nav?.add || 'Add')}</a>
+        <a class="footer-link" href="${prefix}commands/">${escapeHtml(f.commands || dictionary.nav?.help || 'Commands')}</a>
+      </section>
+      <section class="footer-column">
+        <h2>${escapeHtml(f.legalTitle || 'Legal')}</h2>
+        <a class="footer-link" href="${prefix}site-privacy/">${escapeHtml(f.sitePrivacy)}</a>
+        <a class="footer-link" href="${prefix}site-terms/">${escapeHtml(f.siteTerms)}</a>
+        <a class="footer-link" href="${prefix}bot-privacy/">${escapeHtml(f.botPrivacy)}</a>
+        <a class="footer-link" href="${prefix}bot-terms/">${escapeHtml(f.botTerms)}</a>
+      </section>
+      <section class="footer-column footer-disclaimer">
+        <h2>${escapeHtml(f.noticeTitle || 'Notice')}</h2>
+        <p>${escapeHtml(f.notice || '')}</p>
+      </section>
+    </div>
+    <div class="footer-bottom">
+      <span>${escapeHtml(f.copyright || '© 2026 Core.')}</span>
+    </div>
+  `;
+}
+
 function initNavigation() {
   const navbar = document.querySelector('.navbar');
   const menu = document.querySelector('[data-nav-menu]');
@@ -3235,6 +3399,8 @@ function initNavigation() {
     if (event.key === 'Escape') closeNavigationMenu();
   });
 }
+
+ensureFullNavigationMenu();
 
 document.querySelectorAll('a[href*="discord.com/oauth2/authorize"]').forEach((link) => {
   link.href = INVITE_URL;

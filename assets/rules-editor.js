@@ -16,11 +16,632 @@
     componentText: 4000,
     containerChildren: 10,
     galleryItems: 10,
+    selectOptions: 25,
     buttonLabel: 80,
     url: 500
   };
 
   const instances = new WeakMap();
+  const EDITOR_TEXT = {
+    ru: {
+      ready: 'Готово',
+      webhookName: 'Имя вебхука',
+      webhookAvatar: 'Аватар вебхука',
+      send: 'Отправить',
+      sending: 'Отправляю...',
+      exportJson: 'Экспорт JSON',
+      copyJson: 'Скопировать JSON',
+      importJson: 'Импорт JSON',
+      messages: 'Сообщения',
+      add: 'Добавить',
+      duplicate: 'Дубль',
+      delete: 'Удалить',
+      preview: 'Превью',
+      message: 'Сообщение',
+      messageOne: 'сообщение',
+      messageMany: 'сообщений',
+      addComponent: 'Добавить компонент',
+      component: 'Компонент',
+      componentHint: 'В Components V2 обычные content/эмбеды не используются. Для текста добавляйте Text Display или Container.',
+      copied: 'JSON скопирован.',
+      webhookRequired: 'Укажите Discord webhook URL.',
+      sent: 'Отправлено сообщений',
+      sendFailed: 'Не удалось отправить webhook.',
+      corsHint: 'Если браузер блокирует CORS, отправляйте через серверный proxy или Google Apps Script.',
+      errors: 'ошибок',
+      warnings: 'предупреждений',
+      webhookUrl: 'Discord webhook URL',
+      modeClassic: 'Текст + эмбеды',
+      modeComponents: 'Components V2',
+      modeRaw: 'Raw JSON',
+      embed: 'Эмбед',
+      addEmbed: '+ Эмбед',
+      duplicateEmbed: 'Дублировать эмбед',
+      deleteEmbed: 'Удалить эмбед',
+      color: 'Цвет',
+      title: 'Заголовок',
+      titleUrl: 'URL заголовка',
+      embedDescription: 'Описание эмбеда',
+      author: 'Автор',
+      authorUrl: 'URL автора',
+      authorIcon: 'Иконка автора',
+      thumbnailUrl: 'URL миниатюры',
+      imageUrl: 'URL изображения',
+      footer: 'Нижний текст',
+      footerIcon: 'Иконка нижнего текста',
+      timestampIso: 'Время ISO',
+      fields: 'Поля',
+      addField: 'Добавить поле',
+      fieldName: 'Название',
+      fieldValue: 'Значение',
+      inline: 'В строку',
+      noFields: 'Полей пока нет.',
+      messageContent: 'Текст сообщения',
+      rulesPlaceholder: '# Правила сервера',
+      moveUp: 'Выше',
+      moveDown: 'Ниже',
+      componentText: 'Текстовый блок',
+      componentSeparator: 'Разделитель',
+      componentGallery: 'Медиа-галерея',
+      componentFile: 'Файл',
+      componentButton: 'Кнопка',
+      componentSelect: 'Меню выбора',
+      componentSection: 'Секция',
+      componentContainer: 'Контейнер',
+      componentUnknown: 'Неизвестный компонент',
+      markdownText: 'Markdown-текст',
+      showLine: 'Показывать линию',
+      spacing: 'Отступ',
+      small: 'Маленький',
+      large: 'Большой',
+      mediaUrls: 'URL по одному на строку. Описание через |',
+      attachmentUrl: 'URL файла',
+      spoiler: 'Спойлер',
+      buttonLabel: 'Текст кнопки',
+      emoji: 'Emoji',
+      style: 'Стиль',
+      stylePrimary: 'Primary',
+      styleSecondary: 'Secondary',
+      styleSuccess: 'Success',
+      styleDanger: 'Danger',
+      styleLink: 'Link',
+      url: 'URL',
+      customId: 'Custom ID',
+      disabled: 'Отключено',
+      buttonUrlHint: 'Если заполнен URL, Discord отправит кнопку-ссылку. Без URL используются стиль и Custom ID.',
+      type: 'Тип',
+      selectString: 'String select',
+      selectUser: 'User select',
+      selectRole: 'Role select',
+      selectMentionable: 'Mentionable select',
+      selectChannel: 'Channel select',
+      placeholder: 'Placeholder',
+      minValues: 'Минимум выборов',
+      maxValues: 'Максимум выборов',
+      selectOptions: 'Опции для String select: label | value | description | emoji | default',
+      sectionText: 'Текст секции',
+      accessory: 'Accessory',
+      buttonUrl: 'Button URL',
+      accentColor: 'Accent color',
+      spoilerContainer: 'Спойлер-контейнер',
+      insideContainer: 'Внутри контейнера',
+      emptyContainer: 'В контейнере пока нет компонентов.',
+      firstComponent: 'Добавь первый компонент.',
+      rawDiscordJson: 'Raw Discord message JSON',
+      rawModeHint: 'Raw-режим сохраняет сложный Discord payload без изменений: content, эмбеды, старые кнопки и Components V2. Лимиты Discord всё равно проверяются.',
+      defaultText: '# Заголовок\nТекст блока.',
+      defaultSectionText: '# Важный блок\nТекст секции.',
+      defaultContainerText: '# Заголовок\nТекст контейнера.',
+      defaultButtonLabel: 'Открыть',
+      defaultSelectPlaceholder: 'Выберите опцию',
+      defaultSelectOptions: 'Первая опция | first | Описание | ✨\nВторая опция | second',
+      defaultTitle: 'Редактор сообщений',
+      defaultMessageContent: '# Правила сервера\n\nПожалуйста, ознакомься с правилами перед началом общения.',
+      defaultEmbedTitle: 'Основные правила',
+      defaultEmbedDescription: '1. Уважай участников.\n2. Не публикуй спам и рекламу.\n3. Используй каналы по назначению.\n4. Не передавай личные данные.',
+      defaultEmbedFooter: 'Правила могут обновляться.',
+      defaultComponentRules: '# Правила сервера\n\n1. Уважай участников.\n2. Не публикуй спам и рекламу.\n3. Используй каналы по назначению.',
+      invalidRawJson: 'Raw JSON некорректный.',
+      rawPayloadRequired: 'Raw JSON должен содержать content, эмбеды или компоненты.',
+      limitMessages: 'Сообщения',
+      limitRawJson: 'Raw JSON',
+      limitComponentsTotal: 'Всего компонентов',
+      limitTopComponents: 'Компоненты верхнего уровня',
+      limitComponentText: 'Текст компонентов',
+      limitSelectOptions: 'Опции меню',
+      limitTextTotal: 'Всего текста',
+      limitMessageText: 'Текст',
+      limitEmbeds: 'Эмбеды',
+      limitActiveEmbed: 'Активный эмбед',
+      limitEmbedsTotal: 'Всего эмбедов',
+      block: 'блок',
+      child: 'элемент',
+      errorNeedComponent: 'добавьте хотя бы один Components V2 блок.',
+      errorMaxComponents: 'максимум компонентов',
+      errorTextTooLong: 'текст больше',
+      errorSectionButtonUrl: 'для кнопки секции нужен URL.',
+      errorSectionThumbnailUrl: 'для секции нужен URL миниатюры.',
+      errorContainerTextTooLong: 'текст контейнера больше',
+      errorMaxMedia: 'максимум медиа',
+      errorMaxChildren: 'максимум элементов в контейнере',
+      errorMustBeUrl: 'должен быть ссылкой.',
+      errorNeedTextOrEmbed: 'нужен текст или эмбед.',
+      errorMaxEmbeds: 'максимум эмбедов',
+      errorTitleTooLong: 'заголовок больше',
+      errorDescriptionTooLong: 'описание больше',
+      errorMaxFields: 'максимум полей',
+      errorEmbedTotalTooLong: 'общий размер эмбеда больше',
+      warningManyWebhookMessages: 'Много webhook-сообщений лучше разделять по назначению, чтобы канал не выглядел перегруженным.',
+      warningManyRuleMessages: 'Много сообщений лучше отправлять в отдельный канал правил.'
+    },
+    en: {
+      ready: 'Ready',
+      webhookName: 'Webhook name',
+      webhookAvatar: 'Webhook avatar',
+      send: 'Send',
+      sending: 'Sending...',
+      exportJson: 'Export JSON',
+      copyJson: 'Copy JSON',
+      importJson: 'Import JSON',
+      messages: 'Messages',
+      add: 'Add',
+      duplicate: 'Duplicate',
+      delete: 'Delete',
+      preview: 'Preview',
+      message: 'Message',
+      messageOne: 'message',
+      messageMany: 'messages',
+      addComponent: 'Add component',
+      component: 'Component',
+      componentHint: 'Components V2 does not use classic content/embeds. Add Text Display or Container for text.',
+      copied: 'JSON copied.',
+      webhookRequired: 'Enter a Discord webhook URL.',
+      sent: 'Messages sent',
+      sendFailed: 'Webhook sending failed.',
+      corsHint: 'If the browser blocks CORS, send through a server proxy or Google Apps Script.',
+      errors: 'errors',
+      warnings: 'warnings',
+      webhookUrl: 'Discord webhook URL',
+      modeClassic: 'Content + embeds',
+      modeComponents: 'Components V2',
+      modeRaw: 'Raw JSON',
+      embed: 'Embed',
+      addEmbed: '+ Embed',
+      duplicateEmbed: 'Duplicate embed',
+      deleteEmbed: 'Delete embed',
+      color: 'Color',
+      title: 'Title',
+      titleUrl: 'Title URL',
+      embedDescription: 'Embed description',
+      author: 'Author',
+      authorUrl: 'Author URL',
+      authorIcon: 'Author icon',
+      thumbnailUrl: 'Thumbnail URL',
+      imageUrl: 'Image URL',
+      footer: 'Footer',
+      footerIcon: 'Footer icon',
+      timestampIso: 'Timestamp ISO',
+      fields: 'Fields',
+      addField: 'Add field',
+      fieldName: 'Name',
+      fieldValue: 'Value',
+      inline: 'Inline',
+      noFields: 'No fields yet.',
+      messageContent: 'Message text',
+      rulesPlaceholder: '# Server rules',
+      moveUp: 'Move up',
+      moveDown: 'Move down',
+      componentText: 'Text Display',
+      componentSeparator: 'Separator',
+      componentGallery: 'Media Gallery',
+      componentFile: 'File',
+      componentButton: 'Button',
+      componentSelect: 'Select Menu',
+      componentSection: 'Section',
+      componentContainer: 'Container',
+      componentUnknown: 'Unknown component',
+      markdownText: 'Markdown text',
+      showLine: 'Show line',
+      spacing: 'Spacing',
+      small: 'Small',
+      large: 'Large',
+      mediaUrls: 'One URL per line. Add description after |',
+      attachmentUrl: 'Attachment URL',
+      spoiler: 'Spoiler',
+      buttonLabel: 'Button label',
+      emoji: 'Emoji',
+      style: 'Style',
+      stylePrimary: 'Primary',
+      styleSecondary: 'Secondary',
+      styleSuccess: 'Success',
+      styleDanger: 'Danger',
+      styleLink: 'Link',
+      url: 'URL',
+      customId: 'Custom ID',
+      disabled: 'Disabled',
+      buttonUrlHint: 'If URL is filled, Discord sends a link button. Without URL, style and Custom ID are used.',
+      type: 'Type',
+      selectString: 'String select',
+      selectUser: 'User select',
+      selectRole: 'Role select',
+      selectMentionable: 'Mentionable select',
+      selectChannel: 'Channel select',
+      placeholder: 'Placeholder',
+      minValues: 'Min values',
+      maxValues: 'Max values',
+      selectOptions: 'Options for String select: label | value | description | emoji | default',
+      sectionText: 'Section text',
+      accessory: 'Accessory',
+      buttonUrl: 'Button URL',
+      accentColor: 'Accent color',
+      spoilerContainer: 'Spoiler container',
+      insideContainer: 'Inside container',
+      emptyContainer: 'This container has no components yet.',
+      firstComponent: 'Add the first component.',
+      rawDiscordJson: 'Raw Discord message JSON',
+      rawModeHint: 'Raw mode keeps complex Discord payloads exact: content, embeds, legacy buttons and Components V2. Discord limits still apply.',
+      defaultText: '# Title\nBlock text.',
+      defaultSectionText: '# Important block\nSection text.',
+      defaultContainerText: '# Title\nContainer text.',
+      defaultButtonLabel: 'Open',
+      defaultSelectPlaceholder: 'Choose an option',
+      defaultSelectOptions: 'First option | first | Description | ✨\nSecond option | second',
+      defaultTitle: 'Message editor',
+      defaultMessageContent: '# Server rules\n\nPlease read the rules before you start chatting.',
+      defaultEmbedTitle: 'Main rules',
+      defaultEmbedDescription: '1. Respect other members.\n2. Do not post spam or advertising.\n3. Use channels for their intended purpose.\n4. Do not share personal data.',
+      defaultEmbedFooter: 'Rules may be updated.',
+      defaultComponentRules: '# Server rules\n\n1. Respect other members.\n2. Do not post spam or advertising.\n3. Use channels for their intended purpose.',
+      invalidRawJson: 'Raw JSON is invalid.',
+      rawPayloadRequired: 'Raw JSON must include content, embeds, or components.',
+      limitMessages: 'Messages',
+      limitRawJson: 'Raw JSON',
+      limitComponentsTotal: 'Components total',
+      limitTopComponents: 'Top-level components',
+      limitComponentText: 'Component text',
+      limitSelectOptions: 'Select options',
+      limitTextTotal: 'Text total',
+      limitMessageText: 'Text',
+      limitEmbeds: 'Embeds',
+      limitActiveEmbed: 'Active embed',
+      limitEmbedsTotal: 'Embeds total',
+      block: 'block',
+      child: 'child',
+      errorNeedComponent: 'add at least one Components V2 block.',
+      errorMaxComponents: 'maximum components',
+      errorTextTooLong: 'text is longer than',
+      errorSectionButtonUrl: 'section button URL is required.',
+      errorSectionThumbnailUrl: 'section thumbnail URL is required.',
+      errorContainerTextTooLong: 'container text is longer than',
+      errorMaxMedia: 'maximum media items',
+      errorMaxChildren: 'maximum children in container',
+      errorMustBeUrl: 'must be a URL.',
+      errorNeedTextOrEmbed: 'text or embed is required.',
+      errorMaxEmbeds: 'maximum embeds',
+      errorTitleTooLong: 'title is longer than',
+      errorDescriptionTooLong: 'description is longer than',
+      errorMaxFields: 'maximum fields',
+      errorEmbedTotalTooLong: 'total embed size is longer than',
+      warningManyWebhookMessages: 'Many webhook messages are easier to manage when split by purpose, so the channel does not look overloaded.',
+      warningManyRuleMessages: 'Many rule messages are better sent to a dedicated rules channel.'
+    },
+    ua: {
+      ready: 'Готово',
+      webhookName: 'Імʼя вебхука',
+      webhookAvatar: 'Аватар вебхука',
+      send: 'Надіслати',
+      sending: 'Надсилаю...',
+      exportJson: 'Експорт JSON',
+      copyJson: 'Скопіювати JSON',
+      importJson: 'Імпорт JSON',
+      messages: 'Повідомлення',
+      add: 'Додати',
+      duplicate: 'Дубль',
+      delete: 'Видалити',
+      preview: 'Превʼю',
+      message: 'Повідомлення',
+      messageOne: 'повідомлення',
+      messageMany: 'повідомлень',
+      addComponent: 'Додати компонент',
+      component: 'Компонент',
+      componentHint: 'Components V2 не використовує звичайні content/ембеди. Для тексту додавайте Text Display або Container.',
+      copied: 'JSON скопійовано.',
+      webhookRequired: 'Вкажіть Discord webhook URL.',
+      sent: 'Надіслано повідомлень',
+      sendFailed: 'Не вдалося надіслати webhook.',
+      corsHint: 'Якщо браузер блокує CORS, надсилайте через серверний proxy або Google Apps Script.',
+      errors: 'помилок',
+      warnings: 'попереджень',
+      webhookUrl: 'Discord webhook URL',
+      modeClassic: 'Текст + ембеди',
+      modeComponents: 'Components V2',
+      modeRaw: 'Raw JSON',
+      embed: 'Ембед',
+      addEmbed: '+ Ембед',
+      duplicateEmbed: 'Дублювати ембед',
+      deleteEmbed: 'Видалити ембед',
+      color: 'Колір',
+      title: 'Заголовок',
+      titleUrl: 'URL заголовка',
+      embedDescription: 'Опис ембеда',
+      author: 'Автор',
+      authorUrl: 'URL автора',
+      authorIcon: 'Іконка автора',
+      thumbnailUrl: 'URL мініатюри',
+      imageUrl: 'URL зображення',
+      footer: 'Нижній текст',
+      footerIcon: 'Іконка нижнього тексту',
+      timestampIso: 'Час ISO',
+      fields: 'Поля',
+      addField: 'Додати поле',
+      fieldName: 'Назва',
+      fieldValue: 'Значення',
+      inline: 'В рядку',
+      noFields: 'Полів поки немає.',
+      messageContent: 'Текст повідомлення',
+      rulesPlaceholder: '# Правила сервера',
+      moveUp: 'Вище',
+      moveDown: 'Нижче',
+      componentText: 'Текстовий блок',
+      componentSeparator: 'Розділювач',
+      componentGallery: 'Медіагалерея',
+      componentFile: 'Файл',
+      componentButton: 'Кнопка',
+      componentSelect: 'Меню вибору',
+      componentSection: 'Секція',
+      componentContainer: 'Контейнер',
+      componentUnknown: 'Невідомий компонент',
+      markdownText: 'Markdown-текст',
+      showLine: 'Показувати лінію',
+      spacing: 'Відступ',
+      small: 'Малий',
+      large: 'Великий',
+      mediaUrls: 'URL по одному на рядок. Опис через |',
+      attachmentUrl: 'URL файлу',
+      spoiler: 'Спойлер',
+      buttonLabel: 'Текст кнопки',
+      emoji: 'Emoji',
+      style: 'Стиль',
+      stylePrimary: 'Primary',
+      styleSecondary: 'Secondary',
+      styleSuccess: 'Success',
+      styleDanger: 'Danger',
+      styleLink: 'Link',
+      url: 'URL',
+      customId: 'Custom ID',
+      disabled: 'Вимкнено',
+      buttonUrlHint: 'Якщо URL заповнений, Discord надішле кнопку-посилання. Без URL використовуються стиль і Custom ID.',
+      type: 'Тип',
+      selectString: 'String select',
+      selectUser: 'User select',
+      selectRole: 'Role select',
+      selectMentionable: 'Mentionable select',
+      selectChannel: 'Channel select',
+      placeholder: 'Placeholder',
+      minValues: 'Мінімум виборів',
+      maxValues: 'Максимум виборів',
+      selectOptions: 'Опції для String select: label | value | description | emoji | default',
+      sectionText: 'Текст секції',
+      accessory: 'Accessory',
+      buttonUrl: 'Button URL',
+      accentColor: 'Accent color',
+      spoilerContainer: 'Спойлер-контейнер',
+      insideContainer: 'Усередині контейнера',
+      emptyContainer: 'У контейнері поки немає компонентів.',
+      firstComponent: 'Додайте перший компонент.',
+      rawDiscordJson: 'Raw Discord message JSON',
+      rawModeHint: 'Raw-режим зберігає складний Discord payload без змін: content, ембеди, старі кнопки і Components V2. Ліміти Discord все одно перевіряються.',
+      defaultText: '# Заголовок\nТекст блоку.',
+      defaultSectionText: '# Важливий блок\nТекст секції.',
+      defaultContainerText: '# Заголовок\nТекст контейнера.',
+      defaultButtonLabel: 'Відкрити',
+      defaultSelectPlaceholder: 'Виберіть опцію',
+      defaultSelectOptions: 'Перша опція | first | Опис | ✨\nДруга опція | second',
+      defaultTitle: 'Редактор повідомлень',
+      defaultMessageContent: '# Правила сервера\n\nБудь ласка, ознайомтеся з правилами перед початком спілкування.',
+      defaultEmbedTitle: 'Основні правила',
+      defaultEmbedDescription: '1. Поважайте учасників.\n2. Не публікуйте спам і рекламу.\n3. Використовуйте канали за призначенням.\n4. Не передавайте особисті дані.',
+      defaultEmbedFooter: 'Правила можуть оновлюватися.',
+      defaultComponentRules: '# Правила сервера\n\n1. Поважайте учасників.\n2. Не публікуйте спам і рекламу.\n3. Використовуйте канали за призначенням.',
+      invalidRawJson: 'Raw JSON некоректний.',
+      rawPayloadRequired: 'Raw JSON має містити content, ембеди або компоненти.',
+      limitMessages: 'Повідомлення',
+      limitRawJson: 'Raw JSON',
+      limitComponentsTotal: 'Усього компонентів',
+      limitTopComponents: 'Компоненти верхнього рівня',
+      limitComponentText: 'Текст компонентів',
+      limitSelectOptions: 'Опції меню',
+      limitTextTotal: 'Усього тексту',
+      limitMessageText: 'Текст',
+      limitEmbeds: 'Ембеди',
+      limitActiveEmbed: 'Активний ембед',
+      limitEmbedsTotal: 'Усього ембедів',
+      block: 'блок',
+      child: 'елемент',
+      errorNeedComponent: 'додайте хоча б один Components V2 блок.',
+      errorMaxComponents: 'максимум компонентів',
+      errorTextTooLong: 'текст більший за',
+      errorSectionButtonUrl: 'для кнопки секції потрібен URL.',
+      errorSectionThumbnailUrl: 'для секції потрібен URL мініатюри.',
+      errorContainerTextTooLong: 'текст контейнера більший за',
+      errorMaxMedia: 'максимум медіа',
+      errorMaxChildren: 'максимум елементів у контейнері',
+      errorMustBeUrl: 'має бути посиланням.',
+      errorNeedTextOrEmbed: 'потрібен текст або ембед.',
+      errorMaxEmbeds: 'максимум ембедів',
+      errorTitleTooLong: 'заголовок більший за',
+      errorDescriptionTooLong: 'опис більший за',
+      errorMaxFields: 'максимум полів',
+      errorEmbedTotalTooLong: 'загальний розмір ембеда більший за',
+      warningManyWebhookMessages: 'Багато webhook-повідомлень краще розділяти за призначенням, щоб канал не виглядав перевантаженим.',
+      warningManyRuleMessages: 'Багато повідомлень краще надсилати в окремий канал правил.'
+    },
+    de: {
+      ready: 'Bereit',
+      webhookName: 'Webhook-Name',
+      webhookAvatar: 'Webhook-Avatar',
+      send: 'Senden',
+      sending: 'Sende...',
+      exportJson: 'JSON exportieren',
+      copyJson: 'JSON kopieren',
+      importJson: 'JSON importieren',
+      messages: 'Nachrichten',
+      add: 'Hinzufügen',
+      duplicate: 'Duplizieren',
+      delete: 'Löschen',
+      preview: 'Vorschau',
+      message: 'Nachricht',
+      messageOne: 'Nachricht',
+      messageMany: 'Nachrichten',
+      addComponent: 'Komponente hinzufügen',
+      component: 'Komponente',
+      componentHint: 'Components V2 nutzt keine klassischen content/Einbettungen. Für Text Text Display oder Container hinzufügen.',
+      copied: 'JSON kopiert.',
+      webhookRequired: 'Discord-Webhook-URL eingeben.',
+      sent: 'Nachrichten gesendet',
+      sendFailed: 'Webhook konnte nicht gesendet werden.',
+      corsHint: 'Wenn der Browser CORS blockiert, über einen Server-Proxy oder Google Apps Script senden.',
+      errors: 'Fehler',
+      warnings: 'Warnungen',
+      webhookUrl: 'Discord webhook URL',
+      modeClassic: 'Text + Einbettungen',
+      modeComponents: 'Components V2',
+      modeRaw: 'Raw JSON',
+      embed: 'Einbettung',
+      addEmbed: '+ Einbettung',
+      duplicateEmbed: 'Einbettung duplizieren',
+      deleteEmbed: 'Einbettung löschen',
+      color: 'Farbe',
+      title: 'Titel',
+      titleUrl: 'Titel-URL',
+      embedDescription: 'Einbettungsbeschreibung',
+      author: 'Autor',
+      authorUrl: 'Autor-URL',
+      authorIcon: 'Autor-Icon',
+      thumbnailUrl: 'Vorschaubild-URL',
+      imageUrl: 'Bild-URL',
+      footer: 'Fußzeile',
+      footerIcon: 'Fußzeilen-Icon',
+      timestampIso: 'Zeit ISO',
+      fields: 'Felder',
+      addField: 'Feld hinzufügen',
+      fieldName: 'Name',
+      fieldValue: 'Wert',
+      inline: 'In einer Zeile',
+      noFields: 'Noch keine Felder.',
+      messageContent: 'Nachrichtentext',
+      rulesPlaceholder: '# Serverregeln',
+      moveUp: 'Nach oben',
+      moveDown: 'Nach unten',
+      componentText: 'Text Display',
+      componentSeparator: 'Trenner',
+      componentGallery: 'Mediengalerie',
+      componentFile: 'Datei',
+      componentButton: 'Button',
+      componentSelect: 'Auswahlmenü',
+      componentSection: 'Sektion',
+      componentContainer: 'Container',
+      componentUnknown: 'Unbekannte Komponente',
+      markdownText: 'Markdown-Text',
+      showLine: 'Linie anzeigen',
+      spacing: 'Abstand',
+      small: 'Klein',
+      large: 'Groß',
+      mediaUrls: 'Eine URL pro Zeile. Beschreibung nach |',
+      attachmentUrl: 'Datei-URL',
+      spoiler: 'Spoiler',
+      buttonLabel: 'Button-Text',
+      emoji: 'Emoji',
+      style: 'Stil',
+      stylePrimary: 'Primary',
+      styleSecondary: 'Secondary',
+      styleSuccess: 'Success',
+      styleDanger: 'Danger',
+      styleLink: 'Link',
+      url: 'URL',
+      customId: 'Custom ID',
+      disabled: 'Deaktiviert',
+      buttonUrlHint: 'Wenn eine URL eingetragen ist, sendet Discord einen Link-Button. Ohne URL werden Stil und Custom ID genutzt.',
+      type: 'Typ',
+      selectString: 'String select',
+      selectUser: 'User select',
+      selectRole: 'Role select',
+      selectMentionable: 'Mentionable select',
+      selectChannel: 'Channel select',
+      placeholder: 'Placeholder',
+      minValues: 'Min. Werte',
+      maxValues: 'Max. Werte',
+      selectOptions: 'Optionen für String select: label | value | description | emoji | default',
+      sectionText: 'Sektionstext',
+      accessory: 'Accessory',
+      buttonUrl: 'Button-URL',
+      accentColor: 'Akzentfarbe',
+      spoilerContainer: 'Spoiler-Container',
+      insideContainer: 'Im Container',
+      emptyContainer: 'Dieser Container enthält noch keine Komponenten.',
+      firstComponent: 'Erste Komponente hinzufügen.',
+      rawDiscordJson: 'Raw Discord message JSON',
+      rawModeHint: 'Raw-Modus speichert komplexe Discord-Payloads exakt: content, Einbettungen, alte Buttons und Components V2. Discord-Limits werden weiterhin geprüft.',
+      defaultText: '# Titel\nBlocktext.',
+      defaultSectionText: '# Wichtiger Block\nSektionstext.',
+      defaultContainerText: '# Titel\nContainertext.',
+      defaultButtonLabel: 'Öffnen',
+      defaultSelectPlaceholder: 'Option auswählen',
+      defaultSelectOptions: 'Erste Option | first | Beschreibung | ✨\nZweite Option | second',
+      defaultTitle: 'Nachrichteneditor',
+      defaultMessageContent: '# Serverregeln\n\nBitte lesen Sie die Regeln, bevor Sie mit dem Schreiben beginnen.',
+      defaultEmbedTitle: 'Hauptregeln',
+      defaultEmbedDescription: '1. Respektieren Sie andere Mitglieder.\n2. Veröffentlichen Sie keinen Spam und keine Werbung.\n3. Nutzen Sie Kanäle entsprechend ihrem Zweck.\n4. Geben Sie keine persönlichen Daten weiter.',
+      defaultEmbedFooter: 'Regeln können aktualisiert werden.',
+      defaultComponentRules: '# Serverregeln\n\n1. Respektieren Sie andere Mitglieder.\n2. Veröffentlichen Sie keinen Spam und keine Werbung.\n3. Nutzen Sie Kanäle entsprechend ihrem Zweck.',
+      invalidRawJson: 'Raw JSON ist ungültig.',
+      rawPayloadRequired: 'Raw JSON muss content, Einbettungen oder Komponenten enthalten.',
+      limitMessages: 'Nachrichten',
+      limitRawJson: 'Raw JSON',
+      limitComponentsTotal: 'Komponenten gesamt',
+      limitTopComponents: 'Top-Level-Komponenten',
+      limitComponentText: 'Komponententext',
+      limitSelectOptions: 'Auswahloptionen',
+      limitTextTotal: 'Text gesamt',
+      limitMessageText: 'Text',
+      limitEmbeds: 'Einbettungen',
+      limitActiveEmbed: 'Aktive Einbettung',
+      limitEmbedsTotal: 'Einbettungen gesamt',
+      block: 'Block',
+      child: 'Element',
+      errorNeedComponent: 'fügen Sie mindestens einen Components V2 Block hinzu.',
+      errorMaxComponents: 'maximale Komponenten',
+      errorTextTooLong: 'Text ist länger als',
+      errorSectionButtonUrl: 'für den Sektionsbutton ist eine URL erforderlich.',
+      errorSectionThumbnailUrl: 'für die Sektion ist eine Vorschaubild-URL erforderlich.',
+      errorContainerTextTooLong: 'Containertext ist länger als',
+      errorMaxMedia: 'maximale Medienanzahl',
+      errorMaxChildren: 'maximale Elemente im Container',
+      errorMustBeUrl: 'muss eine URL sein.',
+      errorNeedTextOrEmbed: 'Text oder Einbettung ist erforderlich.',
+      errorMaxEmbeds: 'maximale Einbettungen',
+      errorTitleTooLong: 'Titel ist länger als',
+      errorDescriptionTooLong: 'Beschreibung ist länger als',
+      errorMaxFields: 'maximale Felder',
+      errorEmbedTotalTooLong: 'gesamte Einbettungsgröße ist länger als',
+      warningManyWebhookMessages: 'Viele Webhook-Nachrichten sollten nach Zweck getrennt werden, damit der Kanal nicht überladen wirkt.',
+      warningManyRuleMessages: 'Viele Regel-Nachrichten sollten besser in einen eigenen Regelkanal gesendet werden.'
+    }
+  };
+
+  function editorLanguage() {
+    const saved = localStorage.getItem('core-site-language');
+    if (EDITOR_TEXT[saved]) return saved;
+    const htmlLang = document.documentElement.lang;
+    if (htmlLang === 'uk') return 'ua';
+    if (EDITOR_TEXT[htmlLang]) return htmlLang;
+    return 'ru';
+  }
+
+  function et(key) {
+    const language = editorLanguage();
+    return EDITOR_TEXT[language]?.[key] || EDITOR_TEXT.ru[key] || key;
+  }
 
   function escapeHtml(value) {
     return String(value || '')
@@ -29,6 +650,26 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  function componentKindLabel(kind) {
+    const keys = {
+      text: 'componentText',
+      separator: 'componentSeparator',
+      gallery: 'componentGallery',
+      file: 'componentFile',
+      button: 'componentButton',
+      select: 'componentSelect',
+      section: 'componentSection',
+      container: 'componentContainer'
+    };
+    return et(keys[kind] || 'componentUnknown');
+  }
+
+  function renderComponentKindOptions(kinds) {
+    return kinds
+      .map((kind) => `<option value="${escapeHtml(kind)}">${escapeHtml(componentKindLabel(kind))}</option>`)
+      .join('');
   }
 
   function clone(value) {
@@ -95,6 +736,62 @@
     ].reduce((sum, value) => sum + String(value || '').length, 0);
   }
 
+  function measureComponents(components = []) {
+    const totals = {
+      components: 0,
+      text: 0,
+      buttons: 0,
+      selects: 0,
+      selectOptions: 0,
+      containers: 0
+    };
+
+    const visit = (component = {}) => {
+      const type = Number(component.type);
+      totals.components += 1;
+      if (type === 17) totals.containers += 1;
+      if (type === 10) totals.text += String(component.content || '').length;
+      if (type === 2) {
+        totals.buttons += 1;
+        totals.text += String(component.label || '').length + String(component.emoji?.name || '').length;
+      }
+      if ([3, 5, 6, 7, 8].includes(type)) {
+        totals.selects += 1;
+        totals.text += String(component.placeholder || '').length;
+        const options = Array.isArray(component.options) ? component.options : [];
+        totals.selectOptions = Math.max(totals.selectOptions, options.length);
+        options.forEach((option) => {
+          totals.text += String(option.label || '').length;
+          totals.text += String(option.value || '').length;
+          totals.text += String(option.description || '').length;
+          totals.text += String(option.emoji?.name || '').length;
+        });
+      }
+      if (type === 12) {
+        const items = Array.isArray(component.items) ? component.items : [];
+        totals.text += items.reduce((sum, item) => sum + String(item.description || '').length, 0);
+      }
+      if (type === 9 && component.accessory) visit(component.accessory);
+      (component.components || []).forEach(visit);
+    };
+
+    components.forEach(visit);
+    return totals;
+  }
+
+  function measurePayload(payload = {}) {
+    const embeds = Array.isArray(payload.embeds) ? payload.embeds : [];
+    const components = Array.isArray(payload.components) ? payload.components : [];
+    const componentTotals = measureComponents(components);
+    return {
+      content: String(payload.content || '').length,
+      embeds: embeds.length,
+      embedTotal: embeds.reduce((sum, item) => sum + embedTotal(item), 0),
+      topComponents: components.length,
+      ...componentTotals
+    };
+  }
+
   function defaultEmbed() {
     return {
       color: '#44b8de',
@@ -113,18 +810,18 @@
   function defaultMessage() {
     return {
       mode: 'classic',
-      content: '# Правила сервера\n\nПожалуйста, ознакомься с правилами перед началом общения.',
+      content: et('defaultMessageContent'),
       embeds: [{
         ...defaultEmbed(),
-        title: 'Основные правила',
-        description: '1. Уважай участников.\n2. Не публикуй спам и рекламу.\n3. Используй каналы по назначению.\n4. Не передавай личные данные.',
-        footer: { text: 'Правила могут обновляться.', icon_url: '' }
+        title: et('defaultEmbedTitle'),
+        description: et('defaultEmbedDescription'),
+        footer: { text: et('defaultEmbedFooter'), icon_url: '' }
       }],
       activeEmbed: 0,
       blocks: [{
         kind: 'container',
         accent: '#44b8de',
-        text: '# Правила сервера\n\n1. Уважай участников.\n2. Не публикуй спам и рекламу.\n3. Используй каналы по назначению.',
+        text: et('defaultComponentRules'),
         media: '',
         buttonLabel: '',
         buttonUrl: '',
@@ -191,12 +888,56 @@
       .filter(Boolean);
   }
 
+  function optionValueFromLabel(label) {
+    return String(label || 'option')
+      .trim()
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}_-]+/gu, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 100) || 'option';
+  }
+
+  function selectOptionsToText(options = []) {
+    return options
+      .map((option) => [
+        option.label || '',
+        option.value || '',
+        option.description || '',
+        option.emoji?.name || '',
+        option.default ? 'default' : ''
+      ].join(' | ').replace(/\s+\|\s+$/, ''))
+      .filter(Boolean)
+      .join('\n');
+  }
+
+  function parseSelectOptions(value) {
+    return String(value || '')
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .slice(0, LIMITS.selectOptions)
+      .map((line) => {
+        const [labelPart, valuePart, descriptionPart, emojiPart, defaultPart] = line.split('|').map((part) => part.trim());
+        const label = clampText(labelPart, 100);
+        if (!label) return null;
+        const option = {
+          label,
+          value: clampText(valuePart || optionValueFromLabel(label), 100)
+        };
+        if (descriptionPart) option.description = clampText(descriptionPart, 100);
+        if (emojiPart) option.emoji = { name: clampText(emojiPart, 32) };
+        if (/^(1|true|yes|default)$/i.test(defaultPart || '')) option.default = true;
+        return option;
+      })
+      .filter(Boolean);
+  }
+
   function isContainerChildBlock(block) {
-    return Boolean(block && ['text', 'section', 'gallery', 'separator', 'button', 'file'].includes(block.kind));
+    return Boolean(block && ['text', 'section', 'gallery', 'separator', 'button', 'select', 'file'].includes(block.kind));
   }
 
   function normalizeContainerChildren(block = {}) {
-    if (Array.isArray(block.children) && block.children.length) {
+    if (Array.isArray(block.children)) {
       block.children = block.children.filter(isContainerChildBlock).slice(0, LIMITS.containerChildren);
       return block.children;
     }
@@ -225,7 +966,7 @@
       disabled: Boolean(block.disabled)
     });
 
-    block.children = children.length ? children.slice(0, LIMITS.containerChildren) : [{ kind: 'text', content: '# Title\nContainer text.' }];
+    block.children = children.slice(0, LIMITS.containerChildren);
     return block.children;
   }
 
@@ -249,13 +990,31 @@
     }
     if (type === 1) {
       return (component.components || [])
-        .filter((button) => Number(button.type) === 2)
-        .map((button) => ({
+        .flatMap((child) => blockFromComponent(child))
+        .filter(Boolean);
+    }
+    if (type === 2) {
+      return [{
           kind: 'button',
-          label: clampText(button.label, LIMITS.buttonLabel),
-          url: normalizeUrl(button.url),
-          disabled: Boolean(button.disabled)
-        }));
+          label: clampText(component.label, LIMITS.buttonLabel),
+          url: normalizeUrl(component.url),
+          style: Number(component.style || (component.url ? 5 : 2)),
+          customId: clampText(component.custom_id || component.customId, 100),
+          emoji: clampText(component.emoji?.name, 32),
+          disabled: Boolean(component.disabled)
+        }];
+    }
+    if ([3, 5, 6, 7, 8].includes(type)) {
+      return [{
+        kind: 'select',
+        selectType: type,
+        customId: clampText(component.custom_id || component.customId || 'core-select', 100),
+        placeholder: clampText(component.placeholder, 150),
+        minValues: Number.isFinite(Number(component.min_values)) ? Number(component.min_values) : 0,
+        maxValues: Number.isFinite(Number(component.max_values)) ? Number(component.max_values) : 1,
+        disabled: Boolean(component.disabled),
+        options: type === 3 ? selectOptionsToText(component.options || []) : ''
+      }];
     }
     if (type === 9) {
       const content = (component.components || [])
@@ -348,9 +1107,42 @@
   }
 
   function buildButton(block) {
-    const url = normalizeUrl(block.buttonUrl || block.url);
     const label = clampText(block.buttonLabel || block.label || 'Open', LIMITS.buttonLabel);
-    return url ? { type: 2, style: 5, label, url, ...(block.disabled ? { disabled: true } : {}) } : null;
+    const emojiName = clampText(block.emoji, 32);
+    const base = {
+      type: 2,
+      label,
+      ...(emojiName ? { emoji: { name: emojiName } } : {}),
+      ...(block.disabled ? { disabled: true } : {})
+    };
+    const url = normalizeUrl(block.buttonUrl || block.url);
+    if (url) return { ...base, style: 5, url };
+    const customId = clampText(block.customId || block.custom_id, 100);
+    if (!customId) return null;
+    const style = Math.max(1, Math.min(4, Number(block.style || 2)));
+    return { ...base, style, custom_id: customId };
+  }
+
+  function buildSelect(block) {
+    const type = [3, 5, 6, 7, 8].includes(Number(block.selectType)) ? Number(block.selectType) : 3;
+    const customId = clampText(block.customId || 'core-select', 100);
+    if (!customId) return null;
+    const minValues = Math.max(0, Math.min(25, Number(block.minValues || 0)));
+    const maxValues = Math.max(1, Math.min(25, Number(block.maxValues || 1)));
+    const select = {
+      type,
+      custom_id: customId,
+      min_values: Math.min(minValues, maxValues),
+      max_values: Math.max(minValues || 1, maxValues),
+      ...(block.placeholder ? { placeholder: clampText(block.placeholder, 150) } : {}),
+      ...(block.disabled ? { disabled: true } : {})
+    };
+    if (type === 3) {
+      const options = parseSelectOptions(block.options);
+      if (!options.length) return null;
+      select.options = options;
+    }
+    return select;
   }
 
   function buildComponent(block) {
@@ -372,6 +1164,10 @@
     if (block.kind === 'button') {
       const button = buildButton(block);
       return button ? { type: 1, components: [button] } : null;
+    }
+    if (block.kind === 'select') {
+      const select = buildSelect(block);
+      return select ? { type: 1, components: [select] } : null;
     }
     if (block.kind === 'section') {
       const content = clampText(block.content, LIMITS.componentText);
@@ -451,7 +1247,7 @@
     if (Number(payload.flags || 0) & V2_FLAG) normalized.flags = V2_FLAG;
 
     if (!normalized.content && !normalized.embeds?.length && !normalized.components?.length) {
-      throw new Error('Raw JSON must include content, embeds, or components.');
+      throw new Error(et('rawPayloadRequired'));
     }
 
     return normalized;
@@ -470,65 +1266,67 @@
   function renderEditorShell() {
     return `
       <div class="rules-editor">
-        <div class="rules-panel rules-settings">
-          <div class="rules-panel-heading">
-            <span>Webhook</span>
-            <strong data-editor-status>Готово</strong>
-          </div>
-          <label class="rules-field">
-            <span>Discord webhook URL</span>
-            <input type="url" data-setting="webhookUrl" placeholder="https://discord.com/api/webhooks/...">
-          </label>
-          <div class="rules-two">
+        <div class="rules-left-column">
+          <div class="rules-panel rules-settings">
+            <div class="rules-panel-heading">
+              <span>Webhook</span>
+              <strong data-editor-status>${escapeHtml(et('ready'))}</strong>
+            </div>
             <label class="rules-field">
-              <span>Имя вебхука</span>
-              <input type="text" data-setting="username" maxlength="80" placeholder="Core">
+              <span>${escapeHtml(et('webhookUrl'))}</span>
+              <input type="url" data-setting="webhookUrl" placeholder="https://discord.com/api/webhooks/...">
             </label>
-            <label class="rules-field">
-              <span>Аватар вебхука</span>
-              <input type="url" data-setting="avatarUrl" placeholder="https://...">
-            </label>
+            <div class="rules-two">
+              <label class="rules-field">
+                <span>${escapeHtml(et('webhookName'))}</span>
+                <input type="text" data-setting="username" maxlength="80" placeholder="Core">
+              </label>
+              <label class="rules-field">
+                <span>${escapeHtml(et('webhookAvatar'))}</span>
+                <input type="url" data-setting="avatarUrl" placeholder="https://...">
+              </label>
+            </div>
+            <div class="rules-actions">
+              <button type="button" class="button primary" data-editor-send>${escapeHtml(et('send'))}</button>
+              <button type="button" class="button secondary" data-editor-export>${escapeHtml(et('exportJson'))}</button>
+              <button type="button" class="button secondary" data-editor-copy>${escapeHtml(et('copyJson'))}</button>
+              <label class="button secondary rules-file-button">
+                ${escapeHtml(et('importJson'))}
+                <input type="file" data-editor-import accept="application/json,.json">
+              </label>
+            </div>
+            <div class="rules-limit-list" data-editor-limits></div>
+            <div class="rules-alert" data-editor-alert hidden></div>
           </div>
-          <div class="rules-actions">
-            <button type="button" class="button primary" data-editor-send>Отправить</button>
-            <button type="button" class="button secondary" data-editor-export>Экспорт JSON</button>
-            <button type="button" class="button secondary" data-editor-copy>Скопировать JSON</button>
-            <label class="button secondary rules-file-button">
-              Импорт JSON
-              <input type="file" data-editor-import accept="application/json,.json">
-            </label>
-          </div>
-          <div class="rules-limit-list" data-editor-limits></div>
-          <div class="rules-alert" data-editor-alert hidden></div>
-        </div>
 
-        <div class="rules-panel rules-message-list">
-          <div class="rules-panel-heading">
-            <span>Сообщения</span>
-            <button type="button" data-add-message>Добавить</button>
+          <div class="rules-panel rules-message-list">
+            <div class="rules-panel-heading">
+              <span>${escapeHtml(et('messages'))}</span>
+              <button type="button" data-add-message>${escapeHtml(et('add'))}</button>
+            </div>
+            <div class="rules-message-buttons" data-message-list></div>
           </div>
-          <div class="rules-message-buttons" data-message-list></div>
         </div>
 
         <div class="rules-panel rules-edit-panel">
           <div class="rules-panel-heading">
-            <span data-current-message-title>Сообщение 1</span>
+            <span data-current-message-title>${escapeHtml(et('message'))} 1</span>
             <div class="rules-mini-actions">
-              <button type="button" data-duplicate-message>Дубль</button>
-              <button type="button" data-delete-message>Удалить</button>
+              <button type="button" data-duplicate-message>${escapeHtml(et('duplicate'))}</button>
+              <button type="button" data-delete-message>${escapeHtml(et('delete'))}</button>
             </div>
           </div>
           <div class="message-mode-switch" role="group" aria-label="Message type">
-            <button type="button" data-message-mode="classic">Content + embeds</button>
-            <button type="button" data-message-mode="components">Components V2</button>
-            <button type="button" data-message-mode="raw">Raw JSON</button>
+            <button type="button" data-message-mode="classic">${escapeHtml(et('modeClassic'))}</button>
+            <button type="button" data-message-mode="components">${escapeHtml(et('modeComponents'))}</button>
+            <button type="button" data-message-mode="raw">${escapeHtml(et('modeRaw'))}</button>
           </div>
           <div data-message-editor-body></div>
         </div>
 
         <div class="rules-panel rules-preview-panel">
           <div class="rules-panel-heading">
-            <span>Превью</span>
+            <span>${escapeHtml(et('preview'))}</span>
             <strong data-editor-count>1 сообщение</strong>
           </div>
           <div class="rules-preview" data-editor-preview></div>
@@ -544,11 +1342,11 @@
         <div class="embed-tabs">
           ${embeds.map((embed, index) => `
             <button type="button" class="${index === message.activeEmbed ? 'is-active' : ''}" data-select-embed="${index}">
-              ${escapeHtml(embed.title || `Embed ${index + 1}`)}
+              ${escapeHtml(embed.title || `${et('embed')} ${index + 1}`)}
             </button>
           `).join('')}
         </div>
-        <button type="button" data-add-embed ${embeds.length >= LIMITS.embeds ? 'disabled' : ''}>+ Embed</button>
+        <button type="button" data-add-embed ${embeds.length >= LIMITS.embeds ? 'disabled' : ''}>${escapeHtml(et('addEmbed'))}</button>
       </div>
     `;
   }
@@ -559,87 +1357,87 @@
       ${renderEmbedList(message)}
       <div class="embed-editor">
         <div class="rules-mini-actions">
-          <button type="button" data-duplicate-embed ${message.embeds.length >= LIMITS.embeds ? 'disabled' : ''}>Дублировать embed</button>
-          <button type="button" data-delete-embed ${message.embeds.length <= 1 ? 'disabled' : ''}>Удалить embed</button>
+          <button type="button" data-duplicate-embed ${message.embeds.length >= LIMITS.embeds ? 'disabled' : ''}>${escapeHtml(et('duplicateEmbed'))}</button>
+          <button type="button" data-delete-embed ${message.embeds.length <= 1 ? 'disabled' : ''}>${escapeHtml(et('deleteEmbed'))}</button>
         </div>
         <div class="rules-two">
           <label class="rules-field">
-            <span>Цвет</span>
+            <span>${escapeHtml(et('color'))}</span>
             <input type="color" data-embed-path="color" value="${escapeHtml(normalizeHexColor(embed.color))}">
           </label>
           <label class="rules-field">
-            <span>Заголовок</span>
+            <span>${escapeHtml(et('title'))}</span>
             <input type="text" data-embed-path="title" maxlength="${LIMITS.embedTitle}" value="${escapeHtml(embed.title)}">
           </label>
         </div>
         <label class="rules-field">
-          <span>URL заголовка</span>
+          <span>${escapeHtml(et('titleUrl'))}</span>
           <input type="url" data-embed-path="url" value="${escapeHtml(embed.url)}" placeholder="https://...">
         </label>
         <label class="rules-field">
-          <span>Описание embed</span>
+          <span>${escapeHtml(et('embedDescription'))}</span>
           <textarea data-embed-path="description" maxlength="${LIMITS.embedDescription}" rows="8">${escapeHtml(embed.description)}</textarea>
         </label>
         <div class="rules-two">
           <label class="rules-field">
-            <span>Автор</span>
+            <span>${escapeHtml(et('author'))}</span>
             <input type="text" data-embed-path="author.name" maxlength="${LIMITS.embedAuthor}" value="${escapeHtml(embed.author?.name)}">
           </label>
           <label class="rules-field">
-            <span>URL автора</span>
+            <span>${escapeHtml(et('authorUrl'))}</span>
             <input type="url" data-embed-path="author.url" value="${escapeHtml(embed.author?.url)}" placeholder="https://...">
           </label>
         </div>
         <label class="rules-field">
-          <span>Иконка автора</span>
+          <span>${escapeHtml(et('authorIcon'))}</span>
           <input type="url" data-embed-path="author.icon_url" value="${escapeHtml(embed.author?.icon_url)}" placeholder="https://...">
         </label>
         <div class="rules-two">
           <label class="rules-field">
-            <span>Thumbnail URL</span>
+            <span>${escapeHtml(et('thumbnailUrl'))}</span>
             <input type="url" data-embed-path="thumbnail.url" value="${escapeHtml(embed.thumbnail?.url)}" placeholder="https://...">
           </label>
           <label class="rules-field">
-            <span>Image URL</span>
+            <span>${escapeHtml(et('imageUrl'))}</span>
             <input type="url" data-embed-path="image.url" value="${escapeHtml(embed.image?.url)}" placeholder="https://...">
           </label>
         </div>
         <div class="rules-two">
           <label class="rules-field">
-            <span>Footer</span>
+            <span>${escapeHtml(et('footer'))}</span>
             <input type="text" data-embed-path="footer.text" maxlength="${LIMITS.embedFooter}" value="${escapeHtml(embed.footer?.text)}">
           </label>
           <label class="rules-field">
-            <span>Footer icon</span>
+            <span>${escapeHtml(et('footerIcon'))}</span>
             <input type="url" data-embed-path="footer.icon_url" value="${escapeHtml(embed.footer?.icon_url)}" placeholder="https://...">
           </label>
         </div>
         <label class="rules-field">
-          <span>Timestamp ISO</span>
+          <span>${escapeHtml(et('timestampIso'))}</span>
           <input type="text" data-embed-path="timestamp" value="${escapeHtml(embed.timestamp)}" placeholder="2026-05-06T18:00:00.000Z">
         </label>
         <div class="embed-fields">
           <div class="rules-panel-heading">
-            <span>Fields</span>
-            <button type="button" data-add-field ${embed.fields.length >= LIMITS.embedFields ? 'disabled' : ''}>Добавить field</button>
+            <span>${escapeHtml(et('fields'))}</span>
+            <button type="button" data-add-field ${embed.fields.length >= LIMITS.embedFields ? 'disabled' : ''}>${escapeHtml(et('addField'))}</button>
           </div>
           ${embed.fields.length ? embed.fields.map((field, index) => `
             <div class="embed-field-row" data-field-index="${index}">
               <label class="rules-field">
-                <span>Название</span>
+                <span>${escapeHtml(et('fieldName'))}</span>
                 <input type="text" data-field-name="${index}" maxlength="${LIMITS.embedFieldName}" value="${escapeHtml(field.name)}">
               </label>
               <label class="rules-field">
-                <span>Значение</span>
+                <span>${escapeHtml(et('fieldValue'))}</span>
                 <textarea data-field-value="${index}" maxlength="${LIMITS.embedFieldValue}" rows="3">${escapeHtml(field.value)}</textarea>
               </label>
               <label class="rules-check">
                 <input type="checkbox" data-field-inline="${index}" ${field.inline ? 'checked' : ''}>
-                <span>Inline</span>
+                <span>${escapeHtml(et('inline'))}</span>
               </label>
-              <button type="button" class="template-copy-btn" data-delete-field="${index}">Удалить</button>
+              <button type="button" class="template-copy-btn" data-delete-field="${index}">${escapeHtml(et('delete'))}</button>
             </div>
-          `).join('') : '<p class="editor-muted">Fields пока нет.</p>'}
+          `).join('') : `<p class="editor-muted">${escapeHtml(et('noFields'))}</p>`}
         </div>
       </div>
     `;
@@ -650,40 +1448,41 @@
     if (!message.embeds.length) message.embeds.push(defaultEmbed());
     return `
       <label class="rules-field">
-        <span>Текст сообщения</span>
-        <textarea data-message-content maxlength="${LIMITS.content}" rows="8" placeholder="# Правила сервера">${escapeHtml(message.content)}</textarea>
+        <span>${escapeHtml(et('messageContent'))}</span>
+        <textarea data-message-content maxlength="${LIMITS.content}" rows="8" placeholder="${escapeHtml(et('rulesPlaceholder'))}">${escapeHtml(message.content)}</textarea>
       </label>
       ${renderEmbedEditor(message)}
     `;
   }
 
-  function renderComponentBlock(block, index, parentIndex = null) {
+  function renderComponentBlock(block, index, parentIndex = null, siblingCount = null) {
     const isNested = parentIndex !== null && parentIndex !== undefined;
+    const isLast = Number.isFinite(Number(siblingCount)) ? index >= Number(siblingCount) - 1 : false;
     const fieldAttrs = isNested
       ? `data-container-index="${parentIndex}" data-child-index="${index}"`
       : `data-component-index="${index}"`;
     const controls = isNested ? `
       <div class="component-block-actions">
-        <button type="button" data-move-container-component data-container-index="${parentIndex}" data-child-index="${index}" data-direction="-1" ${index === 0 ? 'disabled' : ''}>↑</button>
-        <button type="button" data-move-container-component data-container-index="${parentIndex}" data-child-index="${index}" data-direction="1">↓</button>
-        <button type="button" data-duplicate-container-component data-container-index="${parentIndex}" data-child-index="${index}">Дубль</button>
-        <button type="button" data-delete-container-component data-container-index="${parentIndex}" data-child-index="${index}">Удалить</button>
+        <button type="button" data-move-container-component data-container-index="${parentIndex}" data-child-index="${index}" data-direction="-1" title="${escapeHtml(et('moveUp'))}" aria-label="${escapeHtml(et('moveUp'))}" ${index === 0 ? 'disabled' : ''}>↑</button>
+        <button type="button" data-move-container-component data-container-index="${parentIndex}" data-child-index="${index}" data-direction="1" title="${escapeHtml(et('moveDown'))}" aria-label="${escapeHtml(et('moveDown'))}" ${isLast ? 'disabled' : ''}>↓</button>
+        <button type="button" data-duplicate-container-component data-container-index="${parentIndex}" data-child-index="${index}">${escapeHtml(et('duplicate'))}</button>
+        <button type="button" data-delete-container-component data-container-index="${parentIndex}" data-child-index="${index}">${escapeHtml(et('delete'))}</button>
       </div>
     ` : `
       <div class="component-block-actions">
-        <button type="button" data-move-component="${index}" data-direction="-1" ${index === 0 ? 'disabled' : ''}>↑</button>
-        <button type="button" data-move-component="${index}" data-direction="1">↓</button>
-        <button type="button" data-duplicate-component="${index}">Дубль</button>
-        <button type="button" data-delete-component="${index}">Удалить</button>
+        <button type="button" data-move-component="${index}" data-direction="-1" title="${escapeHtml(et('moveUp'))}" aria-label="${escapeHtml(et('moveUp'))}" ${index === 0 ? 'disabled' : ''}>↑</button>
+        <button type="button" data-move-component="${index}" data-direction="1" title="${escapeHtml(et('moveDown'))}" aria-label="${escapeHtml(et('moveDown'))}" ${isLast ? 'disabled' : ''}>↓</button>
+        <button type="button" data-duplicate-component="${index}">${escapeHtml(et('duplicate'))}</button>
+        <button type="button" data-delete-component="${index}">${escapeHtml(et('delete'))}</button>
       </div>
     `;
 
     if (block.kind === 'text') {
       return `
         <article class="component-block">
-          <div class="component-block-heading"><strong>Text Display</strong>${controls}</div>
+          <div class="component-block-heading"><strong>${escapeHtml(et('componentText'))}</strong>${controls}</div>
           <label class="rules-field">
-            <span>Markdown text</span>
+            <span>${escapeHtml(et('markdownText'))}</span>
             <textarea rows="6" maxlength="${LIMITS.componentText}" data-component-field="content" ${fieldAttrs}>${escapeHtml(block.content)}</textarea>
           </label>
         </article>
@@ -693,16 +1492,16 @@
     if (block.kind === 'separator') {
       return `
         <article class="component-block">
-          <div class="component-block-heading"><strong>Separator</strong>${controls}</div>
+          <div class="component-block-heading"><strong>${escapeHtml(et('componentSeparator'))}</strong>${controls}</div>
           <label class="rules-check">
             <input type="checkbox" data-component-field="divider" ${fieldAttrs} ${block.divider !== false ? 'checked' : ''}>
-            <span>Показывать линию</span>
+            <span>${escapeHtml(et('showLine'))}</span>
           </label>
           <label class="rules-field">
-            <span>Отступ</span>
+            <span>${escapeHtml(et('spacing'))}</span>
             <select data-component-field="spacing" ${fieldAttrs}>
-              <option value="1" ${Number(block.spacing) !== 2 ? 'selected' : ''}>Small</option>
-              <option value="2" ${Number(block.spacing) === 2 ? 'selected' : ''}>Large</option>
+              <option value="1" ${Number(block.spacing) !== 2 ? 'selected' : ''}>${escapeHtml(et('small'))}</option>
+              <option value="2" ${Number(block.spacing) === 2 ? 'selected' : ''}>${escapeHtml(et('large'))}</option>
             </select>
           </label>
         </article>
@@ -712,10 +1511,10 @@
     if (block.kind === 'gallery') {
       return `
         <article class="component-block">
-          <div class="component-block-heading"><strong>Media Gallery</strong>${controls}</div>
+          <div class="component-block-heading"><strong>${escapeHtml(et('componentGallery'))}</strong>${controls}</div>
           <label class="rules-field">
-            <span>URL по одному на строку. Описание через |</span>
-            <textarea rows="6" data-component-field="media" ${fieldAttrs} placeholder="https://site/image.png | Описание">${escapeHtml(block.media)}</textarea>
+            <span>${escapeHtml(et('mediaUrls'))}</span>
+            <textarea rows="6" data-component-field="media" ${fieldAttrs} placeholder="https://site/image.png | Description">${escapeHtml(block.media)}</textarea>
           </label>
         </article>
       `;
@@ -724,14 +1523,14 @@
     if (block.kind === 'file') {
       return `
         <article class="component-block">
-          <div class="component-block-heading"><strong>File</strong>${controls}</div>
+          <div class="component-block-heading"><strong>${escapeHtml(et('componentFile'))}</strong>${controls}</div>
           <label class="rules-field">
-            <span>Attachment URL</span>
+            <span>${escapeHtml(et('attachmentUrl'))}</span>
             <input type="text" data-component-field="fileName" ${fieldAttrs} value="${escapeHtml(block.fileName)}" placeholder="attachment://rules.pdf">
           </label>
           <label class="rules-check">
             <input type="checkbox" data-component-field="spoiler" ${fieldAttrs} ${block.spoiler ? 'checked' : ''}>
-            <span>Spoiler</span>
+            <span>${escapeHtml(et('spoiler'))}</span>
           </label>
         </article>
       `;
@@ -740,17 +1539,88 @@
     if (block.kind === 'button') {
       return `
         <article class="component-block">
-          <div class="component-block-heading"><strong>Link Button</strong>${controls}</div>
+          <div class="component-block-heading"><strong>${escapeHtml(et('componentButton'))}</strong>${controls}</div>
           <div class="rules-two">
             <label class="rules-field">
-              <span>Текст кнопки</span>
+              <span>${escapeHtml(et('buttonLabel'))}</span>
               <input type="text" maxlength="${LIMITS.buttonLabel}" data-component-field="label" ${fieldAttrs} value="${escapeHtml(block.label)}">
             </label>
             <label class="rules-field">
-              <span>URL</span>
+              <span>${escapeHtml(et('emoji'))}</span>
+              <input type="text" maxlength="32" data-component-field="emoji" ${fieldAttrs} value="${escapeHtml(block.emoji)}" placeholder="✨">
+            </label>
+          </div>
+          <div class="rules-two">
+            <label class="rules-field">
+              <span>${escapeHtml(et('style'))}</span>
+              <select data-component-field="style" ${fieldAttrs}>
+                <option value="1" ${Number(block.style) === 1 ? 'selected' : ''}>${escapeHtml(et('stylePrimary'))}</option>
+                <option value="2" ${!block.style || Number(block.style) === 2 ? 'selected' : ''}>${escapeHtml(et('styleSecondary'))}</option>
+                <option value="3" ${Number(block.style) === 3 ? 'selected' : ''}>${escapeHtml(et('styleSuccess'))}</option>
+                <option value="4" ${Number(block.style) === 4 ? 'selected' : ''}>${escapeHtml(et('styleDanger'))}</option>
+                <option value="5" ${Number(block.style) === 5 || block.url ? 'selected' : ''}>${escapeHtml(et('styleLink'))}</option>
+              </select>
+            </label>
+            <label class="rules-field">
+              <span>${escapeHtml(et('url'))}</span>
               <input type="url" data-component-field="url" ${fieldAttrs} value="${escapeHtml(block.url)}" placeholder="https://...">
             </label>
           </div>
+          <label class="rules-field">
+            <span>${escapeHtml(et('customId'))}</span>
+            <input type="text" maxlength="100" data-component-field="customId" ${fieldAttrs} value="${escapeHtml(block.customId)}" placeholder="core_button">
+          </label>
+          <label class="rules-check">
+            <input type="checkbox" data-component-field="disabled" ${fieldAttrs} ${block.disabled ? 'checked' : ''}>
+            <span>${escapeHtml(et('disabled'))}</span>
+          </label>
+          <p class="editor-muted">${escapeHtml(et('buttonUrlHint'))}</p>
+        </article>
+      `;
+    }
+
+    if (block.kind === 'select') {
+      return `
+        <article class="component-block">
+          <div class="component-block-heading"><strong>${escapeHtml(et('componentSelect'))}</strong>${controls}</div>
+          <div class="rules-two">
+            <label class="rules-field">
+              <span>${escapeHtml(et('type'))}</span>
+              <select data-component-field="selectType" ${fieldAttrs}>
+                <option value="3" ${Number(block.selectType) === 3 ? 'selected' : ''}>${escapeHtml(et('selectString'))}</option>
+                <option value="5" ${Number(block.selectType) === 5 ? 'selected' : ''}>${escapeHtml(et('selectUser'))}</option>
+                <option value="6" ${Number(block.selectType) === 6 ? 'selected' : ''}>${escapeHtml(et('selectRole'))}</option>
+                <option value="7" ${Number(block.selectType) === 7 ? 'selected' : ''}>${escapeHtml(et('selectMentionable'))}</option>
+                <option value="8" ${Number(block.selectType) === 8 ? 'selected' : ''}>${escapeHtml(et('selectChannel'))}</option>
+              </select>
+            </label>
+            <label class="rules-field">
+              <span>${escapeHtml(et('customId'))}</span>
+              <input type="text" maxlength="100" data-component-field="customId" ${fieldAttrs} value="${escapeHtml(block.customId)}" placeholder="core_select">
+            </label>
+          </div>
+          <label class="rules-field">
+            <span>${escapeHtml(et('placeholder'))}</span>
+            <input type="text" maxlength="150" data-component-field="placeholder" ${fieldAttrs} value="${escapeHtml(block.placeholder)}" placeholder="${escapeHtml(et('defaultSelectPlaceholder'))}">
+          </label>
+          <div class="rules-two">
+            <label class="rules-field">
+              <span>${escapeHtml(et('minValues'))}</span>
+              <input type="number" min="0" max="25" data-component-field="minValues" ${fieldAttrs} value="${escapeHtml(block.minValues)}">
+            </label>
+            <label class="rules-field">
+              <span>${escapeHtml(et('maxValues'))}</span>
+              <input type="number" min="1" max="25" data-component-field="maxValues" ${fieldAttrs} value="${escapeHtml(block.maxValues)}">
+            </label>
+          </div>
+          <label class="rules-field">
+            <span>${escapeHtml(et('selectOptions'))}</span>
+            <textarea rows="6" data-component-field="options" ${fieldAttrs} placeholder="First option | first | Description | ✨">${escapeHtml(block.options)}</textarea>
+          </label>
+          <label class="rules-check">
+            <input type="checkbox" data-component-field="disabled" ${fieldAttrs} ${block.disabled ? 'checked' : ''}>
+            <span>${escapeHtml(et('disabled'))}</span>
+          </label>
         </article>
       `;
     }
@@ -758,27 +1628,27 @@
     if (block.kind === 'section') {
       return `
         <article class="component-block">
-          <div class="component-block-heading"><strong>Section</strong>${controls}</div>
+          <div class="component-block-heading"><strong>${escapeHtml(et('componentSection'))}</strong>${controls}</div>
           <label class="rules-field">
-            <span>Текст секции</span>
+            <span>${escapeHtml(et('sectionText'))}</span>
             <textarea rows="6" maxlength="${LIMITS.componentText}" data-component-field="content" ${fieldAttrs}>${escapeHtml(block.content)}</textarea>
           </label>
           <div class="rules-two">
             <label class="rules-field">
-              <span>Accessory</span>
+              <span>${escapeHtml(et('accessory'))}</span>
               <select data-component-field="accessoryType" ${fieldAttrs}>
-                <option value="thumbnail" ${block.accessoryType !== 'button' ? 'selected' : ''}>Thumbnail</option>
-                <option value="button" ${block.accessoryType === 'button' ? 'selected' : ''}>Button</option>
+                <option value="thumbnail" ${block.accessoryType !== 'button' ? 'selected' : ''}>${escapeHtml(et('thumbnailUrl'))}</option>
+                <option value="button" ${block.accessoryType === 'button' ? 'selected' : ''}>${escapeHtml(et('componentButton'))}</option>
               </select>
             </label>
             <label class="rules-field">
-              <span>${block.accessoryType === 'button' ? 'Button URL' : 'Thumbnail URL'}</span>
+              <span>${escapeHtml(block.accessoryType === 'button' ? et('buttonUrl') : et('thumbnailUrl'))}</span>
               <input type="url" data-component-field="${block.accessoryType === 'button' ? 'buttonUrl' : 'accessoryUrl'}" ${fieldAttrs} value="${escapeHtml(block.accessoryType === 'button' ? block.buttonUrl : block.accessoryUrl)}" placeholder="https://...">
             </label>
           </div>
           ${block.accessoryType === 'button' ? `
             <label class="rules-field">
-              <span>Button label</span>
+              <span>${escapeHtml(et('buttonLabel'))}</span>
               <input type="text" maxlength="${LIMITS.buttonLabel}" data-component-field="buttonLabel" ${fieldAttrs} value="${escapeHtml(block.buttonLabel)}">
             </label>
           ` : ''}
@@ -790,30 +1660,31 @@
       const children = normalizeContainerChildren(block);
       return `
         <article class="component-block component-container-block">
-          <div class="component-block-heading"><strong>Container</strong>${controls}</div>
+          <div class="component-block-heading"><strong>${escapeHtml(et('componentContainer'))}</strong>${controls}</div>
           <div class="rules-two">
             <label class="rules-field">
-              <span>Accent color</span>
+              <span>${escapeHtml(et('accentColor'))}</span>
               <input type="color" data-component-field="accent" data-component-index="${index}" value="${escapeHtml(normalizeHexColor(block.accent))}">
             </label>
             <label class="rules-check">
               <input type="checkbox" data-component-field="spoiler" data-component-index="${index}" ${block.spoiler ? 'checked' : ''}>
-              <span>Spoiler container</span>
+              <span>${escapeHtml(et('spoilerContainer'))}</span>
             </label>
           </div>
           <div class="container-child-toolbar">
-            <span>Inside container</span>
+            <span>${escapeHtml(et('insideContainer'))}</span>
             <div class="components-toolbar">
-              <button type="button" data-add-container-component="text" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>Text</button>
-              <button type="button" data-add-container-component="section" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>Section</button>
-              <button type="button" data-add-container-component="gallery" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>Gallery</button>
-              <button type="button" data-add-container-component="separator" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>Separator</button>
-              <button type="button" data-add-container-component="button" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>Button</button>
-              <button type="button" data-add-container-component="file" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>File</button>
+              <label class="rules-field component-add-field">
+                <span>${escapeHtml(et('component'))}</span>
+                <select data-add-container-component-kind data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>
+                  ${renderComponentKindOptions(['text', 'section', 'gallery', 'separator', 'button', 'select', 'file'])}
+                </select>
+              </label>
+              <button type="button" data-add-container-selected data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>${escapeHtml(et('add'))}</button>
             </div>
           </div>
           <div class="container-child-list">
-            ${children.map((child, childIndex) => renderComponentBlock(child, childIndex, index)).join('')}
+            ${children.length ? children.map((child, childIndex) => renderComponentBlock(child, childIndex, index, children.length)).join('') : `<div class="template-empty"><strong>${escapeHtml(et('emptyContainer'))}</strong></div>`}
           </div>
         </article>
       `;
@@ -821,38 +1692,38 @@
 
     return `
       <article class="component-block">
-        <div class="component-block-heading"><strong>Unknown component</strong>${controls}</div>
+        <div class="component-block-heading"><strong>${escapeHtml(et('componentUnknown'))}</strong>${controls}</div>
         <div class="rules-two">
           <label class="rules-field">
-            <span>Accent color</span>
+            <span>${escapeHtml(et('accentColor'))}</span>
             <input type="color" data-component-field="accent" data-component-index="${index}" value="${escapeHtml(normalizeHexColor(block.accent))}">
           </label>
           <label class="rules-field">
-            <span>Thumbnail URL</span>
+            <span>${escapeHtml(et('thumbnailUrl'))}</span>
             <input type="url" data-component-field="thumbnail" data-component-index="${index}" value="${escapeHtml(block.thumbnail)}" placeholder="https://...">
           </label>
         </div>
         <label class="rules-field">
-          <span>Text Display внутри контейнера</span>
+          <span>${escapeHtml(et('componentText'))}</span>
           <textarea rows="7" maxlength="${LIMITS.componentText}" data-component-field="text" data-component-index="${index}">${escapeHtml(block.text)}</textarea>
         </label>
         <label class="rules-field">
-          <span>Media Gallery URL по одному на строку</span>
-          <textarea rows="4" data-component-field="media" data-component-index="${index}" placeholder="https://site/image.png | Описание">${escapeHtml(block.media)}</textarea>
+          <span>${escapeHtml(et('mediaUrls'))}</span>
+          <textarea rows="4" data-component-field="media" data-component-index="${index}" placeholder="https://site/image.png | Description">${escapeHtml(block.media)}</textarea>
         </label>
         <div class="rules-two">
           <label class="rules-field">
-            <span>Кнопка</span>
-            <input type="text" maxlength="${LIMITS.buttonLabel}" data-component-field="buttonLabel" data-component-index="${index}" value="${escapeHtml(block.buttonLabel)}" placeholder="Открыть">
+            <span>${escapeHtml(et('componentButton'))}</span>
+            <input type="text" maxlength="${LIMITS.buttonLabel}" data-component-field="buttonLabel" data-component-index="${index}" value="${escapeHtml(block.buttonLabel)}" placeholder="${escapeHtml(et('defaultButtonLabel'))}">
           </label>
           <label class="rules-field">
-            <span>URL кнопки</span>
+            <span>${escapeHtml(et('buttonUrl'))}</span>
             <input type="url" data-component-field="buttonUrl" data-component-index="${index}" value="${escapeHtml(block.buttonUrl)}" placeholder="https://...">
           </label>
         </div>
         <label class="rules-check">
           <input type="checkbox" data-component-field="spoiler" data-component-index="${index}" ${block.spoiler ? 'checked' : ''}>
-          <span>Spoiler container</span>
+          <span>${escapeHtml(et('spoilerContainer'))}</span>
         </label>
       </article>
     `;
@@ -861,17 +1732,17 @@
   function renderComponentsEditor(message) {
     return `
       <div class="components-toolbar">
-        <button type="button" data-add-component="container">Container</button>
-        <button type="button" data-add-component="text">Text</button>
-        <button type="button" data-add-component="section">Section</button>
-        <button type="button" data-add-component="gallery">Gallery</button>
-        <button type="button" data-add-component="separator">Separator</button>
-        <button type="button" data-add-component="button">Button</button>
-        <button type="button" data-add-component="file">File</button>
+        <label class="rules-field component-add-field">
+          <span>${escapeHtml(et('addComponent'))}</span>
+          <select data-add-component-kind>
+            ${renderComponentKindOptions(['container', 'text', 'section', 'gallery', 'separator', 'button', 'select', 'file'])}
+          </select>
+        </label>
+        <button type="button" data-add-selected-component>${escapeHtml(et('add'))}</button>
       </div>
-      <p class="editor-muted">В Components V2 Discord не использует обычные content/embeds. Для текста используй Text Display или Container.</p>
+      <p class="editor-muted">${escapeHtml(et('componentHint'))}</p>
       <div class="component-block-list">
-        ${message.blocks?.length ? message.blocks.map(renderComponentBlock).join('') : '<div class="template-empty"><strong>Добавь первый компонент.</strong></div>'}
+        ${message.blocks?.length ? message.blocks.map((block, index) => renderComponentBlock(block, index, null, message.blocks.length)).join('') : `<div class="template-empty"><strong>${escapeHtml(et('firstComponent'))}</strong></div>`}
       </div>
     `;
   }
@@ -883,10 +1754,10 @@
 
     return `
       <label class="rules-field">
-        <span>Raw Discord message JSON</span>
+        <span>${escapeHtml(et('rawDiscordJson'))}</span>
         <textarea data-message-raw rows="18" spellcheck="false">${escapeHtml(message.raw)}</textarea>
       </label>
-      <p class="editor-muted">Raw mode keeps complex Discord payloads exact: content, embeds, legacy buttons and Components V2. Discord limits still apply.</p>
+      <p class="editor-muted">${escapeHtml(et('rawModeHint'))}</p>
     `;
   }
 
@@ -1226,25 +2097,37 @@
   }
 
   function createBlock(kind) {
-    if (kind === 'text') return { kind, content: '# Заголовок\nТекст блока.' };
+    if (kind === 'text') return { kind, content: et('defaultText') };
     if (kind === 'separator') return { kind, divider: true, spacing: 1 };
     if (kind === 'gallery') return { kind, media: '' };
-    if (kind === 'file') return { kind, fileName: 'attachment://rules.pdf', spoiler: false };
-    if (kind === 'button') return { kind, label: 'Открыть', url: '' };
+    if (kind === 'file') return { kind, fileName: 'attachment://file.pdf', spoiler: false };
+    if (kind === 'button') return { kind, label: et('defaultButtonLabel'), emoji: '', style: 5, url: '', customId: '', disabled: false };
+    if (kind === 'select') {
+      return {
+        kind,
+        selectType: 3,
+        customId: 'core_select',
+        placeholder: et('defaultSelectPlaceholder'),
+        minValues: 0,
+        maxValues: 1,
+        options: et('defaultSelectOptions'),
+        disabled: false
+      };
+    }
     if (kind === 'container') {
       return {
       kind: 'container',
       accent: '#44b8de',
       children: [
-        { kind: 'text', content: '# Title\nContainer text.' }
+        { kind: 'text', content: et('defaultContainerText') }
       ],
       spoiler: false
     };
     }
     if (kind === 'section') {
-      return { kind, content: '# Важный блок\nТекст секции.', accessoryType: 'thumbnail', accessoryUrl: '', buttonLabel: 'Открыть', buttonUrl: '' };
+      return { kind, content: et('defaultSectionText'), accessoryType: 'thumbnail', accessoryUrl: '', buttonLabel: et('defaultButtonLabel'), buttonUrl: '' };
     }
-    return { kind: 'container', accent: '#44b8de', text: '# Заголовок\nТекст контейнера.', thumbnail: '', media: '', buttonLabel: '', buttonUrl: '', spoiler: false };
+    return { kind: 'container', accent: '#44b8de', text: et('defaultContainerText'), thumbnail: '', media: '', buttonLabel: '', buttonUrl: '', spoiler: false };
   }
 
   function createState(root, options = {}) {
@@ -1261,7 +2144,8 @@
       webhookUrl: '',
       username: options.username || 'Core',
       avatarUrl: '',
-      title: options.title || root.dataset.editorTitle || 'Редактор сообщений',
+      kind: options.kind || root.dataset.editorKind || 'rules',
+      title: options.title || root.dataset.editorTitle || et('defaultTitle'),
       messages: normalizeMessages(initialMessages)
     };
   }
@@ -1287,7 +2171,7 @@
     function buildExportJson() {
       const messages = state.messages.map(buildRuleMessage);
       return {
-        kind: 'rules',
+        kind: state.kind === 'webhook' ? 'webhook-messages' : 'rules',
         version: 2,
         createdAt: new Date().toISOString(),
         messages,
@@ -1298,69 +2182,73 @@
     function validatePayload() {
       const errors = [];
       const warnings = [];
+      const messageLabel = (number) => `${et('message')} ${number}`;
+      const blockLabel = (number, blockIndex) => `${messageLabel(number)}, ${et('block')} ${blockIndex + 1}`;
+      const childLabel = (label, childIndex) => `${label}, ${et('child')} ${childIndex + 1}`;
+
       state.messages.forEach((item, index) => {
         const number = index + 1;
         if (item.mode === 'raw') {
           try {
             parseRawPayload(item.raw);
           } catch (error) {
-            errors.push(`Сообщение ${number}: ${error.message || 'raw JSON is invalid.'}`);
+            errors.push(`${messageLabel(number)}: ${error.message || et('invalidRawJson')}`);
           }
           return;
         }
 
         if (item.mode === 'components') {
           const components = buildComponents(item.blocks);
-          if (!components.length) errors.push(`Сообщение ${number}: добавь хотя бы один Components V2 блок.`);
-          if (components.length > LIMITS.components) errors.push(`Сообщение ${number}: максимум ${LIMITS.components} компонентов.`);
+          if (!components.length) errors.push(`${messageLabel(number)}: ${et('errorNeedComponent')}`);
+          if (components.length > LIMITS.components) errors.push(`${messageLabel(number)}: ${et('errorMaxComponents')} ${LIMITS.components}.`);
           (item.blocks || []).forEach((block, blockIndex) => {
-            const label = `Сообщение ${number}, блок ${blockIndex + 1}`;
-            if (['text', 'section'].includes(block.kind) && (block.content || '').length > LIMITS.componentText) errors.push(`${label}: текст больше ${LIMITS.componentText}.`);
-            if (block.kind === 'section' && block.accessoryType === 'button' && !normalizeUrl(block.buttonUrl)) errors.push(`${label}: section button URL is required.`);
-            if (block.kind === 'section' && block.accessoryType !== 'button' && !normalizeUrl(block.accessoryUrl)) errors.push(`${label}: section thumbnail URL is required.`);
-            if (block.kind === 'container' && (block.text || '').length > LIMITS.componentText) errors.push(`${label}: текст контейнера больше ${LIMITS.componentText}.`);
-            if (block.kind === 'gallery' && parseMediaItems(block.media).length > LIMITS.galleryItems) errors.push(`${label}: максимум ${LIMITS.galleryItems} медиа.`);
+            const label = blockLabel(number, blockIndex);
+            if (['text', 'section'].includes(block.kind) && (block.content || '').length > LIMITS.componentText) errors.push(`${label}: ${et('errorTextTooLong')} ${LIMITS.componentText}.`);
+            if (block.kind === 'section' && block.accessoryType === 'button' && !normalizeUrl(block.buttonUrl)) errors.push(`${label}: ${et('errorSectionButtonUrl')}`);
+            if (block.kind === 'section' && block.accessoryType !== 'button' && !normalizeUrl(block.accessoryUrl)) errors.push(`${label}: ${et('errorSectionThumbnailUrl')}`);
+            if (block.kind === 'container' && (block.text || '').length > LIMITS.componentText) errors.push(`${label}: ${et('errorContainerTextTooLong')} ${LIMITS.componentText}.`);
+            if (block.kind === 'gallery' && parseMediaItems(block.media).length > LIMITS.galleryItems) errors.push(`${label}: ${et('errorMaxMedia')} ${LIMITS.galleryItems}.`);
             if (block.kind === 'container') {
               const children = normalizeContainerChildren(block);
-              if (children.length > LIMITS.containerChildren) errors.push(`${label}: maximum ${LIMITS.containerChildren} children.`);
+              if (children.length > LIMITS.containerChildren) errors.push(`${label}: ${et('errorMaxChildren')} ${LIMITS.containerChildren}.`);
               children.forEach((child, childIndex) => {
-                const childLabel = `${label}, child ${childIndex + 1}`;
-                if (['text', 'section'].includes(child.kind) && (child.content || '').length > LIMITS.componentText) errors.push(`${childLabel}: text is longer than ${LIMITS.componentText}.`);
-                if (child.kind === 'section' && child.accessoryType === 'button' && !normalizeUrl(child.buttonUrl)) errors.push(`${childLabel}: section button URL is required.`);
-                if (child.kind === 'section' && child.accessoryType !== 'button' && !normalizeUrl(child.accessoryUrl)) errors.push(`${childLabel}: section thumbnail URL is required.`);
-                if (child.kind === 'gallery' && parseMediaItems(child.media).length > LIMITS.galleryItems) errors.push(`${childLabel}: maximum ${LIMITS.galleryItems} media items.`);
+                const nestedLabel = childLabel(label, childIndex);
+                if (['text', 'section'].includes(child.kind) && (child.content || '').length > LIMITS.componentText) errors.push(`${nestedLabel}: ${et('errorTextTooLong')} ${LIMITS.componentText}.`);
+                if (child.kind === 'section' && child.accessoryType === 'button' && !normalizeUrl(child.buttonUrl)) errors.push(`${nestedLabel}: ${et('errorSectionButtonUrl')}`);
+                if (child.kind === 'section' && child.accessoryType !== 'button' && !normalizeUrl(child.accessoryUrl)) errors.push(`${nestedLabel}: ${et('errorSectionThumbnailUrl')}`);
+                if (child.kind === 'gallery' && parseMediaItems(child.media).length > LIMITS.galleryItems) errors.push(`${nestedLabel}: ${et('errorMaxMedia')} ${LIMITS.galleryItems}.`);
                 ['media', 'buttonUrl', 'url', 'accessoryUrl'].forEach((field) => {
                   if (child[field] && field === 'media') return;
-                  if (child[field] && !isValidUrl(child[field])) errors.push(`${childLabel}: ${field} must be a URL.`);
+                  if (child[field] && !isValidUrl(child[field])) errors.push(`${nestedLabel}: ${field} ${et('errorMustBeUrl')}`);
                 });
               });
             }
             ['media', 'thumbnail', 'buttonUrl', 'url', 'accessoryUrl'].forEach((field) => {
               if (block[field] && field === 'media') return;
-              if (block[field] && !isValidUrl(block[field])) errors.push(`${label}: ${field} должен быть ссылкой.`);
+              if (block[field] && !isValidUrl(block[field])) errors.push(`${label}: ${field} ${et('errorMustBeUrl')}`);
             });
           });
           return;
         }
 
         const embeds = (item.embeds || []).map(buildEmbed).filter(Boolean);
-        if (!item.content && !embeds.length) errors.push(`Сообщение ${number}: нужен текст или embed.`);
-        if ((item.content || '').length > LIMITS.content) errors.push(`Сообщение ${number}: текст больше ${LIMITS.content}.`);
-        if ((item.embeds || []).length > LIMITS.embeds) errors.push(`Сообщение ${number}: максимум ${LIMITS.embeds} embed.`);
+        if (!item.content && !embeds.length) errors.push(`${messageLabel(number)}: ${et('errorNeedTextOrEmbed')}`);
+        if ((item.content || '').length > LIMITS.content) errors.push(`${messageLabel(number)}: ${et('errorTextTooLong')} ${LIMITS.content}.`);
+        if ((item.embeds || []).length > LIMITS.embeds) errors.push(`${messageLabel(number)}: ${et('errorMaxEmbeds')} ${LIMITS.embeds}.`);
         (item.embeds || []).forEach((embedItem, embedIndex) => {
-          const label = `Сообщение ${number}, embed ${embedIndex + 1}`;
-          if ((embedItem.title || '').length > LIMITS.embedTitle) errors.push(`${label}: заголовок больше ${LIMITS.embedTitle}.`);
-          if ((embedItem.description || '').length > LIMITS.embedDescription) errors.push(`${label}: описание больше ${LIMITS.embedDescription}.`);
-          if ((embedItem.fields || []).length > LIMITS.embedFields) errors.push(`${label}: максимум ${LIMITS.embedFields} fields.`);
-          if (embedTotal(embedItem) > LIMITS.embedTotal) errors.push(`${label}: общий размер больше ${LIMITS.embedTotal}.`);
+          const label = `${messageLabel(number)}, ${et('embed')} ${embedIndex + 1}`;
+          if ((embedItem.title || '').length > LIMITS.embedTitle) errors.push(`${label}: ${et('errorTitleTooLong')} ${LIMITS.embedTitle}.`);
+          if ((embedItem.description || '').length > LIMITS.embedDescription) errors.push(`${label}: ${et('errorDescriptionTooLong')} ${LIMITS.embedDescription}.`);
+          if ((embedItem.fields || []).length > LIMITS.embedFields) errors.push(`${label}: ${et('errorMaxFields')} ${LIMITS.embedFields}.`);
+          if (embedTotal(embedItem) > LIMITS.embedTotal) errors.push(`${label}: ${et('errorEmbedTotalTooLong')} ${LIMITS.embedTotal}.`);
           ['url', 'thumbnail.url', 'image.url', 'author.url', 'author.icon_url', 'footer.icon_url'].forEach((path) => {
             const value = path.split('.').reduce((object, key) => object?.[key], embedItem);
-            if (value && !isValidUrl(value)) errors.push(`${label}: ${path} должен быть ссылкой.`);
+            if (value && !isValidUrl(value)) errors.push(`${label}: ${path} ${et('errorMustBeUrl')}`);
           });
         });
       });
 
-      if (state.messages.length > 6) warnings.push('Много сообщений лучше отправлять в отдельный канал правил.');
+      if (state.messages.length > 6) warnings.push(state.kind === 'webhook' ? et('warningManyWebhookMessages') : et('warningManyRuleMessages'));
       return { errors, warnings };
     }
 
@@ -1372,7 +2260,7 @@
           ? firstFilledLine(item.raw, `Raw JSON ${index + 1}`)
           : item.mode === 'components'
           ? firstFilledLine(item.blocks?.find((block) => block.text || block.content)?.text || item.blocks?.find((block) => block.content)?.content, `Components V2 ${index + 1}`)
-          : firstFilledLine(item.embeds?.[0]?.title || item.content, `Сообщение ${index + 1}`);
+          : firstFilledLine(item.embeds?.[0]?.title || item.content, `${et('message')} ${index + 1}`);
         return `
           <button type="button" class="${index === state.active ? 'is-active' : ''}" data-select-message="${index}">
             <strong>${index + 1}</strong>
@@ -1385,7 +2273,7 @@
     function renderEditorBody() {
       const current = message();
       const body = root.querySelector('[data-message-editor-body]');
-      root.querySelector('[data-current-message-title]').textContent = `Сообщение ${state.active + 1}`;
+      root.querySelector('[data-current-message-title]').textContent = `${et('message')} ${state.active + 1}`;
       root.querySelectorAll('[data-message-mode]').forEach((button) => {
         button.classList.toggle('is-active', button.dataset.messageMode === current.mode);
       });
@@ -1405,14 +2293,14 @@
     function renderPreview() {
       const preview = root.querySelector('[data-editor-preview]');
       const count = root.querySelector('[data-editor-count]');
-      if (count) count.textContent = `${state.messages.length} ${state.messages.length === 1 ? 'сообщение' : 'сообщений'}`;
+      if (count) count.textContent = `${state.messages.length} ${state.messages.length === 1 ? et('messageOne') : et('messageMany')}`;
       if (!preview) return;
 
       preview.innerHTML = renderDiscordMessages(state.messages.map((item) => {
         try {
           return buildRuleMessage(item);
         } catch {
-          return { content: 'Raw JSON is invalid.', embeds: [] };
+          return { content: et('invalidRawJson'), embeds: [] };
         }
       }), {
         username: state.username || 'Webhook'
@@ -1428,23 +2316,28 @@
         currentPayload = buildRuleMessage(current);
       } catch {}
       const activeEmbed = current.mode === 'classic' ? embed() : null;
+      const measure = measurePayload(currentPayload);
       const items = current.mode === 'raw'
         ? [
-          ['Messages', state.messages.length, LIMITS.messages],
-          ['Raw JSON', String(current.raw || '').length, 30000],
-          ['Components', Array.isArray(currentPayload.components) ? currentPayload.components.length : 0, LIMITS.components]
+          [et('limitMessages'), state.messages.length, LIMITS.messages],
+          [et('limitRawJson'), String(current.raw || '').length, 30000],
+          [et('limitComponentsTotal'), measure.components, LIMITS.components],
+          [et('limitTextTotal'), measure.content + measure.text + measure.embedTotal, 6000]
         ]
         : current.mode === 'components'
         ? [
-          ['Сообщения', state.messages.length, LIMITS.messages],
-          ['Components', currentPayload.components?.length || 0, LIMITS.components],
-          ['Text Display', Math.max(...(current.blocks || []).map((block) => String(block.text || block.content || '').length), 0), LIMITS.componentText]
+          [et('limitMessages'), state.messages.length, LIMITS.messages],
+          [et('limitComponentsTotal'), measure.components, LIMITS.components],
+          [et('limitTopComponents'), measure.topComponents, LIMITS.components],
+          [et('limitComponentText'), measure.text, LIMITS.componentText],
+          [et('limitSelectOptions'), measure.selectOptions, LIMITS.selectOptions]
         ]
         : [
-          ['Сообщения', state.messages.length, LIMITS.messages],
-          ['Текст', current.content.length, LIMITS.content],
-          ['Embeds', current.embeds.length, LIMITS.embeds],
-          ['Embed total', activeEmbed ? embedTotal(activeEmbed) : 0, LIMITS.embedTotal]
+          [et('limitMessages'), state.messages.length, LIMITS.messages],
+          [et('limitMessageText'), measure.content, LIMITS.content],
+          [et('limitEmbeds'), measure.embeds, LIMITS.embeds],
+          [et('limitActiveEmbed'), activeEmbed ? embedTotal(activeEmbed) : 0, LIMITS.embedTotal],
+          [et('limitEmbedsTotal'), measure.embedTotal, LIMITS.embedTotal]
         ];
 
       limits.innerHTML = items.map(([label, value, max]) => {
@@ -1471,7 +2364,7 @@
         alert.classList.toggle('is-error', Boolean(errors.length));
         alert.innerHTML = messages.map((item) => `<div>${escapeHtml(item)}</div>`).join('');
       }
-      if (status) status.textContent = errors.length ? `${errors.length} ошибок` : warnings.length ? `${warnings.length} предупреждений` : 'Готово';
+      if (status) status.textContent = errors.length ? `${errors.length} ${et('errors')}` : warnings.length ? `${warnings.length} ${et('warnings')}` : et('ready');
       if (send) send.disabled = Boolean(errors.length) || !isValidWebhookUrl(state.webhookUrl);
     }
 
@@ -1555,7 +2448,7 @@
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'core-rules-template.json';
+      link.download = state.kind === 'webhook' ? 'core-webhook-messages.json' : 'core-rules-template.json';
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -1594,7 +2487,7 @@
           alert.hidden = false;
           alert.classList.add('is-error');
           alert.textContent = !isValidWebhookUrl(state.webhookUrl)
-            ? 'Укажи Discord webhook URL.'
+            ? et('webhookRequired')
             : errors.join('\n');
         }
         return;
@@ -1602,7 +2495,7 @@
 
       if (send) {
         send.disabled = true;
-        send.textContent = 'Отправляю...';
+        send.textContent = et('sending');
       }
 
       try {
@@ -1620,16 +2513,16 @@
         if (alert) {
           alert.hidden = false;
           alert.classList.remove('is-error');
-          alert.textContent = `Отправлено сообщений: ${state.messages.length}.`;
+          alert.textContent = `${et('sent')}: ${state.messages.length}.`;
         }
       } catch (error) {
         if (alert) {
           alert.hidden = false;
           alert.classList.add('is-error');
-          alert.textContent = `${error.message || 'Не удалось отправить webhook.'} Если браузер блокирует CORS, отправляй через серверный proxy или Google Apps Script.`;
+          alert.textContent = `${error.message || et('sendFailed')} ${et('corsHint')}`;
         }
       } finally {
-        if (send) send.textContent = 'Отправить';
+        if (send) send.textContent = et('send');
         refreshDynamic();
       }
     }
@@ -1734,6 +2627,12 @@
         render();
         return;
       }
+      if (target.matches('[data-add-selected-component]')) {
+        const kind = root.querySelector('[data-add-component-kind]')?.value || 'container';
+        current.blocks.push(createBlock(kind));
+        render();
+        return;
+      }
       if (target.dataset.addContainerComponent) {
         const children = getContainerChildren(current, target.dataset.containerIndex);
         if (children && children.length < LIMITS.containerChildren) {
@@ -1742,9 +2641,18 @@
         }
         return;
       }
+      if (target.matches('[data-add-container-selected]')) {
+        const children = getContainerChildren(current, target.dataset.containerIndex);
+        const select = root.querySelector(`[data-add-container-component-kind][data-container-index="${target.dataset.containerIndex}"]`);
+        if (children && children.length < LIMITS.containerChildren) {
+          children.push(createBlock(select?.value || 'text'));
+          render();
+        }
+        return;
+      }
       if (target.dataset.deleteContainerComponent !== undefined) {
         const children = getContainerChildren(current, target.dataset.containerIndex);
-        if (children && children.length > 1) {
+        if (children) {
           children.splice(Number(target.dataset.childIndex), 1);
           render();
         }
@@ -1801,7 +2709,7 @@
         if (alert) {
           alert.hidden = false;
           alert.classList.remove('is-error');
-          alert.textContent = 'JSON скопирован.';
+          alert.textContent = et('copied');
         }
         return;
       }
@@ -1809,6 +2717,8 @@
         sendWebhook();
       }
     });
+
+    window.addEventListener('core-language-change', () => render());
 
     render();
     const api = { render, state, buildExportJson };

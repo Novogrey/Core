@@ -1779,6 +1779,31 @@ button {
   padding-bottom: 88px;
 }
 
+.webhook-page .tool-hero,
+.webhook-page .webhook-section {
+  width: min(100% - 36px, 1540px);
+}
+
+.webhook-page .tool-hero {
+  padding-bottom: 34px;
+}
+
+.webhook-page .section-heading {
+  width: min(760px, 100%);
+}
+
+.webhook-message-builder {
+  min-width: 0;
+}
+
+.webhook-page .rules-editor {
+  grid-template-columns: minmax(260px, 0.68fr) minmax(470px, 1.15fr) minmax(380px, 0.95fr);
+}
+
+.webhook-page .rules-panel {
+  box-shadow: none;
+}
+
 .webhook-workspace {
   display: grid;
   grid-template-columns: minmax(360px, 0.92fr) minmax(380px, 1.08fr);
@@ -2680,6 +2705,65 @@ button {
   white-space: normal;
 }
 
+.legal-hero {
+  padding-bottom: 42px;
+}
+
+.legal-hero h1 {
+  max-width: 920px;
+  margin: 0;
+  font-size: clamp(2.4rem, 6vw, 5.2rem);
+  line-height: 1.02;
+}
+
+.legal-hero p:not(.eyebrow) {
+  max-width: 780px;
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 1.08rem;
+}
+
+.legal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.legal-document {
+  display: grid;
+  gap: 16px;
+  padding-top: 0;
+}
+
+.legal-card {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.92);
+  box-shadow: var(--shadow);
+}
+
+.legal-card h2 {
+  margin: 0 0 14px;
+  font-size: 1.35rem;
+}
+
+.legal-card p {
+  margin: 0;
+  color: #d4dce8;
+}
+
+.legal-card p + p {
+  margin-top: 12px;
+}
+
+.legal-contact a {
+  color: var(--cyan);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
 .rules-editor-section {
   padding-top: 8px;
   padding-bottom: 88px;
@@ -2687,9 +2771,15 @@ button {
 
 .rules-editor {
   display: grid;
-  grid-template-columns: minmax(260px, 0.8fr) minmax(240px, 0.65fr) minmax(360px, 1.1fr);
+  grid-template-columns: minmax(250px, 0.72fr) minmax(420px, 1.12fr) minmax(360px, 0.95fr);
   gap: 16px;
   align-items: start;
+}
+
+.rules-left-column {
+  display: grid;
+  gap: 16px;
+  align-content: start;
 }
 
 .rules-panel {
@@ -2703,15 +2793,20 @@ button {
 }
 
 .rules-settings {
-  grid-column: span 1;
+  grid-column: auto;
 }
 
 .rules-preview-panel {
-  grid-column: span 2;
+  position: sticky;
+  top: calc(var(--core-nav-height) + 18px);
+  max-height: calc(100vh - var(--core-nav-height) - 36px);
+  max-height: calc(100dvh - var(--core-nav-height) - 36px);
+  overflow: auto;
+  grid-column: auto;
 }
 
 .rules-edit-panel {
-  grid-row: span 2;
+  min-width: 0;
 }
 
 .rules-panel-heading {
@@ -2760,7 +2855,8 @@ button {
 }
 
 .rules-field input,
-.rules-field textarea {
+.rules-field textarea,
+.rules-field select {
   width: 100%;
   min-height: 44px;
   padding: 11px 12px;
@@ -2779,6 +2875,15 @@ button {
 
 .rules-field textarea {
   line-height: 1.45;
+}
+
+.rules-field select {
+  appearance: none;
+  background:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%) right 15px center / 6px 6px no-repeat,
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%) right 10px center / 6px 6px no-repeat,
+    #0b1017;
+  cursor: pointer;
 }
 
 .rules-field textarea[data-message-raw] {
@@ -3026,6 +3131,18 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.components-toolbar {
+  align-items: end;
+}
+
+.component-add-field {
+  flex: 1 1 220px;
+}
+
+.component-add-field span {
+  font-size: 0.68rem;
 }
 
 .message-mode-switch button,
@@ -5187,12 +5304,54 @@ body.is-template-modal-open {
 }
 
 .site-footer {
-  justify-content: space-between;
-  gap: 16px;
-  padding: 26px clamp(18px, 5vw, 80px);
+  display: block;
+  padding: 34px clamp(18px, 5vw, 80px) 24px;
   border-top: 1px solid var(--line-soft);
   color: var(--muted-2);
   background: #080a0e;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(170px, 0.7fr) minmax(210px, 0.75fr) minmax(260px, 1.05fr);
+  gap: 28px;
+  align-items: start;
+  width: min(1320px, 100%);
+  margin: 0 auto;
+}
+
+.footer-brand-block,
+.footer-column {
+  display: grid;
+  gap: 10px;
+}
+
+.footer-brand-block strong {
+  color: var(--text);
+  font-size: 1.15rem;
+  font-weight: 950;
+}
+
+.footer-brand-block p,
+.footer-disclaimer p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.footer-column h2 {
+  margin: 0 0 2px;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px 16px;
 }
 
 .site-footer span:first-child {
@@ -5201,12 +5360,22 @@ body.is-template-modal-open {
 }
 
 .footer-link {
-  color: var(--cyan);
+  width: fit-content;
+  color: #cbd5e1;
   font-weight: 800;
 }
 
 .footer-link:hover {
-  color: var(--text);
+  color: var(--cyan);
+}
+
+.footer-bottom {
+  width: min(1320px, 100%);
+  margin: 26px auto 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--line-soft);
+  color: var(--muted-2);
+  font-size: 0.9rem;
 }
 
 @keyframes riseIn {
@@ -5424,6 +5593,11 @@ body.is-template-modal-open {
     grid-row: auto;
   }
 
+  .rules-preview-panel {
+    position: static;
+    max-height: none;
+  }
+
   .command-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     border-right: 0;
@@ -5444,6 +5618,10 @@ body.is-template-modal-open {
 
   .template-preview-panel {
     position: fixed;
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .template-preview-dialog {
@@ -5832,8 +6010,16 @@ body.is-template-modal-open {
   }
 
   .site-footer {
-    flex-direction: column;
-    align-items: flex-start;
+    padding-inline: 18px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .footer-links {
+    justify-content: flex-start;
   }
 }
 
@@ -5851,4 +6037,40 @@ body.is-template-modal-open {
     opacity: 1;
     transform: none;
   }
+}
+
+/* Internal pages keep only the main title in the top block. The home page uses .hero and is intentionally unaffected. */
+.tool-page .tool-hero,
+.templates-page .templates-page-hero,
+.command-help-page .command-help-hero,
+.legal-hero {
+  justify-content: center;
+  text-align: center;
+}
+
+.tool-page .tool-hero .section-heading,
+.templates-page .templates-page-hero .section-heading,
+.command-help-page .command-help-hero .section-heading {
+  width: min(920px, 100%);
+  max-width: 920px;
+  margin-inline: auto;
+}
+
+.legal-hero h1 {
+  margin-inline: auto;
+}
+
+.tool-page .tool-hero .eyebrow,
+.tool-page .tool-hero p:not(.eyebrow),
+.templates-page .templates-page-hero .eyebrow,
+.templates-page .templates-page-hero p:not(.eyebrow),
+.command-help-page .command-help-hero .eyebrow,
+.command-help-page .command-help-hero p:not(.eyebrow),
+.legal-hero .eyebrow,
+.legal-hero p:not(.eyebrow),
+.tool-page .tool-hero > .button,
+.templates-page .templates-page-hero > .button,
+.command-help-page .command-help-hero > .button,
+.legal-hero .legal-actions {
+  display: none;
 }
