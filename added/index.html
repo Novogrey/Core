@@ -330,6 +330,10 @@
                 <strong data-result>Authorization completed</strong>
               </div>
               <div class="detail">
+                <span data-i18n="guildLabel">Server ID</span>
+                <strong data-guild-id>Not provided</strong>
+              </div>
+              <div class="detail">
                 <span data-i18n="permissionsLabel">Permissions</span>
                 <strong data-permissions>Use Discord server settings</strong>
               </div>
@@ -363,8 +367,10 @@
           step4: 'Use templates only after checking the preview and confirmation screen.',
           detailsTitle: 'Session details',
           resultLabel: 'Result',
+          guildLabel: 'Server ID',
           permissionsLabel: 'Permissions',
           resultSuccess: 'Authorization completed',
+          guildFallback: 'Not provided',
           permissionsFallback: 'Use Discord server settings',
           openDiscord: 'Open Discord',
           supportServer: 'Support server',
@@ -386,8 +392,10 @@
           step4: 'Применяйте шаблоны только после проверки предпросмотра и экрана подтверждения.',
           detailsTitle: 'Детали авторизации',
           resultLabel: 'Результат',
+          guildLabel: 'ID сервера',
           permissionsLabel: 'Права',
           resultSuccess: 'Авторизация завершена',
+          guildFallback: 'Не передан Discord',
           permissionsFallback: 'Проверьте настройки сервера Discord',
           openDiscord: 'Открыть Discord',
           supportServer: 'Сервер поддержки',
@@ -409,8 +417,10 @@
           step4: 'Застосовуйте шаблони тільки після перевірки попереднього перегляду та екрана підтвердження.',
           detailsTitle: 'Деталі авторизації',
           resultLabel: 'Результат',
+          guildLabel: 'ID сервера',
           permissionsLabel: 'Права',
           resultSuccess: 'Авторизацію завершено',
+          guildFallback: 'Не передано Discord',
           permissionsFallback: 'Перевірте налаштування сервера Discord',
           openDiscord: 'Відкрити Discord',
           supportServer: 'Сервер підтримки',
@@ -432,8 +442,10 @@
           step4: 'Nutzen Sie Vorlagen erst nach Pruefung der Vorschau und des Bestaetigungsfensters.',
           detailsTitle: 'Sitzungsdetails',
           resultLabel: 'Ergebnis',
+          guildLabel: 'Server-ID',
           permissionsLabel: 'Rechte',
           resultSuccess: 'Autorisierung abgeschlossen',
+          guildFallback: 'Nicht von Discord uebergeben',
           permissionsFallback: 'Discord-Servereinstellungen pruefen',
           openDiscord: 'Discord oeffnen',
           supportServer: 'Support-Server',
@@ -447,6 +459,7 @@
       const params = new URLSearchParams(window.location.search);
       const error = params.get('error');
       const errorDescription = params.get('error_description');
+      const guildId = params.get('guild_id');
       const permissions = params.get('permissions');
 
       function getInitialLanguage() {
@@ -477,6 +490,7 @@
         });
 
         setText('[data-result]', error ? error : dictionary.resultSuccess);
+        setText('[data-guild-id]', guildId || dictionary.guildFallback);
         setText('[data-permissions]', permissions || dictionary.permissionsFallback);
 
         if (error) {
