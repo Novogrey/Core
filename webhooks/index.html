@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Core - webhook builder</title>
+    <meta name="description" content="Create and send Discord webhook messages with Core-style preview, embeds and link buttons.">
+    <meta name="theme-color" content="#0c0e12">
+    <meta property="og:title" content="Core - webhook builder">
+    <meta property="og:description" content="A Core-styled webhook message builder for Discord.">
+    <meta property="og:image" content="../assets/hero-core.webp">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../assets/styles.css">
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="navbar-container">
+        <a class="logo-section" href="../" aria-label="Core">
+          <img src="../assets/core-mark.png" alt="" class="navbar-avatar" width="40" height="40">
+          <span class="logo">Core</span>
+        </a>
+
+        <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open navigation" aria-controls="core-nav-menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <ul class="nav-menu" id="core-nav-menu" data-nav-menu>
+          <li class="menu-back-item">
+            <button class="menu-back-btn" type="button" data-menu-close>
+              <span aria-hidden="true">←</span>
+              <span data-i18n="nav.back">Назад</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../" data-i18n="nav.home">Главная</a>
+          </li>
+          <li class="nav-item has-dropdown">
+            <button class="dropdown-toggle" type="button" aria-expanded="false">
+              <span data-i18n="nav.templates">Шаблоны</span>
+              <span class="dropdown-arrow" aria-hidden="true">▾</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-link" href="../templates/" data-i18n="nav.catalog">Каталог</a></li>
+              <li><a class="dropdown-link" href="../templates/" data-i18n="templates.groupServers">Серверные шаблоны</a></li>
+              <li><a class="dropdown-link" href="../templates/" data-i18n="templates.groupRoles">Ролевые шаблоны</a></li>
+              <li><a class="dropdown-link" href="../templates/" data-i18n="templates.groupRules">Шаблоны правил</a></li>
+            </ul>
+          </li>
+          <li class="nav-item has-dropdown">
+            <button class="dropdown-toggle is-active" type="button" aria-expanded="false">
+              <span data-i18n="nav.tools">Инструменты</span>
+              <span class="dropdown-arrow" aria-hidden="true">▾</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-link" href="../symbols/" data-i18n="nav.symbols">Символы</a></li>
+              <li><a class="dropdown-link" href="../emoji/" data-i18n="nav.emoji">Emoji</a></li>
+              <li><a class="dropdown-link is-active" href="./" data-i18n="nav.webhooks">Вебхуки</a></li>
+            </ul>
+          </li>
+          <li class="nav-item has-dropdown">
+            <button class="dropdown-toggle" type="button" aria-expanded="false">
+              <span data-i18n="nav.commands">Команды</span>
+              <span class="dropdown-arrow" aria-hidden="true">▾</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-link" href="../commands/" data-i18n="nav.help">Справка</a></li>
+              <li><a class="dropdown-link" href="../#commands" data-i18n="nav.commands">Команды</a></li>
+              <li><a class="dropdown-link" href="../#benefits" data-i18n="nav.benefits">Возможности</a></li>
+              <li><a class="dropdown-link" href="../#preview" data-i18n="nav.preview">Превью</a></li>
+              <li><a class="dropdown-link" href="../#safety" data-i18n="nav.safety">Откат</a></li>
+            </ul>
+          </li>
+          <li class="nav-item has-dropdown">
+            <button class="dropdown-toggle" type="button" aria-expanded="false">
+              <span data-i18n="nav.links">Ссылки</span>
+              <span class="dropdown-arrow" aria-hidden="true">▾</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+              <li><a class="dropdown-link" data-i18n="nav.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Сервер</a></li>
+              <li><a class="dropdown-link dropdown-link-accent" data-i18n="nav.add" href="https://discord.com/oauth2/authorize?client_id=1499785495264104688&permissions=8&integration_type=0&scope=bot+applications.commands">Добавить</a></li>
+            </ul>
+          </li>
+          <li class="nav-item has-dropdown language-selector">
+            <button class="dropdown-toggle lang-toggle" type="button" aria-expanded="false">
+              <span data-active-language>RU</span>
+              <span class="dropdown-arrow" aria-hidden="true">▾</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right language-menu" role="group" aria-label="Language">
+              <li><button type="button" class="language-button is-active" data-lang="ru" aria-pressed="true">RU</button></li>
+              <li><button type="button" class="language-button" data-lang="en" aria-pressed="false">EN</button></li>
+              <li><button type="button" class="language-button" data-lang="ua" aria-pressed="false">UA</button></li>
+              <li><button type="button" class="language-button" data-lang="de" aria-pressed="false">DE</button></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    <main id="top" class="tool-page webhook-page">
+      <section class="section tool-hero webhook-hero">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow" data-webhook-i18n="eyebrow">Core tools</p>
+          <h1 data-webhook-i18n="title">Создание вебхуков</h1>
+          <p data-webhook-i18n="copy">Собери сообщение, проверь его в Discord-превью и отправь через свой webhook URL. Поддерживаются текст, embeds и только кнопки-ссылки.</p>
+        </div>
+        <a class="button secondary" href="../commands/" data-webhook-i18n="openHelp">Справка по командам</a>
+      </section>
+
+      <section class="section webhook-section">
+        <div class="webhook-workspace" data-reveal>
+          <form class="webhook-editor" data-webhook-form>
+            <div class="editor-block editor-block-main">
+              <div class="editor-block-heading">
+                <span data-webhook-i18n="connectionLabel">Подключение</span>
+                <strong data-webhook-i18n="connectionTitle">Webhook</strong>
+              </div>
+
+              <label class="field">
+                <span data-webhook-i18n="webhookUrlLabel">Webhook URL</span>
+                <input class="core-input" type="url" data-webhook-url autocomplete="off" placeholder="https://discord.com/api/webhooks/...">
+              </label>
+
+              <div class="field-grid">
+                <label class="field">
+                  <span data-webhook-i18n="usernameLabel">Имя отправителя</span>
+                  <input class="core-input" type="text" data-webhook-username maxlength="80" value="Core">
+                </label>
+                <label class="field">
+                  <span data-webhook-i18n="avatarLabel">Аватар URL</span>
+                  <input class="core-input" type="url" data-webhook-avatar autocomplete="off" placeholder="https://.../avatar.png">
+                </label>
+              </div>
+
+              <label class="field">
+                <span data-webhook-i18n="contentLabel">Текст сообщения</span>
+                <textarea class="core-textarea" data-webhook-content maxlength="2000" rows="7"># Привет!
+Это сообщение отправлено через Core webhook builder.</textarea>
+                <small><b data-content-count>0</b>/2000</small>
+              </label>
+            </div>
+
+            <div class="editor-block">
+              <div class="editor-block-heading">
+                <span data-webhook-i18n="embedsLabel">Embeds</span>
+                <strong data-webhook-i18n="embedsTitle">Карточки сообщения</strong>
+              </div>
+              <div class="embed-list" data-embed-list></div>
+              <button class="editor-action" type="button" data-add-embed data-webhook-i18n="addEmbed">Добавить embed</button>
+            </div>
+
+            <div class="editor-block">
+              <div class="editor-block-heading">
+                <span data-webhook-i18n="linksLabel">Link buttons</span>
+                <strong data-webhook-i18n="linksTitle">Кнопки-ссылки</strong>
+              </div>
+              <div class="link-button-list" data-link-button-list></div>
+              <button class="editor-action" type="button" data-add-link-button data-webhook-i18n="addLinkButton">Добавить ссылку</button>
+            </div>
+
+            <div class="webhook-actions">
+              <button class="button primary" type="submit" data-webhook-i18n="send">Отправить вебхук</button>
+              <button class="button secondary" type="button" data-copy-payload data-webhook-i18n="copyJson">Копировать JSON</button>
+              <button class="button secondary" type="button" data-reset-webhook data-webhook-i18n="reset">Сбросить</button>
+            </div>
+            <p class="webhook-status" data-webhook-status aria-live="polite"></p>
+          </form>
+
+          <aside class="webhook-preview-panel">
+            <div class="discord-webhook-preview">
+              <div class="discord-preview-top">
+                <span>#</span>
+                <strong data-webhook-i18n="previewChannel">webhook-preview</strong>
+              </div>
+              <div class="discord-message-preview">
+                <div class="discord-message-avatar" data-preview-avatar>C</div>
+                <div class="discord-message-main">
+                  <div class="discord-message-head">
+                    <strong data-preview-username>Core</strong>
+                    <span>BOT</span>
+                    <time>Today</time>
+                  </div>
+                  <div class="discord-message-content" data-preview-content></div>
+                  <div class="discord-embed-list" data-preview-embeds></div>
+                  <div class="discord-link-buttons" data-preview-buttons></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="payload-card">
+              <div class="editor-block-heading">
+                <span data-webhook-i18n="payloadLabel">Payload</span>
+                <strong data-webhook-i18n="payloadTitle">JSON</strong>
+              </div>
+              <pre data-payload-preview>{}</pre>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Core</span>
+      <span data-i18n="footer.text">Создан для аккуратных Discord-серверов.</span>
+      <a class="footer-link" data-i18n="footer.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Официальный сервер</a>
+    </footer>
+
+    <div class="copy-toast webhook-toast" data-webhook-toast aria-live="polite"></div>
+
+    <script src="../assets/site-config.js"></script>
+    <script src="../assets/app.js"></script>
+    <script src="../assets/webhooks.js"></script>
+  </body>
+</html>

@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Core - symbols</title>
-    <meta name="description" content="Copy useful symbols for Discord server names, channels, roles and messages.">
+    <title>Core - command help</title>
+    <meta name="description" content="Detailed public Core command help with Discord-style command simulations.">
     <meta name="theme-color" content="#0c0e12">
-    <meta property="og:title" content="Core - symbols">
-    <meta property="og:description" content="A fast symbol picker for Discord servers.">
+    <meta property="og:title" content="Core - command help">
+    <meta property="og:description" content="Explore every public Core command with animated Discord-like previews.">
     <meta property="og:image" content="../assets/hero-core.webp">
     <meta property="og:type" content="website">
     <link rel="icon" href="../assets/favicon.png">
@@ -50,23 +50,23 @@
             </ul>
           </li>
           <li class="nav-item has-dropdown">
-            <button class="dropdown-toggle is-active" type="button" aria-expanded="false">
+            <button class="dropdown-toggle" type="button" aria-expanded="false">
               <span data-i18n="nav.tools">Инструменты</span>
               <span class="dropdown-arrow" aria-hidden="true">▾</span>
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-link is-active" href="./" data-i18n="nav.symbols">Символы</a></li>
+              <li><a class="dropdown-link" href="../symbols/" data-i18n="nav.symbols">Символы</a></li>
               <li><a class="dropdown-link" href="../emoji/" data-i18n="nav.emoji">Emoji</a></li>
               <li><a class="dropdown-link" href="../webhooks/" data-i18n="nav.webhooks">Вебхуки</a></li>
             </ul>
           </li>
           <li class="nav-item has-dropdown">
-            <button class="dropdown-toggle" type="button" aria-expanded="false">
+            <button class="dropdown-toggle is-active" type="button" aria-expanded="false">
               <span data-i18n="nav.commands">Команды</span>
               <span class="dropdown-arrow" aria-hidden="true">▾</span>
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-link" href="../commands/" data-i18n="nav.help">Справка</a></li>
+              <li><a class="dropdown-link is-active" href="./" data-i18n="nav.help">Справка</a></li>
               <li><a class="dropdown-link" href="../#commands" data-i18n="nav.commands">Команды</a></li>
               <li><a class="dropdown-link" href="../#benefits" data-i18n="nav.benefits">Возможности</a></li>
               <li><a class="dropdown-link" href="../#preview" data-i18n="nav.preview">Превью</a></li>
@@ -99,48 +99,105 @@
       </div>
     </header>
 
-    <main id="top" class="tool-page">
-      <section class="section tool-hero">
+    <main id="top" class="command-help-page">
+      <section class="section tool-hero command-help-hero">
         <div class="section-heading" data-reveal>
-          <p class="eyebrow" data-tool-eyebrow>Copy tools</p>
-          <h1 data-tool-title>Символы для Discord</h1>
-          <p data-tool-copy>Найди стрелки, рамки, звёзды, валюты и другие символы. Нажми на любой знак, чтобы скопировать его.</p>
+          <p class="eyebrow" data-help-i18n="eyebrow">Core guide</p>
+          <h1 data-help-i18n="title">Справка по публичным командам</h1>
+          <p data-help-i18n="copy">Открой любую функцию и посмотри, как команда выглядит в Discord: ввод, ответ Core, результат и ограничения доступа.</p>
         </div>
-        <a class="button secondary" href="../emoji/" data-tool-switch>Emoji</a>
+        <a class="button secondary" href="../webhooks/" data-help-i18n="openWebhooks">Создать вебхук</a>
       </section>
 
-      <section class="section copy-tool-section">
-        <div class="copy-tool-panel" data-copy-tool="symbols" data-reveal>
-          <div class="copy-tool-toolbar">
-            <label>
-              <span data-tool-search-label>Поиск</span>
-              <input type="search" data-tool-search autocomplete="off" placeholder="arrow, star, heart">
-            </label>
-            <strong data-tool-count>0</strong>
-          </div>
-
-          <div class="copy-tool-tabs" data-tool-tabs></div>
-
-          <div class="copy-tool-recent" data-tool-recent-wrap hidden>
-            <div class="copy-tool-heading">
-              <h2 data-tool-recent-title>Недавние</h2>
+      <section class="section command-help-section">
+        <div class="command-help-shell" data-reveal>
+          <aside class="command-help-sidebar">
+            <div class="command-help-search">
+              <label>
+                <span data-help-i18n="searchLabel">Поиск</span>
+                <input class="core-input" type="search" data-help-search autocomplete="off" placeholder="/server-import">
+              </label>
             </div>
-            <div class="copy-token-grid" data-tool-recent></div>
-          </div>
+            <div class="command-help-categories" data-help-categories></div>
+            <div class="command-help-list" data-help-list></div>
+          </aside>
 
-          <div class="copy-tool-results" data-tool-grid></div>
-          <div class="copy-toast" data-copy-toast aria-live="polite"></div>
+          <article class="command-help-detail">
+            <div class="discord-command-window">
+              <div class="discord-command-titlebar">
+                <span></span>
+                <strong># core-help</strong>
+                <small data-help-i18n="livePreview">Live preview</small>
+              </div>
+              <div class="discord-command-chat">
+                <div class="discord-help-row user-row">
+                  <div class="help-avatar user-avatar">U</div>
+                  <div>
+                    <div class="help-author" data-help-i18n="ownerLabel">Владелец</div>
+                    <div class="help-input-line">
+                      <span>/</span>
+                      <code data-help-typed></code>
+                      <i></i>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="discord-help-row bot-row" data-help-bot-row>
+                  <div class="help-avatar bot-avatar">C</div>
+                  <div class="help-bot-message">
+                    <div class="help-author">Core <span>BOT</span></div>
+                    <div class="help-components-card">
+                      <div class="help-card-header">
+                        <strong data-help-preview-title></strong>
+                        <small data-help-preview-kind></small>
+                      </div>
+                      <p data-help-preview-copy></p>
+                      <div class="help-artifact" data-help-artifact></div>
+                      <div class="help-progress" data-help-progress></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="command-doc-card">
+              <div class="command-doc-heading">
+                <p class="eyebrow" data-help-category></p>
+                <h2 data-help-title></h2>
+                <p data-help-summary></p>
+              </div>
+              <div class="command-doc-grid">
+                <section>
+                  <span data-help-i18n="usageTitle">Использование</span>
+                  <div data-help-usage></div>
+                </section>
+                <section>
+                  <span data-help-i18n="accessTitle">Доступ</span>
+                  <p data-help-access></p>
+                </section>
+                <section>
+                  <span data-help-i18n="paramsTitle">Параметры</span>
+                  <div data-help-params></div>
+                </section>
+                <section>
+                  <span data-help-i18n="resultTitle">Результат</span>
+                  <p data-help-result></p>
+                </section>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
       <span>Core</span>
-      <span data-i18n="footer.text">Built for cleaner Discord servers.</span>
-      <a class="footer-link" data-i18n="footer.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Official server</a>
+      <span data-i18n="footer.text">Создан для аккуратных Discord-серверов.</span>
+      <a class="footer-link" data-i18n="footer.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Официальный сервер</a>
     </footer>
 
     <script src="../assets/site-config.js"></script>
     <script src="../assets/app.js"></script>
+    <script src="../assets/commands-help.js"></script>
   </body>
 </html>

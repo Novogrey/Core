@@ -14,33 +14,88 @@
     <link rel="stylesheet" href="../assets/styles.css">
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="../" aria-label="Core">
-        <img src="../assets/core-mark.png" alt="" width="36" height="36">
-        <span>Core</span>
-      </a>
+    <header class="navbar">
+      <div class="navbar-container">
+        <a class="logo-section" href="../" aria-label="Core">
+          <img src="../assets/core-mark.png" alt="" class="navbar-avatar" width="40" height="40">
+          <span class="logo">Core</span>
+        </a>
 
-      <div class="header-navs">
-        <div class="nav-group">
-          <span data-i18n="nav.siteLabel">Страницы</span>
-          <nav class="site-tabs" aria-label="Site pages">
-            <a href="../" data-i18n="nav.home">Главная</a>
-            <a href="../templates/" data-i18n="nav.templates">Шаблоны</a>
-            <a href="../symbols/" data-i18n="nav.symbols">Символы</a>
-            <a class="is-active" href="./" data-i18n="nav.emoji">Emoji</a>
-          </nav>
-        </div>
-      </div>
+        <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open navigation" aria-controls="core-nav-menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
 
-      <div class="header-actions">
-        <div class="language-switcher" role="group" aria-label="Language">
-          <button type="button" class="language-button is-active" data-lang="ru" aria-pressed="true">RU</button>
-          <button type="button" class="language-button" data-lang="en" aria-pressed="false">EN</button>
-          <button type="button" class="language-button" data-lang="ua" aria-pressed="false">UA</button>
-          <button type="button" class="language-button" data-lang="de" aria-pressed="false">DE</button>
-        </div>
-        <a class="header-server" data-i18n="nav.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Сервер</a>
-        <a class="header-invite" data-i18n="nav.add" href="https://discord.com/oauth2/authorize?client_id=1499785495264104688&permissions=8&integration_type=0&scope=bot+applications.commands">Добавить</a>
+        <ul class="nav-menu" id="core-nav-menu" data-nav-menu>
+          <li class="menu-back-item">
+            <button class="menu-back-btn" type="button" data-menu-close>
+              <span aria-hidden="true">←</span>
+              <span data-i18n="nav.back">Назад</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../" data-i18n="nav.home">Главная</a>
+          </li>
+          <li class="nav-item has-dropdown">
+            <button class="dropdown-toggle" type="button" aria-expanded="false">
+              <span data-i18n="nav.templates">Шаблоны</span>
+              <span class="dropdown-arrow" aria-hidden="true">▾</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-link" href="../templates/" data-i18n="nav.catalog">Каталог</a></li>
+              <li><a class="dropdown-link" href="../templates/" data-i18n="templates.groupServers">Серверные шаблоны</a></li>
+              <li><a class="dropdown-link" href="../templates/" data-i18n="templates.groupRoles">Ролевые шаблоны</a></li>
+              <li><a class="dropdown-link" href="../templates/" data-i18n="templates.groupRules">Шаблоны правил</a></li>
+            </ul>
+          </li>
+          <li class="nav-item has-dropdown">
+            <button class="dropdown-toggle is-active" type="button" aria-expanded="false">
+              <span data-i18n="nav.tools">Инструменты</span>
+              <span class="dropdown-arrow" aria-hidden="true">▾</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-link" href="../symbols/" data-i18n="nav.symbols">Символы</a></li>
+              <li><a class="dropdown-link is-active" href="./" data-i18n="nav.emoji">Emoji</a></li>
+              <li><a class="dropdown-link" href="../webhooks/" data-i18n="nav.webhooks">Вебхуки</a></li>
+            </ul>
+          </li>
+          <li class="nav-item has-dropdown">
+            <button class="dropdown-toggle" type="button" aria-expanded="false">
+              <span data-i18n="nav.commands">Команды</span>
+              <span class="dropdown-arrow" aria-hidden="true">▾</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-link" href="../commands/" data-i18n="nav.help">Справка</a></li>
+              <li><a class="dropdown-link" href="../#commands" data-i18n="nav.commands">Команды</a></li>
+              <li><a class="dropdown-link" href="../#benefits" data-i18n="nav.benefits">Возможности</a></li>
+              <li><a class="dropdown-link" href="../#preview" data-i18n="nav.preview">Превью</a></li>
+              <li><a class="dropdown-link" href="../#safety" data-i18n="nav.safety">Откат</a></li>
+            </ul>
+          </li>
+          <li class="nav-item has-dropdown">
+            <button class="dropdown-toggle" type="button" aria-expanded="false">
+              <span data-i18n="nav.links">Ссылки</span>
+              <span class="dropdown-arrow" aria-hidden="true">▾</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+              <li><a class="dropdown-link" data-i18n="nav.server" data-official-server-url href="https://discord.gg/FjfZkHEuyv">Сервер</a></li>
+              <li><a class="dropdown-link dropdown-link-accent" data-i18n="nav.add" href="https://discord.com/oauth2/authorize?client_id=1499785495264104688&permissions=8&integration_type=0&scope=bot+applications.commands">Добавить</a></li>
+            </ul>
+          </li>
+          <li class="nav-item has-dropdown language-selector">
+            <button class="dropdown-toggle lang-toggle" type="button" aria-expanded="false">
+              <span data-active-language>RU</span>
+              <span class="dropdown-arrow" aria-hidden="true">▾</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right language-menu" role="group" aria-label="Language">
+              <li><button type="button" class="language-button is-active" data-lang="ru" aria-pressed="true">RU</button></li>
+              <li><button type="button" class="language-button" data-lang="en" aria-pressed="false">EN</button></li>
+              <li><button type="button" class="language-button" data-lang="ua" aria-pressed="false">UA</button></li>
+              <li><button type="button" class="language-button" data-lang="de" aria-pressed="false">DE</button></li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </header>
 

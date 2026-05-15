@@ -13,12 +13,18 @@ const translations = {
     },
     nav: {
       home: 'Главная',
+      back: 'Назад',
       siteLabel: 'Страницы',
       pageLabel: 'Разделы',
       commands: 'Команды',
       templates: 'Шаблоны',
+      tools: 'Инструменты',
+      links: 'Ссылки',
       symbols: 'Символы',
       emoji: 'Emoji',
+      webhooks: 'Вебхуки',
+      help: 'Справка',
+      benefits: 'Возможности',
       preview: 'Превью',
       safety: 'Откат',
       catalog: 'Каталог',
@@ -65,7 +71,7 @@ const translations = {
           result: 'Владелец понимает, что именно появится на сервере, до подтверждения изменений.'
         },
         templateSend: {
-          command: '/template send name:<template>',
+          command: '/server-import template:<template>',
           label: 'Применить шаблон',
           title: 'Применяет публичную заготовку',
           description: 'Core показывает подтверждение, создаёт временный снимок и переносит структуру шаблона на сервер.',
@@ -89,7 +95,7 @@ const translations = {
           result: 'Получается файл, который можно использовать для импорта на другом сервере с Core.'
         },
         serverImport: {
-          command: '/server-import file:<json>',
+          command: '/server-import file:<json> | template:<template>',
           label: 'Импорт JSON',
           title: 'Воссоздаёт сервер из файла',
           description: 'Core принимает JSON, проверяет данные, сохраняет снимок для отката и создаёт структуру на сервере.',
@@ -349,12 +355,18 @@ const translations = {
     },
     nav: {
       home: 'Home',
+      back: 'Back',
       siteLabel: 'Pages',
       pageLabel: 'Sections',
       commands: 'Commands',
       templates: 'Templates',
+      tools: 'Tools',
+      links: 'Links',
       symbols: 'Symbols',
       emoji: 'Emoji',
+      webhooks: 'Webhooks',
+      help: 'Help',
+      benefits: 'Features',
       preview: 'Preview',
       safety: 'Rollback',
       catalog: 'Catalog',
@@ -401,7 +413,7 @@ const translations = {
           result: 'The owner understands exactly what will appear before confirming any change.'
         },
         templateSend: {
-          command: '/template send name:<template>',
+          command: '/server-import template:<template>',
           label: 'Apply template',
           title: 'Applies a public preset',
           description: 'Core asks for confirmation, saves a temporary rollback snapshot and applies the template structure.',
@@ -425,7 +437,7 @@ const translations = {
           result: 'You receive a file that can be imported on another server with Core.'
         },
         serverImport: {
-          command: '/server-import file:<json>',
+          command: '/server-import file:<json> | template:<template>',
           label: 'JSON import',
           title: 'Recreates a server from a file',
           description: 'Core reads the JSON, checks the data, saves a rollback snapshot and creates the structure on the server.',
@@ -434,7 +446,7 @@ const translations = {
             'Saves the current server snapshot',
             'Creates missing roles and channels'
           ],
-          result: 'The file structure appears on the server after validation and owner confirmation.'
+          result: 'The file or public template structure appears on the server after owner validation.'
         },
         serverRollback: {
           command: '/server-rollback',
@@ -685,12 +697,18 @@ const translations = {
     },
     nav: {
       home: 'Головна',
+      back: 'Назад',
       siteLabel: 'Сторінки',
       pageLabel: 'Розділи',
       commands: 'Команди',
       templates: 'Шаблони',
+      tools: 'Інструменти',
+      links: 'Посилання',
       symbols: 'Символи',
       emoji: 'Emoji',
+      webhooks: 'Вебхуки',
+      help: 'Довідка',
+      benefits: 'Можливості',
       preview: 'Превью',
       safety: 'Відкат',
       catalog: 'Каталог',
@@ -737,7 +755,7 @@ const translations = {
           result: 'Власник розуміє, що саме з’явиться на сервері, до підтвердження змін.'
         },
         templateSend: {
-          command: '/template send name:<template>',
+          command: '/server-import template:<template>',
           label: 'Застосувати шаблон',
           title: 'Застосовує публічну заготовку',
           description: 'Core показує підтвердження, створює тимчасовий знімок і переносить структуру шаблону на сервер.',
@@ -761,7 +779,7 @@ const translations = {
           result: 'Виходить файл, який можна використати для імпорту на іншому сервері з Core.'
         },
         serverImport: {
-          command: '/server-import file:<json>',
+          command: '/server-import file:<json> | template:<template>',
           label: 'Імпорт JSON',
           title: 'Відтворює сервер із файлу',
           description: 'Core приймає JSON, перевіряє дані, зберігає знімок для відкату та створює структуру на сервері.',
@@ -1021,12 +1039,18 @@ const translations = {
     },
     nav: {
       home: 'Start',
+      back: 'Zurück',
       siteLabel: 'Seiten',
       pageLabel: 'Bereiche',
       commands: 'Befehle',
       templates: 'Vorlagen',
+      tools: 'Tools',
+      links: 'Links',
       symbols: 'Symbole',
       emoji: 'Emoji',
+      webhooks: 'Webhooks',
+      help: 'Hilfe',
+      benefits: 'Funktionen',
       preview: 'Vorschau',
       safety: 'Rollback',
       catalog: 'Katalog',
@@ -1073,7 +1097,7 @@ const translations = {
           result: 'Der Besitzer sieht vor der Bestätigung genau, was auf dem Server erscheint.'
         },
         templateSend: {
-          command: '/template send name:<template>',
+          command: '/server-import template:<template>',
           label: 'Vorlage anwenden',
           title: 'Wendet eine öffentliche Vorlage an',
           description: 'Core fragt nach Bestätigung, speichert einen temporären Rollback-Schnappschuss und überträgt die Struktur.',
@@ -1097,7 +1121,7 @@ const translations = {
           result: 'Du erhältst eine Datei, die auf einem anderen Server mit Core importiert werden kann.'
         },
         serverImport: {
-          command: '/server-import file:<json>',
+          command: '/server-import file:<json> | template:<template>',
           label: 'JSON-Import',
           title: 'Stellt einen Server aus einer Datei nach',
           description: 'Core liest die JSON-Datei, prüft die Daten, speichert einen Rollback-Schnappschuss und erstellt die Struktur.',
@@ -2598,7 +2622,7 @@ function renderTemplateModalSummary(template, labels, index = 0) {
   const name = template.name || 'core-template';
   const displayName = getTemplateDisplayName(template);
   const description = template.description || labels.noDescription;
-  const command = template.command || `/template send name:${name}`;
+  const command = template.command || `/server-import template:${name}`;
   const templateUrl = safeHttpUrl(template.templateUrl || template.publishedUrl);
   const updatedAt = formatDateLabel(template.updatedAt || template.publishedAt || template.createdAt);
   const accent = makeTemplateAccent(displayName, index);
@@ -2662,7 +2686,7 @@ function renderDiscordPreviewWindow(template, labels) {
             <span>#</span>
             <strong>${escapeHtml(displayName)}</strong>
           </div>
-          <small>${escapeHtml(template.command || `/template send name:${template.name}`)}</small>
+          <small>${escapeHtml(template.command || `/server-import template:${template.name}`)}</small>
         </div>
         <div class="discord-preview-content">
           <div class="discord-preview-channel-list">
@@ -2721,6 +2745,9 @@ function renderRolesPreviewWindow(template, labels) {
 function renderRulesPreviewWindow(template, labels) {
   const displayName = getTemplateDisplayName(template);
   const messages = getRuleTemplateMessages(template);
+  const renderedMessages = window.CoreMessageEditor?.renderMessages
+    ? window.CoreMessageEditor.renderMessages(messages, { username: 'Core' })
+    : messages.map((message) => `<pre>${escapeHtml(JSON.stringify(message, null, 2))}</pre>`).join('');
   return `
     <div class="discord-preview-window template-rules-preview">
       <aside class="discord-preview-sidebar">
@@ -2737,28 +2764,7 @@ function renderRulesPreviewWindow(template, labels) {
           <small>${escapeHtml(template.command || `/rules-import template:${template.name}`)}</small>
         </div>
         <div class="rules-message-preview">
-          ${messages.map((message, index) => `
-            <article class="rules-message-preview-item">
-              <div class="rules-message-author">
-                <span>C</span>
-                <strong>Core</strong>
-                <small>${message.components?.length ? 'Components V2' : `message ${index + 1}`}</small>
-              </div>
-              <div class="rules-message-body">
-                ${message.content
-    ? escapeHtml(message.content).split(/\r?\n/).map((line) => `<p>${line || '&nbsp;'}</p>`).join('')
-    : ''}
-                ${(message.embeds || []).map((embed) => `
-                  <div class="rules-embed-preview">
-                    ${embed.title ? `<strong>${escapeHtml(embed.title)}</strong>` : ''}
-                    ${embed.description ? `<p>${escapeHtml(embed.description)}</p>` : ''}
-                    ${embed.fields?.length ? `<small>${embed.fields.length} fields</small>` : ''}
-                  </div>
-                `).join('')}
-                ${message.components?.length ? `<div class="rules-embed-preview"><strong>Components V2</strong><p>${escapeHtml(message.components.length)} blocks</p></div>` : ''}
-              </div>
-            </article>
-          `).join('')}
+          ${renderedMessages}
         </div>
       </div>
     </div>
@@ -2990,6 +2996,10 @@ function renderSimulation(panel, item, lang) {
 }
 
 function setLanguageButtons(lang) {
+  document.querySelectorAll('[data-active-language]').forEach((element) => {
+    element.textContent = String(lang || 'ru').toUpperCase();
+  });
+
   document.querySelectorAll('.language-button').forEach((button) => {
     const isActive = button.dataset.lang === lang;
     button.classList.toggle('is-active', isActive);
@@ -3108,6 +3118,9 @@ function applyLanguageNow(lang, animateCommand = false) {
   renderTemplateGallery();
   renderCopyTool();
   localStorage.setItem('core-site-language', currentLanguage);
+  window.dispatchEvent(new CustomEvent('core-language-change', {
+    detail: { language: currentLanguage }
+  }));
 }
 
 function applyLanguage(lang, options = {}) {
@@ -3158,6 +3171,71 @@ function setupReveal() {
   });
 }
 
+function closeOpenDropdowns(exceptItem = null) {
+  document.querySelectorAll('.nav-item.is-open').forEach((item) => {
+    if (item === exceptItem) return;
+    item.classList.remove('is-open');
+    item.querySelector(':scope > .dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+  });
+}
+
+function closeNavigationMenu() {
+  const menu = document.querySelector('[data-nav-menu]');
+  const toggle = document.querySelector('[data-menu-toggle]');
+  menu?.classList.remove('is-active');
+  toggle?.classList.remove('is-active');
+  toggle?.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('menu-open');
+  closeOpenDropdowns();
+}
+
+function initNavigation() {
+  const navbar = document.querySelector('.navbar');
+  const menu = document.querySelector('[data-nav-menu]');
+  const toggle = document.querySelector('[data-menu-toggle]');
+
+  const syncScrolledState = () => {
+    navbar?.classList.toggle('is-scrolled', window.scrollY > 24);
+  };
+
+  syncScrolledState();
+  window.addEventListener('scroll', syncScrolledState, { passive: true });
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = menu?.classList.toggle('is-active');
+    toggle.classList.toggle('is-active', Boolean(isOpen));
+    toggle.setAttribute('aria-expanded', String(Boolean(isOpen)));
+    document.body.classList.toggle('menu-open', Boolean(isOpen));
+  });
+
+  document.querySelector('[data-menu-close]')?.addEventListener('click', closeNavigationMenu);
+
+  document.querySelectorAll('.nav-item.has-dropdown > .dropdown-toggle').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      const item = button.closest('.nav-item');
+      if (!item) return;
+
+      const shouldOpen = !item.classList.contains('is-open');
+      closeOpenDropdowns(item);
+      item.classList.toggle('is-open', shouldOpen);
+      button.setAttribute('aria-expanded', String(shouldOpen));
+    });
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.navbar')) closeNavigationMenu();
+  });
+
+  document.querySelectorAll('.nav-link, .dropdown-link').forEach((link) => {
+    link.addEventListener('click', () => closeNavigationMenu());
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeNavigationMenu();
+  });
+}
+
 document.querySelectorAll('a[href*="discord.com/oauth2/authorize"]').forEach((link) => {
   link.href = INVITE_URL;
 });
@@ -3167,7 +3245,10 @@ document.querySelectorAll('[data-official-server-url]').forEach((link) => {
 });
 
 document.querySelectorAll('.language-button').forEach((button) => {
-  button.addEventListener('click', () => applyLanguage(button.dataset.lang, { animate: true }));
+  button.addEventListener('click', () => {
+    applyLanguage(button.dataset.lang, { animate: true });
+    closeNavigationMenu();
+  });
 });
 
 document.querySelectorAll('.command-button').forEach((button) => {
@@ -3199,7 +3280,7 @@ document.querySelector('[data-template-gallery]')?.addEventListener('click', (ev
 
   templateGalleryState.activeName = templateName;
   templateGalleryState.activeChannelKey = '';
-  templateGalleryState.activeTab = getTemplateType(getTemplateByName(templateName)) === 'rules' ? 'editor' : 'summary';
+  templateGalleryState.activeTab = 'summary';
   renderTemplateGallery();
 });
 
@@ -3254,6 +3335,7 @@ const defaultLanguage = savedLanguage
       : browserLanguage.startsWith('de') ? 'de'
         : 'en');
 
+initNavigation();
 setupCopyTool();
 applyLanguage(defaultLanguage, { animate: false, animateCommand: true });
 setupReveal();

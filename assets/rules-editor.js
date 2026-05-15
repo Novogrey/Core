@@ -191,6 +191,44 @@
       .filter(Boolean);
   }
 
+  function isContainerChildBlock(block) {
+    return Boolean(block && ['text', 'section', 'gallery', 'separator', 'button', 'file'].includes(block.kind));
+  }
+
+  function normalizeContainerChildren(block = {}) {
+    if (Array.isArray(block.children) && block.children.length) {
+      block.children = block.children.filter(isContainerChildBlock).slice(0, LIMITS.containerChildren);
+      return block.children;
+    }
+
+    const children = [];
+    const text = clampText(block.text, LIMITS.componentText);
+    if (text) {
+      if (normalizeUrl(block.thumbnail)) {
+        children.push({
+          kind: 'section',
+          content: text,
+          accessoryType: 'thumbnail',
+          accessoryUrl: normalizeUrl(block.thumbnail),
+          buttonLabel: '',
+          buttonUrl: ''
+        });
+      } else {
+        children.push({ kind: 'text', content: text });
+      }
+    }
+    if (block.media) children.push({ kind: 'gallery', media: block.media });
+    if (block.buttonUrl) children.push({
+      kind: 'button',
+      label: block.buttonLabel || 'Open',
+      url: block.buttonUrl,
+      disabled: Boolean(block.disabled)
+    });
+
+    block.children = children.length ? children.slice(0, LIMITS.containerChildren) : [{ kind: 'text', content: '# Title\nContainer text.' }];
+    return block.children;
+  }
+
   function blockFromComponent(component = {}) {
     const type = Number(component.type);
     if (type === 10) {
@@ -237,24 +275,14 @@
     }
     if (type === 17) {
       const children = component.components || [];
-      const text = children
-        .filter((child) => Number(child.type) === 10)
-        .map((child) => child.content || '')
-        .join('\n\n');
-      const gallery = children.find((child) => Number(child.type) === 12);
-      const button = children
-        .find((child) => Number(child.type) === 1)
-        ?.components?.find((item) => Number(item.type) === 2 && item.url);
-      const section = children.find((child) => Number(child.type) === 9);
-      const thumbnail = section?.accessory?.media?.url || '';
+      const nestedBlocks = children
+        .flatMap(blockFromComponent)
+        .filter(isContainerChildBlock)
+        .slice(0, LIMITS.containerChildren);
       return [{
         kind: 'container',
         accent: normalizeHexColor(component.accent_color, '#44b8de'),
-        text: clampText(text || section?.components?.map((child) => child.content || '').join('\n\n'), LIMITS.componentText),
-        thumbnail: normalizeUrl(thumbnail),
-        media: mediaItemsToText(gallery?.items || []),
-        buttonLabel: clampText(button?.label, LIMITS.buttonLabel),
-        buttonUrl: normalizeUrl(button?.url),
+        children: nestedBlocks.length ? nestedBlocks : [{ kind: 'text', content: '' }],
         spoiler: Boolean(component.spoiler)
       }];
     }
@@ -268,12 +296,16 @@
     const embeds = Array.isArray(message.embeds)
       ? message.embeds.map(normalizeIncomingEmbed).filter((embed) => buildEmbed(embed))
       : [];
+    const rawPayload = normalizeRawPayload(message);
+    const hasComponents = Array.isArray(message.components) && message.components.length;
+    const hasClassicBody = Boolean(message.content) || embeds.length > 0;
     return {
-      mode: blocks.length ? 'components' : 'classic',
+      mode: hasComponents ? (blocks.length && !hasClassicBody ? 'components' : 'raw') : 'classic',
       content: clampText(message.content, LIMITS.content),
       embeds,
       activeEmbed: 0,
-      blocks: blocks.length ? blocks : clone(defaultMessage().blocks)
+      blocks: blocks.length ? blocks : clone(defaultMessage().blocks),
+      raw: JSON.stringify(rawPayload, null, 2)
     };
   }
 
@@ -353,23 +385,10 @@
       return accessory ? { type: 9, components: [{ type: 10, content }], accessory } : null;
     }
     if (block.kind === 'container') {
-      const children = [];
-      const text = clampText(block.text, LIMITS.componentText);
-      if (text) {
-        if (normalizeUrl(block.thumbnail)) {
-          children.push({
-            type: 9,
-            components: [{ type: 10, content: text }],
-            accessory: { type: 11, media: { url: normalizeUrl(block.thumbnail) } }
-          });
-        } else {
-          children.push({ type: 10, content: text });
-        }
-      }
-      const gallery = buildComponent({ kind: 'gallery', media: block.media });
-      if (gallery) children.push(gallery);
-      const button = buildButton(block);
-      if (button) children.push({ type: 1, components: [button] });
+      const children = normalizeContainerChildren(block)
+        .map(buildComponent)
+        .filter((component) => component && Number(component.type) !== 17)
+        .slice(0, LIMITS.containerChildren);
       if (!children.length) return null;
       return {
         type: 17,
@@ -386,6 +405,10 @@
   }
 
   function buildRuleMessage(message) {
+    if (message.mode === 'raw') {
+      return parseRawPayload(message.raw);
+    }
+
     if (message.mode === 'components') {
       return {
         flags: V2_FLAG,
@@ -398,6 +421,40 @@
       content: clampText(message.content, LIMITS.content),
       embeds
     };
+  }
+
+  function normalizeRawPayload(message = {}) {
+    const payload = {};
+    const flags = Number(message.flags || 0);
+    const content = clampText(message.content, LIMITS.content);
+    if (content) payload.content = content;
+    if (Array.isArray(message.embeds) && message.embeds.length) {
+      payload.embeds = message.embeds.slice(0, LIMITS.embeds).map((embed) => clone(embed));
+    }
+    if (Array.isArray(message.components) && message.components.length) {
+      payload.components = clone(message.components).slice(0, LIMITS.components);
+    }
+    if (flags & V2_FLAG) payload.flags = V2_FLAG;
+    return payload;
+  }
+
+  function parseRawPayload(raw) {
+    const payload = JSON.parse(String(raw || '{}'));
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+      throw new Error('Raw JSON must be a Discord message object.');
+    }
+
+    const normalized = {};
+    if (payload.content) normalized.content = clampText(payload.content, LIMITS.content);
+    if (Array.isArray(payload.embeds)) normalized.embeds = payload.embeds.slice(0, LIMITS.embeds);
+    if (Array.isArray(payload.components)) normalized.components = payload.components.slice(0, LIMITS.components);
+    if (Number(payload.flags || 0) & V2_FLAG) normalized.flags = V2_FLAG;
+
+    if (!normalized.content && !normalized.embeds?.length && !normalized.components?.length) {
+      throw new Error('Raw JSON must include content, embeds, or components.');
+    }
+
+    return normalized;
   }
 
   function buildWebhookPayload(state, message) {
@@ -464,6 +521,7 @@
           <div class="message-mode-switch" role="group" aria-label="Message type">
             <button type="button" data-message-mode="classic">Content + embeds</button>
             <button type="button" data-message-mode="components">Components V2</button>
+            <button type="button" data-message-mode="raw">Raw JSON</button>
           </div>
           <div data-message-editor-body></div>
         </div>
@@ -599,8 +657,19 @@
     `;
   }
 
-  function renderComponentBlock(block, index) {
-    const controls = `
+  function renderComponentBlock(block, index, parentIndex = null) {
+    const isNested = parentIndex !== null && parentIndex !== undefined;
+    const fieldAttrs = isNested
+      ? `data-container-index="${parentIndex}" data-child-index="${index}"`
+      : `data-component-index="${index}"`;
+    const controls = isNested ? `
+      <div class="component-block-actions">
+        <button type="button" data-move-container-component data-container-index="${parentIndex}" data-child-index="${index}" data-direction="-1" ${index === 0 ? 'disabled' : ''}>↑</button>
+        <button type="button" data-move-container-component data-container-index="${parentIndex}" data-child-index="${index}" data-direction="1">↓</button>
+        <button type="button" data-duplicate-container-component data-container-index="${parentIndex}" data-child-index="${index}">Дубль</button>
+        <button type="button" data-delete-container-component data-container-index="${parentIndex}" data-child-index="${index}">Удалить</button>
+      </div>
+    ` : `
       <div class="component-block-actions">
         <button type="button" data-move-component="${index}" data-direction="-1" ${index === 0 ? 'disabled' : ''}>↑</button>
         <button type="button" data-move-component="${index}" data-direction="1">↓</button>
@@ -615,7 +684,7 @@
           <div class="component-block-heading"><strong>Text Display</strong>${controls}</div>
           <label class="rules-field">
             <span>Markdown text</span>
-            <textarea rows="6" maxlength="${LIMITS.componentText}" data-component-field="content" data-component-index="${index}">${escapeHtml(block.content)}</textarea>
+            <textarea rows="6" maxlength="${LIMITS.componentText}" data-component-field="content" ${fieldAttrs}>${escapeHtml(block.content)}</textarea>
           </label>
         </article>
       `;
@@ -626,12 +695,12 @@
         <article class="component-block">
           <div class="component-block-heading"><strong>Separator</strong>${controls}</div>
           <label class="rules-check">
-            <input type="checkbox" data-component-field="divider" data-component-index="${index}" ${block.divider !== false ? 'checked' : ''}>
+            <input type="checkbox" data-component-field="divider" ${fieldAttrs} ${block.divider !== false ? 'checked' : ''}>
             <span>Показывать линию</span>
           </label>
           <label class="rules-field">
             <span>Отступ</span>
-            <select data-component-field="spacing" data-component-index="${index}">
+            <select data-component-field="spacing" ${fieldAttrs}>
               <option value="1" ${Number(block.spacing) !== 2 ? 'selected' : ''}>Small</option>
               <option value="2" ${Number(block.spacing) === 2 ? 'selected' : ''}>Large</option>
             </select>
@@ -646,7 +715,7 @@
           <div class="component-block-heading"><strong>Media Gallery</strong>${controls}</div>
           <label class="rules-field">
             <span>URL по одному на строку. Описание через |</span>
-            <textarea rows="6" data-component-field="media" data-component-index="${index}" placeholder="https://site/image.png | Описание">${escapeHtml(block.media)}</textarea>
+            <textarea rows="6" data-component-field="media" ${fieldAttrs} placeholder="https://site/image.png | Описание">${escapeHtml(block.media)}</textarea>
           </label>
         </article>
       `;
@@ -658,10 +727,10 @@
           <div class="component-block-heading"><strong>File</strong>${controls}</div>
           <label class="rules-field">
             <span>Attachment URL</span>
-            <input type="text" data-component-field="fileName" data-component-index="${index}" value="${escapeHtml(block.fileName)}" placeholder="attachment://rules.pdf">
+            <input type="text" data-component-field="fileName" ${fieldAttrs} value="${escapeHtml(block.fileName)}" placeholder="attachment://rules.pdf">
           </label>
           <label class="rules-check">
-            <input type="checkbox" data-component-field="spoiler" data-component-index="${index}" ${block.spoiler ? 'checked' : ''}>
+            <input type="checkbox" data-component-field="spoiler" ${fieldAttrs} ${block.spoiler ? 'checked' : ''}>
             <span>Spoiler</span>
           </label>
         </article>
@@ -675,11 +744,11 @@
           <div class="rules-two">
             <label class="rules-field">
               <span>Текст кнопки</span>
-              <input type="text" maxlength="${LIMITS.buttonLabel}" data-component-field="label" data-component-index="${index}" value="${escapeHtml(block.label)}">
+              <input type="text" maxlength="${LIMITS.buttonLabel}" data-component-field="label" ${fieldAttrs} value="${escapeHtml(block.label)}">
             </label>
             <label class="rules-field">
               <span>URL</span>
-              <input type="url" data-component-field="url" data-component-index="${index}" value="${escapeHtml(block.url)}" placeholder="https://...">
+              <input type="url" data-component-field="url" ${fieldAttrs} value="${escapeHtml(block.url)}" placeholder="https://...">
             </label>
           </div>
         </article>
@@ -692,34 +761,67 @@
           <div class="component-block-heading"><strong>Section</strong>${controls}</div>
           <label class="rules-field">
             <span>Текст секции</span>
-            <textarea rows="6" maxlength="${LIMITS.componentText}" data-component-field="content" data-component-index="${index}">${escapeHtml(block.content)}</textarea>
+            <textarea rows="6" maxlength="${LIMITS.componentText}" data-component-field="content" ${fieldAttrs}>${escapeHtml(block.content)}</textarea>
           </label>
           <div class="rules-two">
             <label class="rules-field">
               <span>Accessory</span>
-              <select data-component-field="accessoryType" data-component-index="${index}">
+              <select data-component-field="accessoryType" ${fieldAttrs}>
                 <option value="thumbnail" ${block.accessoryType !== 'button' ? 'selected' : ''}>Thumbnail</option>
                 <option value="button" ${block.accessoryType === 'button' ? 'selected' : ''}>Button</option>
               </select>
             </label>
             <label class="rules-field">
               <span>${block.accessoryType === 'button' ? 'Button URL' : 'Thumbnail URL'}</span>
-              <input type="url" data-component-field="${block.accessoryType === 'button' ? 'buttonUrl' : 'accessoryUrl'}" data-component-index="${index}" value="${escapeHtml(block.accessoryType === 'button' ? block.buttonUrl : block.accessoryUrl)}" placeholder="https://...">
+              <input type="url" data-component-field="${block.accessoryType === 'button' ? 'buttonUrl' : 'accessoryUrl'}" ${fieldAttrs} value="${escapeHtml(block.accessoryType === 'button' ? block.buttonUrl : block.accessoryUrl)}" placeholder="https://...">
             </label>
           </div>
           ${block.accessoryType === 'button' ? `
             <label class="rules-field">
               <span>Button label</span>
-              <input type="text" maxlength="${LIMITS.buttonLabel}" data-component-field="buttonLabel" data-component-index="${index}" value="${escapeHtml(block.buttonLabel)}">
+              <input type="text" maxlength="${LIMITS.buttonLabel}" data-component-field="buttonLabel" ${fieldAttrs} value="${escapeHtml(block.buttonLabel)}">
             </label>
           ` : ''}
         </article>
       `;
     }
 
+    if (block.kind === 'container') {
+      const children = normalizeContainerChildren(block);
+      return `
+        <article class="component-block component-container-block">
+          <div class="component-block-heading"><strong>Container</strong>${controls}</div>
+          <div class="rules-two">
+            <label class="rules-field">
+              <span>Accent color</span>
+              <input type="color" data-component-field="accent" data-component-index="${index}" value="${escapeHtml(normalizeHexColor(block.accent))}">
+            </label>
+            <label class="rules-check">
+              <input type="checkbox" data-component-field="spoiler" data-component-index="${index}" ${block.spoiler ? 'checked' : ''}>
+              <span>Spoiler container</span>
+            </label>
+          </div>
+          <div class="container-child-toolbar">
+            <span>Inside container</span>
+            <div class="components-toolbar">
+              <button type="button" data-add-container-component="text" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>Text</button>
+              <button type="button" data-add-container-component="section" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>Section</button>
+              <button type="button" data-add-container-component="gallery" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>Gallery</button>
+              <button type="button" data-add-container-component="separator" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>Separator</button>
+              <button type="button" data-add-container-component="button" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>Button</button>
+              <button type="button" data-add-container-component="file" data-container-index="${index}" ${children.length >= LIMITS.containerChildren ? 'disabled' : ''}>File</button>
+            </div>
+          </div>
+          <div class="container-child-list">
+            ${children.map((child, childIndex) => renderComponentBlock(child, childIndex, index)).join('')}
+          </div>
+        </article>
+      `;
+    }
+
     return `
       <article class="component-block">
-        <div class="component-block-heading"><strong>Container</strong>${controls}</div>
+        <div class="component-block-heading"><strong>Unknown component</strong>${controls}</div>
         <div class="rules-two">
           <label class="rules-field">
             <span>Accent color</span>
@@ -771,6 +873,20 @@
       <div class="component-block-list">
         ${message.blocks?.length ? message.blocks.map(renderComponentBlock).join('') : '<div class="template-empty"><strong>Добавь первый компонент.</strong></div>'}
       </div>
+    `;
+  }
+
+  function renderRawEditor(message) {
+    if (!message.raw) {
+      message.raw = JSON.stringify(buildRuleMessage({ ...message, mode: 'classic' }), null, 2);
+    }
+
+    return `
+      <label class="rules-field">
+        <span>Raw Discord message JSON</span>
+        <textarea data-message-raw rows="18" spellcheck="false">${escapeHtml(message.raw)}</textarea>
+      </label>
+      <p class="editor-muted">Raw mode keeps complex Discord payloads exact: content, embeds, legacy buttons and Components V2. Discord limits still apply.</p>
     `;
   }
 
@@ -831,6 +947,273 @@
     return '';
   }
 
+  function isRenderableMediaUrl(value) {
+    const raw = String(value || '').trim();
+    if (!raw || raw.startsWith('attachment://')) return false;
+    return Boolean(normalizeUrl(raw));
+  }
+
+  function renderMedia(url, className = '', alt = '') {
+    const raw = String(url || '').trim();
+    if (!raw) return '';
+    if (!isRenderableMediaUrl(raw)) {
+      return `<div class="discord-media-placeholder ${escapeHtml(className)}">${escapeHtml(raw.replace('attachment://', ''))}</div>`;
+    }
+    return `<img class="${escapeHtml(className)}" src="${escapeHtml(raw)}" alt="${escapeHtml(alt)}" loading="lazy">`;
+  }
+
+  function formatDiscordTime(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return String(value).slice(0, 32);
+    return date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  }
+
+  function renderInlineMarkdown(value) {
+    let html = escapeHtml(value);
+    html = html.replace(/\[([^\]]{1,80})\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    html = html.replace(/&lt;#(\d{17,22})&gt;/g, '<span class="discord-mention">#channel</span>');
+    html = html.replace(/&lt;@!?(\d{17,22})&gt;/g, '<span class="discord-mention">@user</span>');
+    html = html.replace(/&lt;@&amp;(\d{17,22})&gt;/g, '<span class="discord-mention">@role</span>');
+    html = html.replace(/\|\|(.+?)\|\|/g, '<span class="discord-spoiler">$1</span>');
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__(.+?)__/g, '<u>$1</u>');
+    html = html.replace(/~~(.+?)~~/g, '<s>$1</s>');
+    html = html.replace(/(^|[^\*])\*([^\*]+)\*/g, '$1<em>$2</em>');
+    return html;
+  }
+
+  function renderTextLines(segment) {
+    const lines = String(segment || '').replace(/\r\n/g, '\n').split('\n');
+    const output = [];
+    let quote = [];
+    let list = [];
+
+    const flushQuote = () => {
+      if (!quote.length) return;
+      output.push(`<blockquote>${quote.map((line) => `<div>${renderInlineMarkdown(line)}</div>`).join('')}</blockquote>`);
+      quote = [];
+    };
+
+    const flushList = () => {
+      if (!list.length) return;
+      output.push(`<ul>${list.map((line) => `<li>${renderInlineMarkdown(line)}</li>`).join('')}</ul>`);
+      list = [];
+    };
+
+    lines.forEach((line) => {
+      const raw = String(line || '');
+      const trimmed = raw.trim();
+      const heading = raw.match(/^(#{1,3})\s+(.+)$/);
+      const subtext = raw.match(/^-#\s+(.+)$/);
+      const quoteLine = raw.match(/^>\s?(.+)$/);
+      const listLine = raw.match(/^(?:[-*]|\d+\.)\s+(.+)$/);
+
+      if (!trimmed) {
+        flushQuote();
+        flushList();
+        output.push('<div class="discord-line is-empty">&nbsp;</div>');
+        return;
+      }
+
+      if (quoteLine) {
+        flushList();
+        quote.push(quoteLine[1]);
+        return;
+      }
+
+      if (listLine) {
+        flushQuote();
+        list.push(listLine[1]);
+        return;
+      }
+
+      flushQuote();
+      flushList();
+
+      if (heading) {
+        output.push(`<div class="discord-heading discord-heading-${heading[1].length}">${renderInlineMarkdown(heading[2])}</div>`);
+      } else if (subtext) {
+        output.push(`<div class="discord-subtext">${renderInlineMarkdown(subtext[1])}</div>`);
+      } else {
+        output.push(`<div class="discord-line">${renderInlineMarkdown(raw)}</div>`);
+      }
+    });
+
+    flushQuote();
+    flushList();
+    return output.join('');
+  }
+
+  function renderDiscordMarkdown(value) {
+    const parts = String(value || '').replace(/\r\n/g, '\n').split(/```/);
+    return parts.map((part, index) => {
+      if (index % 2 === 1) return `<pre><code>${escapeHtml(part.trim())}</code></pre>`;
+      return renderTextLines(part);
+    }).join('');
+  }
+
+  function renderPreviewEmbed(embed = {}) {
+    const color = normalizeHexColor(embed.color || embed.color === 0 ? embed.color : '#5865f2');
+    const title = embed.title
+      ? embed.url
+        ? `<a class="discord-embed-title" href="${escapeHtml(embed.url)}" target="_blank" rel="noopener noreferrer">${renderInlineMarkdown(embed.title)}</a>`
+        : `<strong class="discord-embed-title">${renderInlineMarkdown(embed.title)}</strong>`
+      : '';
+    const footer = [
+      embed.footer?.text ? escapeHtml(embed.footer.text) : '',
+      embed.timestamp ? formatDiscordTime(embed.timestamp) : ''
+    ].filter(Boolean).join(' • ');
+
+    return `
+      <div class="rules-preview-embed discord-embed" style="--embed-color:${escapeHtml(color)}">
+        ${embed.author?.name ? `
+          <div class="discord-embed-author">
+            ${embed.author.icon_url ? renderMedia(embed.author.icon_url, 'discord-embed-author-icon') : ''}
+            ${embed.author.url ? `<a href="${escapeHtml(embed.author.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(embed.author.name)}</a>` : `<span>${escapeHtml(embed.author.name)}</span>`}
+          </div>
+        ` : ''}
+        <div class="discord-embed-grid">
+          <div class="discord-embed-main">
+            ${title}
+            ${embed.description ? `<div class="discord-embed-description">${renderDiscordMarkdown(embed.description)}</div>` : ''}
+            ${embed.fields?.length ? `<div class="rules-preview-fields">${embed.fields.map((field) => `
+              <span class="${field.inline ? 'is-inline' : ''}">
+                <b>${renderInlineMarkdown(field.name || '\u200B')}</b>
+                <small>${renderDiscordMarkdown(field.value || '\u200B')}</small>
+              </span>
+            `).join('')}</div>` : ''}
+          </div>
+          ${embed.thumbnail?.url ? `<div class="discord-embed-thumb-wrap">${renderMedia(embed.thumbnail.url, 'rules-preview-thumb')}</div>` : ''}
+        </div>
+        ${embed.image?.url ? renderMedia(embed.image.url, 'rules-preview-image') : ''}
+        ${footer ? `
+          <div class="discord-embed-footer">
+            ${embed.footer?.icon_url ? renderMedia(embed.footer.icon_url, 'discord-embed-footer-icon') : ''}
+            <span>${footer}</span>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  function buttonClass(button = {}) {
+    const style = Number(button.style || (button.url ? 5 : 2));
+    if (style === 1) return 'is-primary';
+    if (style === 3) return 'is-success';
+    if (style === 4) return 'is-danger';
+    if (style === 5) return 'is-link';
+    return 'is-secondary';
+  }
+
+  function renderButton(button = {}) {
+    const label = button.label || button.emoji?.name || 'Open';
+    const emoji = button.emoji?.name && button.label ? `<span>${escapeHtml(button.emoji.name)}</span>` : '';
+    const content = `${emoji}${escapeHtml(label)}`;
+    const className = `discord-button ${buttonClass(button)}${button.disabled ? ' is-disabled' : ''}`;
+    return button.url
+      ? `<a class="${className}" href="${escapeHtml(button.url)}" target="_blank" rel="noopener noreferrer">${content}</a>`
+      : `<span class="${className}">${content}</span>`;
+  }
+
+  function renderSelectMenu(component = {}) {
+    const type = Number(component.type);
+    const typeLabel = type === 3
+      ? 'String select'
+      : type === 5
+        ? 'User select'
+        : type === 6
+          ? 'Role select'
+          : type === 7
+            ? 'Mentionable select'
+            : 'Channel select';
+    const optionCount = Array.isArray(component.options) ? component.options.length : 0;
+    const placeholder = component.placeholder || typeLabel;
+    return `
+      <div class="discord-select ${component.disabled ? 'is-disabled' : ''}">
+        <span>${escapeHtml(placeholder)}</span>
+        <small>${escapeHtml(optionCount ? `${optionCount} options` : typeLabel)}</small>
+      </div>
+    `;
+  }
+
+  function renderPreviewComponent(component = {}) {
+    const type = Number(component.type);
+    if (type === 10) return `<div class="v2-text-display">${renderDiscordMarkdown(component.content)}</div>`;
+    if (type === 11) return renderMedia(component.media?.url, 'v2-thumbnail', component.description || '');
+    if (type === 14) return `<div class="v2-separator ${Number(component.spacing) === 2 ? 'is-large' : ''}">${component.divider === false ? '' : '<i></i>'}</div>`;
+    if (type === 12) {
+      return `<div class="v2-gallery">${(component.items || []).map((item) => `
+        <figure class="${item.spoiler ? 'is-spoiler' : ''}">
+          ${renderMedia(item.media?.url, 'v2-gallery-image', item.description || '')}
+          ${item.description ? `<figcaption>${escapeHtml(item.description)}</figcaption>` : ''}
+        </figure>
+      `).join('')}</div>`;
+    }
+    if (type === 13) {
+      const fileName = String(component.file?.url || '').replace('attachment://', '');
+      return `<div class="v2-file ${component.spoiler ? 'is-spoiler' : ''}"><strong>FILE</strong><span>${escapeHtml(fileName || 'attachment')}</span></div>`;
+    }
+    if (type === 1) {
+      const children = component.components || [];
+      const buttons = children.filter((item) => Number(item.type) === 2);
+      if (buttons.length === children.length) return `<div class="v2-buttons">${buttons.map(renderButton).join('')}</div>`;
+      return `<div class="v2-action-row">${children.map(renderPreviewComponent).join('')}</div>`;
+    }
+    if (type === 2) return `<div class="v2-buttons">${renderButton(component)}</div>`;
+    if ([3, 5, 6, 7, 8].includes(type)) return renderSelectMenu(component);
+    if (type === 9) {
+      return `
+        <div class="v2-section">
+          <div class="v2-section-copy">${(component.components || []).map(renderPreviewComponent).join('')}</div>
+          ${component.accessory?.type === 11 ? `<div class="v2-section-accessory">${renderPreviewComponent(component.accessory)}</div>` : ''}
+          ${component.accessory?.type === 2 ? `<div class="v2-section-accessory">${renderButton(component.accessory)}</div>` : ''}
+        </div>
+      `;
+    }
+    if (type === 17) {
+      const accent = `#${Number(component.accent_color || 0x5865f2).toString(16).padStart(6, '0')}`;
+      return `
+        <div class="v2-container ${component.spoiler ? 'is-spoiler' : ''}" style="--component-accent:${escapeHtml(accent)}">
+          ${(component.components || []).map(renderPreviewComponent).join('')}
+        </div>
+      `;
+    }
+    return '';
+  }
+
+  function renderDiscordMessage(message = {}, index = 0, options = {}) {
+    const isV2 = Boolean(Number(message.flags || 0) & V2_FLAG);
+    const components = Array.isArray(message.components) ? message.components : [];
+    const embeds = isV2 ? [] : (Array.isArray(message.embeds) ? message.embeds : []);
+    const content = isV2 ? '' : String(message.content || '');
+    const username = options.username || 'Core';
+    const avatarText = String(username || 'C').trim().slice(0, 1).toUpperCase() || 'C';
+
+    return `
+      <article class="rules-preview-message discord-message">
+        <div class="rules-preview-avatar discord-avatar">${escapeHtml(avatarText)}</div>
+        <div class="discord-message-inner">
+          <div class="rules-preview-meta discord-message-meta">
+            <strong>${escapeHtml(username)}</strong>
+            <span>${escapeHtml(options.timestampLabel || 'Today')}</span>
+            ${isV2 ? '<span>Components V2</span>' : `<span>message ${index + 1}</span>`}
+          </div>
+          ${content ? `<div class="rules-preview-content discord-message-content">${renderDiscordMarkdown(content)}</div>` : ''}
+          ${embeds.map(renderPreviewEmbed).join('')}
+          ${components.length ? `<div class="v2-preview">${components.map(renderPreviewComponent).join('')}</div>` : ''}
+          ${!content && !embeds.length && !components.length ? '<div class="discord-empty-message">Empty message</div>' : ''}
+        </div>
+      </article>
+    `;
+  }
+
+  function renderDiscordMessages(messages = [], options = {}) {
+    const source = Array.isArray(messages) && messages.length ? messages : [{ content: '', embeds: [] }];
+    return `<div class="discord-message-stack">${source.slice(0, LIMITS.messages).map((message, index) => renderDiscordMessage(message, index, options)).join('')}</div>`;
+  }
+
   function setPath(target, path, value) {
     const parts = path.split('.');
     let pointer = target;
@@ -848,6 +1231,16 @@
     if (kind === 'gallery') return { kind, media: '' };
     if (kind === 'file') return { kind, fileName: 'attachment://rules.pdf', spoiler: false };
     if (kind === 'button') return { kind, label: 'Открыть', url: '' };
+    if (kind === 'container') {
+      return {
+      kind: 'container',
+      accent: '#44b8de',
+      children: [
+        { kind: 'text', content: '# Title\nContainer text.' }
+      ],
+      spoiler: false
+    };
+    }
     if (kind === 'section') {
       return { kind, content: '# Важный блок\nТекст секции.', accessoryType: 'thumbnail', accessoryUrl: '', buttonLabel: 'Открыть', buttonUrl: '' };
     }
@@ -907,6 +1300,15 @@
       const warnings = [];
       state.messages.forEach((item, index) => {
         const number = index + 1;
+        if (item.mode === 'raw') {
+          try {
+            parseRawPayload(item.raw);
+          } catch (error) {
+            errors.push(`Сообщение ${number}: ${error.message || 'raw JSON is invalid.'}`);
+          }
+          return;
+        }
+
         if (item.mode === 'components') {
           const components = buildComponents(item.blocks);
           if (!components.length) errors.push(`Сообщение ${number}: добавь хотя бы один Components V2 блок.`);
@@ -914,8 +1316,25 @@
           (item.blocks || []).forEach((block, blockIndex) => {
             const label = `Сообщение ${number}, блок ${blockIndex + 1}`;
             if (['text', 'section'].includes(block.kind) && (block.content || '').length > LIMITS.componentText) errors.push(`${label}: текст больше ${LIMITS.componentText}.`);
+            if (block.kind === 'section' && block.accessoryType === 'button' && !normalizeUrl(block.buttonUrl)) errors.push(`${label}: section button URL is required.`);
+            if (block.kind === 'section' && block.accessoryType !== 'button' && !normalizeUrl(block.accessoryUrl)) errors.push(`${label}: section thumbnail URL is required.`);
             if (block.kind === 'container' && (block.text || '').length > LIMITS.componentText) errors.push(`${label}: текст контейнера больше ${LIMITS.componentText}.`);
             if (block.kind === 'gallery' && parseMediaItems(block.media).length > LIMITS.galleryItems) errors.push(`${label}: максимум ${LIMITS.galleryItems} медиа.`);
+            if (block.kind === 'container') {
+              const children = normalizeContainerChildren(block);
+              if (children.length > LIMITS.containerChildren) errors.push(`${label}: maximum ${LIMITS.containerChildren} children.`);
+              children.forEach((child, childIndex) => {
+                const childLabel = `${label}, child ${childIndex + 1}`;
+                if (['text', 'section'].includes(child.kind) && (child.content || '').length > LIMITS.componentText) errors.push(`${childLabel}: text is longer than ${LIMITS.componentText}.`);
+                if (child.kind === 'section' && child.accessoryType === 'button' && !normalizeUrl(child.buttonUrl)) errors.push(`${childLabel}: section button URL is required.`);
+                if (child.kind === 'section' && child.accessoryType !== 'button' && !normalizeUrl(child.accessoryUrl)) errors.push(`${childLabel}: section thumbnail URL is required.`);
+                if (child.kind === 'gallery' && parseMediaItems(child.media).length > LIMITS.galleryItems) errors.push(`${childLabel}: maximum ${LIMITS.galleryItems} media items.`);
+                ['media', 'buttonUrl', 'url', 'accessoryUrl'].forEach((field) => {
+                  if (child[field] && field === 'media') return;
+                  if (child[field] && !isValidUrl(child[field])) errors.push(`${childLabel}: ${field} must be a URL.`);
+                });
+              });
+            }
             ['media', 'thumbnail', 'buttonUrl', 'url', 'accessoryUrl'].forEach((field) => {
               if (block[field] && field === 'media') return;
               if (block[field] && !isValidUrl(block[field])) errors.push(`${label}: ${field} должен быть ссылкой.`);
@@ -949,7 +1368,9 @@
       const list = root.querySelector('[data-message-list]');
       if (!list) return;
       list.innerHTML = state.messages.map((item, index) => {
-        const label = item.mode === 'components'
+        const label = item.mode === 'raw'
+          ? firstFilledLine(item.raw, `Raw JSON ${index + 1}`)
+          : item.mode === 'components'
           ? firstFilledLine(item.blocks?.find((block) => block.text || block.content)?.text || item.blocks?.find((block) => block.content)?.content, `Components V2 ${index + 1}`)
           : firstFilledLine(item.embeds?.[0]?.title || item.content, `Сообщение ${index + 1}`);
         return `
@@ -968,7 +1389,13 @@
       root.querySelectorAll('[data-message-mode]').forEach((button) => {
         button.classList.toggle('is-active', button.dataset.messageMode === current.mode);
       });
-      if (body) body.innerHTML = current.mode === 'components' ? renderComponentsEditor(current) : renderClassicEditor(current);
+      if (body) {
+        body.innerHTML = current.mode === 'raw'
+          ? renderRawEditor(current)
+          : current.mode === 'components'
+            ? renderComponentsEditor(current)
+            : renderClassicEditor(current);
+      }
       const deleteMessage = root.querySelector('[data-delete-message]');
       const addMessage = root.querySelector('[data-add-message]');
       if (deleteMessage) deleteMessage.disabled = state.messages.length <= 1;
@@ -981,34 +1408,33 @@
       if (count) count.textContent = `${state.messages.length} ${state.messages.length === 1 ? 'сообщение' : 'сообщений'}`;
       if (!preview) return;
 
-      preview.innerHTML = state.messages.map((item, index) => {
-        const payload = buildRuleMessage(item);
-        const isV2 = Boolean(payload.components?.length);
-        const embeds = isV2 ? [] : (payload.embeds || []);
-        return `
-          <article class="rules-preview-message">
-            <div class="rules-preview-avatar">C</div>
-            <div>
-              <div class="rules-preview-meta">
-                <strong>${escapeHtml(state.username || 'Webhook')}</strong>
-                <span>${isV2 ? 'Components V2' : 'message'} ${index + 1}</span>
-              </div>
-              ${payload.content ? `<div class="rules-preview-content">${escapeHtml(payload.content).replace(/\n/g, '<br>')}</div>` : ''}
-              ${embeds.map(renderPreviewEmbed).join('')}
-              ${isV2 ? `<div class="v2-preview">${payload.components.map(renderPreviewComponent).join('')}</div>` : ''}
-            </div>
-          </article>
-        `;
-      }).join('');
+      preview.innerHTML = renderDiscordMessages(state.messages.map((item) => {
+        try {
+          return buildRuleMessage(item);
+        } catch {
+          return { content: 'Raw JSON is invalid.', embeds: [] };
+        }
+      }), {
+        username: state.username || 'Webhook'
+      });
     }
 
     function renderLimits() {
       const current = message();
       const limits = root.querySelector('[data-editor-limits]');
       if (!limits) return;
-      const currentPayload = buildRuleMessage(current);
+      let currentPayload = {};
+      try {
+        currentPayload = buildRuleMessage(current);
+      } catch {}
       const activeEmbed = current.mode === 'classic' ? embed() : null;
-      const items = current.mode === 'components'
+      const items = current.mode === 'raw'
+        ? [
+          ['Messages', state.messages.length, LIMITS.messages],
+          ['Raw JSON', String(current.raw || '').length, 30000],
+          ['Components', Array.isArray(currentPayload.components) ? currentPayload.components.length : 0, LIMITS.components]
+        ]
+        : current.mode === 'components'
         ? [
           ['Сообщения', state.messages.length, LIMITS.messages],
           ['Components', currentPayload.components?.length || 0, LIMITS.components],
@@ -1074,10 +1500,28 @@
       return true;
     }
 
+    function getContainerChildren(current, containerIndex) {
+      const container = current.blocks[Number(containerIndex)];
+      if (!container || container.kind !== 'container') return null;
+      return normalizeContainerChildren(container);
+    }
+
+    function getEditableComponentBlock(current, target) {
+      if (target.dataset.containerIndex !== undefined && target.dataset.childIndex !== undefined) {
+        const children = getContainerChildren(current, target.dataset.containerIndex);
+        return children?.[Number(target.dataset.childIndex)] || null;
+      }
+      return current.blocks[Number(target.dataset.componentIndex)] || null;
+    }
+
     function updateActiveInput(target) {
       const current = message();
       if (target.matches('[data-message-content]')) {
         current.content = clampText(target.value, LIMITS.content);
+        return true;
+      }
+      if (target.matches('[data-message-raw]')) {
+        current.raw = target.value;
         return true;
       }
       if (target.dataset.embedPath) {
@@ -1097,7 +1541,7 @@
         return true;
       }
       if (target.dataset.componentField) {
-        const block = current.blocks[Number(target.dataset.componentIndex)];
+        const block = getEditableComponentBlock(current, target);
         if (!block) return true;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         block[target.dataset.componentField] = value;
@@ -1219,9 +1663,15 @@
         return;
       }
       if (target.dataset.messageMode) {
+        if (target.dataset.messageMode === 'raw') {
+          try {
+            current.raw = JSON.stringify(buildRuleMessage(current), null, 2);
+          } catch {}
+        }
         current.mode = target.dataset.messageMode;
         if (current.mode === 'classic' && !current.embeds.length) current.embeds.push(defaultEmbed());
         if (current.mode === 'components' && !current.blocks.length) current.blocks.push(createBlock('container'));
+        if (current.mode === 'raw' && !current.raw) current.raw = JSON.stringify(normalizeRawPayload(current), null, 2);
         render();
         return;
       }
@@ -1284,6 +1734,42 @@
         render();
         return;
       }
+      if (target.dataset.addContainerComponent) {
+        const children = getContainerChildren(current, target.dataset.containerIndex);
+        if (children && children.length < LIMITS.containerChildren) {
+          children.push(createBlock(target.dataset.addContainerComponent));
+          render();
+        }
+        return;
+      }
+      if (target.dataset.deleteContainerComponent !== undefined) {
+        const children = getContainerChildren(current, target.dataset.containerIndex);
+        if (children && children.length > 1) {
+          children.splice(Number(target.dataset.childIndex), 1);
+          render();
+        }
+        return;
+      }
+      if (target.dataset.duplicateContainerComponent !== undefined) {
+        const children = getContainerChildren(current, target.dataset.containerIndex);
+        const index = Number(target.dataset.childIndex);
+        if (children && children.length < LIMITS.containerChildren && children[index]) {
+          children.splice(index + 1, 0, clone(children[index]));
+          render();
+        }
+        return;
+      }
+      if (target.dataset.moveContainerComponent !== undefined) {
+        const children = getContainerChildren(current, target.dataset.containerIndex);
+        const index = Number(target.dataset.childIndex);
+        const next = index + Number(target.dataset.direction);
+        if (children && next >= 0 && next < children.length) {
+          const [block] = children.splice(index, 1);
+          children.splice(next, 0, block);
+          render();
+        }
+        return;
+      }
       if (target.dataset.deleteComponent !== undefined) {
         current.blocks.splice(Number(target.dataset.deleteComponent), 1);
         render();
@@ -1334,7 +1820,13 @@
     scope.querySelectorAll('[data-message-editor], [data-rules-editor], [data-template-rule-editor]').forEach((root) => init(root));
   }
 
-  window.CoreMessageEditor = { init, initAll };
+  window.CoreMessageEditor = {
+    init,
+    initAll,
+    renderDiscordMarkdown,
+    renderMessage: renderDiscordMessage,
+    renderMessages: renderDiscordMessages
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => initAll());
