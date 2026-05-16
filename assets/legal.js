@@ -39,7 +39,7 @@
           {
             heading: '1. Область действия',
             body: [
-              'Эта политика относится к публичному сайту Core, включая главную страницу, каталог шаблонов, страницы символов и emoji, справку по командам, редактор webhook-сообщений и юридические страницы.',
+              'Эта политика относится к публичному сайту Core, включая главную страницу, каталог шаблонов, страницы символов и emoji, генератор timestamp, генератор цветного ANSI-текста, справочник Discord Markdown, справку по командам, редактор webhook-сообщений и юридические страницы.',
               'Сайт Core является отдельным публичным интерфейсом проекта Core. Он не является продуктом Discord Inc., GitHub Inc., Google LLC, MongoDB Inc. или других внешних поставщиков.',
               'Эта политика описывает техническую обработку данных на сайте. Она не заменяет условия Discord, правила Discord-серверов, настройки браузера или отдельные политики внешних сервисов, через которые пользователь открывает сайт.'
             ]
@@ -57,7 +57,8 @@
             body: [
               'Сайт может сохранять выбранный язык в localStorage браузера. Это нужно только для того, чтобы страницы открывались на выбранном языке после обновления или повторного посещения.',
               'Инструменты копирования символов и emoji используют системный буфер обмена браузера только после действия пользователя. Сайт не читает буфер обмена без необходимости и не отправляет его содержимое на сервер Core.',
-              'Редактор webhook-сообщений обрабатывает введенный webhook URL, текст сообщения, embed-поля, Components V2, ссылки на изображения, цвета, имена профиля и другие настройки сообщения в браузере пользователя до момента отправки.',
+              'Редактор webhook-сообщений обрабатывает введенный webhook URL, текст сообщения, embed-поля, Components V2, ссылки на изображения, цвета, имена профиля, настройки ветки, включая название новой ветки, ID существующей ветки и ID тегов форума, а также другие настройки сообщения в браузере пользователя до момента отправки.',
+              'Генератор timestamp, генератор цветного ANSI-текста и справочник Markdown работают локально в браузере и создают текстовые фрагменты, которые пользователь сам копирует или вставляет в редактор.',
               'Если пользователь закрывает страницу, очищает данные сайта или использует приватный режим браузера, локальные настройки могут быть удалены или недоступны.'
             ]
           },
@@ -75,8 +76,10 @@
             body: [
               'Webhook URL является секретной ссылкой Discord. Любой, кто получил действующий webhook URL, может отправлять сообщения через соответствующий webhook, пока он не удален или не изменен в Discord.',
               'Core не сохраняет webhook URL на сайте и не добавляет его в собственную базу данных сайта. При отправке сообщения браузер отправляет запрос напрямую на Discord webhook URL, который указал пользователь.',
-              'Содержимое webhook-сообщения может быть передано Discord, потому что Discord является сервисом, который фактически принимает и публикует сообщение. После отправки дальнейшее хранение и удаление сообщения регулируется Discord и правами на конкретном сервере.',
-              'Пользователь должен вставлять только те webhook URL, которыми он вправе пользоваться. Если webhook URL был раскрыт ошибочно, его нужно удалить или пересоздать в настройках канала Discord.'
+              'Содержимое webhook-сообщения, название создаваемой ветки, ID существующей ветки и ID тегов могут быть переданы Discord, потому что Discord является сервисом, который фактически принимает и публикует сообщение. После отправки дальнейшее хранение и удаление сообщения регулируется Discord и правами на конкретном сервере.',
+              'Пользователь должен вставлять только те webhook URL, которыми он вправе пользоваться. Если webhook URL был раскрыт ошибочно, его нужно удалить или пересоздать в настройках канала Discord.',
+              'Вкладка сохранений webhook-редактора может записывать в localStorage именованные локальные сохранения. Такие сохранения могут включать тексты сообщений, embed-данные, Components V2, имя сохранения, имя вебхука, аватар и webhook URL, если пользователь оставил его в редакторе.',
+              'Файл переноса .corehook является закодированным экспортом настроек для удобного импорта в другом браузере. Он не считается криптографической защитой, поэтому его не следует отправлять третьим лицам, если внутри есть приватный webhook URL или материалы, которые не должны стать публичными.'
             ]
           },
           {
@@ -92,7 +95,7 @@
             heading: '7. Cookies, localStorage и аналитика',
             body: [
               'Сайт Core не использует собственные рекламные cookies, не строит рекламный профиль пользователя и не продает данные рекламным сетям.',
-              'Основное локальное хранение сайта ограничивается техническими настройками интерфейса, например выбранным языком. Эти данные находятся в браузере пользователя и могут быть очищены средствами браузера.',
+              'Основное локальное хранение сайта ограничивается техническими настройками интерфейса, например выбранным языком, и сохранениями webhook-редактора, если пользователь сам нажал сохранение. Эти данные находятся в браузере пользователя и могут быть очищены средствами браузера.',
               'Если в будущем на сайт будет добавлена аналитика, этот документ должен быть обновлен до начала ее полноценного использования, а назначение такой аналитики должно быть описано отдельно.'
             ]
           },
@@ -107,7 +110,7 @@
           {
             heading: '9. Сроки хранения',
             body: [
-              'Локальные настройки сайта хранятся в браузере до очистки localStorage, смены браузера, удаления данных сайта или сброса профиля браузера.',
+              'Локальные настройки сайта и локальные сохранения webhook-редактора хранятся в браузере до очистки localStorage, смены браузера, удаления данных сайта, ручного удаления сохранения или сброса профиля браузера.',
               'Публичные данные каталога шаблонов хранятся до удаления или обновления соответствующего шаблона в системе Core.',
               'Технические журналы внешних поставщиков хранятся по правилам этих поставщиков. Core не может вручную удалить журналы GitHub, Google, Discord, браузера или интернет-провайдера.'
             ]
@@ -115,7 +118,7 @@
           {
             heading: '10. Управление данными пользователем',
             body: [
-              'Пользователь может очистить localStorage и cookies сайта в настройках браузера, чтобы удалить локальный выбор языка и другие локальные следы работы интерфейса.',
+              'Пользователь может очистить localStorage и cookies сайта в настройках браузера, чтобы удалить локальный выбор языка, сохранения webhook-редактора и другие локальные следы работы интерфейса.',
               'Пользователь может не использовать webhook-редактор, если не хочет передавать сообщение напрямую в Discord через webhook.',
               'Пользователь может удалить или пересоздать webhook в Discord, если ссылка была скомпрометирована, использована ошибочно или больше не должна работать.',
               'По вопросам публичных шаблонов, спорных материалов или данных, опубликованных в каталоге, нужно обращаться через официальный сервер Core.'
@@ -154,7 +157,7 @@
           {
             heading: '1. Scope',
             body: [
-              'This policy applies to the public Core website, including the home page, template catalog, symbols and emoji pages, command help, webhook message editor and legal pages.',
+              'This policy applies to the public Core website, including the home page, template catalog, symbols and emoji pages, timestamp generator, ANSI colored text generator, Discord Markdown reference, command help, webhook message editor and legal pages.',
               'The Core website is an independent public interface for the Core project. It is not a product of Discord Inc., GitHub Inc., Google LLC, MongoDB Inc. or any other external provider.',
               'This policy describes technical data handling on the website. It does not replace Discord terms, Discord server rules, browser settings or the separate policies of external services used to open the site.'
             ]
@@ -172,7 +175,8 @@
             body: [
               'The website may store the selected language in browser localStorage so pages can reopen in the chosen language after refresh or return visits.',
               'Symbol and emoji copy tools use the browser clipboard only after a user action. The site does not read the clipboard unnecessarily and does not send clipboard contents to a Core server.',
-              'The webhook editor handles the supplied webhook URL, message text, embed fields, Components V2, image links, colors, profile names and other message settings in the user browser until sending.',
+              'The webhook editor handles the supplied webhook URL, message text, embed fields, Components V2, image links, colors, profile names, thread settings such as a new thread name, existing thread ID and forum tag IDs, and other message settings in the user browser until sending.',
+              'The timestamp generator, ANSI colored text generator and Markdown reference work locally in the browser and create text snippets that the user copies or inserts into the editor.',
               'If the user closes the page, clears site data or uses a private browser session, local settings may be deleted or unavailable.'
             ]
           },
@@ -190,8 +194,10 @@
             body: [
               'A webhook URL is a secret Discord link. Anyone with a valid webhook URL can send messages through that webhook until it is deleted or changed in Discord.',
               'Core does not store webhook URLs on the website and does not add them to a website database. When sending a message, the browser sends the request directly to the Discord webhook URL supplied by the user.',
-              'Webhook message content may be transmitted to Discord because Discord is the service that accepts and publishes the message. After sending, further storage and deletion are governed by Discord and permissions on the relevant server.',
-              'Users should only enter webhook URLs they are allowed to use. If a webhook URL is exposed by mistake, it should be deleted or regenerated in the Discord channel settings.'
+              'Webhook message content, a new thread name, existing thread ID and tag IDs may be transmitted to Discord because Discord is the service that accepts and publishes the message. After sending, further storage and deletion are governed by Discord and permissions on the relevant server.',
+              'Users should only enter webhook URLs they are allowed to use. If a webhook URL is exposed by mistake, it should be deleted or regenerated in the Discord channel settings.',
+              'The webhook editor saves tab may write named local saves to localStorage. Those saves may include message text, embed data, Components V2, the save name, webhook profile name, avatar and webhook URL if the user left it in the editor.',
+              'A .corehook transfer file is an encoded export of editor settings for convenient import in another browser. It is not cryptographic protection, so it should not be shared with third parties if it contains a private webhook URL or material that should not become public.'
             ]
           },
           {
@@ -207,7 +213,7 @@
             heading: '7. Cookies, localStorage and analytics',
             body: [
               'The Core website does not use its own advertising cookies, does not build an advertising profile and does not sell data to ad networks.',
-              'The main local storage is limited to technical interface settings such as the selected language. This data remains in the user browser and can be cleared through browser settings.',
+              'The main local storage is limited to technical interface settings such as the selected language and webhook editor saves when the user explicitly saves them. This data remains in the user browser and can be cleared through browser settings.',
               'If analytics are added in the future, this document must be updated before full use, and the purpose of the analytics must be described separately.'
             ]
           },
@@ -222,7 +228,7 @@
           {
             heading: '9. Retention',
             body: [
-              'Local website settings remain in the browser until localStorage is cleared, the browser is changed, site data is deleted or the browser profile is reset.',
+              'Local website settings and local webhook editor saves remain in the browser until localStorage is cleared, the browser is changed, site data is deleted, the save is manually removed or the browser profile is reset.',
               'Public template catalog data remains available until the relevant template is removed or updated in the Core system.',
               'Technical logs of external providers are retained under their own rules. Core cannot manually delete logs held by GitHub, Google, Discord, a browser vendor or an internet provider.'
             ]
@@ -230,7 +236,7 @@
           {
             heading: '10. User control',
             body: [
-              'Users can clear localStorage and cookies in browser settings to remove the local language choice and other local traces of the interface.',
+              'Users can clear localStorage and cookies in browser settings to remove the local language choice, webhook editor saves and other local traces of the interface.',
               'Users can avoid the webhook editor if they do not want to send a message directly to Discord through a webhook.',
               'Users can delete or regenerate a webhook in Discord if the link was compromised, used by mistake or should no longer work.',
               'Questions about public templates, disputed materials or catalog data should be sent through the official Core server.'
@@ -269,7 +275,7 @@
           {
             heading: '1. Сфера дії',
             body: [
-              'Ця політика стосується публічного сайту Core, включно з головною сторінкою, каталогом шаблонів, сторінками символів та emoji, довідкою команд, редактором webhook-повідомлень і юридичними сторінками.',
+              'Ця політика стосується публічного сайту Core, включно з головною сторінкою, каталогом шаблонів, сторінками символів та emoji, генератором timestamp, генератором кольорового ANSI-тексту, довідником Discord Markdown, довідкою команд, редактором webhook-повідомлень і юридичними сторінками.',
               'Сайт Core є окремим публічним інтерфейсом проєкту Core. Він не є продуктом Discord Inc., GitHub Inc., Google LLC, MongoDB Inc. або інших зовнішніх постачальників.',
               'Ця політика описує технічну обробку даних на сайті. Вона не замінює умови Discord, правила Discord-серверів, налаштування браузера або окремі політики зовнішніх сервісів.'
             ]
@@ -287,7 +293,8 @@
             body: [
               'Сайт може зберігати вибрану мову в localStorage браузера, щоб сторінки відкривалися вибраною мовою після оновлення або повторного відвідування.',
               'Інструменти копіювання символів та emoji використовують буфер обміну браузера тільки після дії користувача. Сайт не читає буфер обміну без потреби і не надсилає його вміст на сервер Core.',
-              'Редактор webhook-повідомлень обробляє введений webhook URL, текст, embed-поля, Components V2, посилання на зображення, кольори, імена профілю та інші налаштування повідомлення у браузері до моменту надсилання.',
+              'Редактор webhook-повідомлень обробляє введений webhook URL, текст, embed-поля, Components V2, посилання на зображення, кольори, імена профілю, налаштування гілки, зокрема назву нової гілки, ID наявної гілки та ID тегів форуму, а також інші налаштування повідомлення у браузері до моменту надсилання.',
+              'Генератор timestamp, генератор кольорового ANSI-тексту і довідник Markdown працюють локально в браузері та створюють текстові фрагменти, які користувач сам копіює або вставляє в редактор.',
               'Якщо користувач закриває сторінку, очищає дані сайту або використовує приватний режим браузера, локальні налаштування можуть бути видалені або недоступні.'
             ]
           },
@@ -305,8 +312,10 @@
             body: [
               'Webhook URL є секретним посиланням Discord. Будь-хто, хто має чинний webhook URL, може надсилати повідомлення через відповідний webhook, доки його не видалено або не змінено в Discord.',
               'Core не зберігає webhook URL на сайті і не додає його до бази даних сайту. Під час надсилання повідомлення браузер надсилає запит напряму на Discord webhook URL, який вказав користувач.',
-              'Вміст webhook-повідомлення може передаватися Discord, тому що Discord фактично приймає і публікує повідомлення. Після надсилання подальше зберігання та видалення регулюються Discord і правами на конкретному сервері.',
-              'Користувач повинен вставляти тільки ті webhook URL, якими має право користуватися. Якщо webhook URL було розкрито помилково, його потрібно видалити або створити заново в налаштуваннях каналу Discord.'
+              'Вміст webhook-повідомлення, назва створюваної гілки, ID наявної гілки та ID тегів можуть передаватися Discord, тому що Discord фактично приймає і публікує повідомлення. Після надсилання подальше зберігання та видалення регулюються Discord і правами на конкретному сервері.',
+              'Користувач повинен вставляти тільки ті webhook URL, якими має право користуватися. Якщо webhook URL було розкрито помилково, його потрібно видалити або створити заново в налаштуваннях каналу Discord.',
+              'Вкладка збережень webhook-редактора може записувати в localStorage іменовані локальні збереження. Такі збереження можуть містити тексти повідомлень, embed-дані, Components V2, назву збереження, імʼя вебхука, аватар і webhook URL, якщо користувач залишив його в редакторі.',
+              'Файл перенесення .corehook є закодованим експортом налаштувань для зручного імпорту в іншому браузері. Він не є криптографічним захистом, тому його не слід передавати третім особам, якщо всередині є приватний webhook URL або матеріали, які не мають стати публічними.'
             ]
           },
           {
@@ -322,7 +331,7 @@
             heading: '7. Cookies, localStorage та аналітика',
             body: [
               'Сайт Core не використовує власні рекламні cookies, не створює рекламний профіль користувача і не продає дані рекламним мережам.',
-              'Основне локальне зберігання обмежується технічними налаштуваннями інтерфейсу, наприклад вибраною мовою. Ці дані знаходяться у браузері користувача і можуть бути очищені засобами браузера.',
+              'Основне локальне зберігання обмежується технічними налаштуваннями інтерфейсу, наприклад вибраною мовою, і збереженнями webhook-редактора, якщо користувач сам натиснув збереження. Ці дані знаходяться у браузері користувача і можуть бути очищені засобами браузера.',
               'Якщо в майбутньому на сайт буде додано аналітику, цей документ має бути оновлений до її повноцінного використання, а призначення аналітики має бути описане окремо.'
             ]
           },
@@ -337,7 +346,7 @@
           {
             heading: '9. Строки зберігання',
             body: [
-              'Локальні налаштування сайту зберігаються у браузері до очищення localStorage, зміни браузера, видалення даних сайту або скидання профілю браузера.',
+              'Локальні налаштування сайту і локальні збереження webhook-редактора зберігаються у браузері до очищення localStorage, зміни браузера, видалення даних сайту, ручного видалення збереження або скидання профілю браузера.',
               'Публічні дані каталогу шаблонів зберігаються до видалення або оновлення відповідного шаблону в системі Core.',
               'Технічні журнали зовнішніх постачальників зберігаються за їхніми правилами. Core не може вручну видалити журнали GitHub, Google, Discord, браузера або інтернет-провайдера.'
             ]
@@ -345,7 +354,7 @@
           {
             heading: '10. Керування даними',
             body: [
-              'Користувач може очистити localStorage і cookies сайту в налаштуваннях браузера, щоб видалити локальний вибір мови та інші локальні сліди роботи інтерфейсу.',
+              'Користувач може очистити localStorage і cookies сайту в налаштуваннях браузера, щоб видалити локальний вибір мови, збереження webhook-редактора та інші локальні сліди роботи інтерфейсу.',
               'Користувач може не використовувати webhook-редактор, якщо не хоче передавати повідомлення напряму в Discord через webhook.',
               'Користувач може видалити або створити заново webhook у Discord, якщо посилання було скомпрометоване, використане помилково або більше не повинно працювати.',
               'З питаннями щодо публічних шаблонів, спірних матеріалів або даних каталогу потрібно звертатися через офіційний сервер Core.'
@@ -384,7 +393,7 @@
           {
             heading: '1. Geltungsbereich',
             body: [
-              'Diese Richtlinie gilt fuer die oeffentliche Core-Website, einschliesslich Startseite, Vorlagenkatalog, Symbol- und Emoji-Seiten, Befehlshilfe, Webhook-Editor und rechtliche Seiten.',
+              'Diese Richtlinie gilt fuer die oeffentliche Core-Website, einschliesslich Startseite, Vorlagenkatalog, Symbol- und Emoji-Seiten, Timestamp-Generator, ANSI-Farbtext-Generator, Discord-Markdown-Referenz, Befehlshilfe, Webhook-Editor und rechtliche Seiten.',
               'Die Core-Website ist eine eigenstaendige oeffentliche Oberflaeche des Core-Projekts. Sie ist kein Produkt von Discord Inc., GitHub Inc., Google LLC, MongoDB Inc. oder anderen externen Anbietern.',
               'Diese Richtlinie beschreibt die technische Datenverarbeitung auf der Website. Sie ersetzt nicht die Discord-Bedingungen, Serverregeln, Browsereinstellungen oder Richtlinien externer Dienste.'
             ]
@@ -402,7 +411,8 @@
             body: [
               'Die Website kann die ausgewaehlte Sprache im localStorage des Browsers speichern, damit Seiten nach Aktualisierung oder erneutem Besuch in dieser Sprache geoeffnet werden.',
               'Symbol- und Emoji-Werkzeuge verwenden die Zwischenablage nur nach einer Nutzeraktion. Die Website liest die Zwischenablage nicht ohne Notwendigkeit und sendet deren Inhalt nicht an einen Core-Server.',
-              'Der Webhook-Editor verarbeitet die angegebene Webhook-URL, Nachrichtentext, Embed-Felder, Components V2, Bildlinks, Farben, Profilnamen und weitere Einstellungen im Browser bis zum Senden.',
+              'Der Webhook-Editor verarbeitet die angegebene Webhook-URL, Nachrichtentext, Embed-Felder, Components V2, Bildlinks, Farben, Profilnamen, Thread-Einstellungen wie neuen Thread-Namen, bestehende Thread-ID und Forum-Tag-IDs sowie weitere Einstellungen im Browser bis zum Senden.',
+              'Timestamp-Generator, ANSI-Farbtext-Generator und Markdown-Referenz arbeiten lokal im Browser und erstellen Textbausteine, die der Nutzer selbst kopiert oder in den Editor einfuegt.',
               'Wenn der Nutzer die Seite schliesst, Website-Daten loescht oder einen privaten Browsermodus verwendet, koennen lokale Einstellungen geloescht oder nicht verfuegbar sein.'
             ]
           },
@@ -420,8 +430,10 @@
             body: [
               'Eine Webhook-URL ist ein geheimer Discord-Link. Wer eine gueltige Webhook-URL besitzt, kann darueber Nachrichten senden, bis sie in Discord geloescht oder geaendert wird.',
               'Core speichert Webhook-URLs nicht auf der Website und fuegt sie keiner Website-Datenbank hinzu. Beim Senden sendet der Browser direkt an die vom Nutzer angegebene Discord-Webhook-URL.',
-              'Der Inhalt einer Webhook-Nachricht kann an Discord uebertragen werden, weil Discord die Nachricht annimmt und veroeffentlicht. Danach richten sich Speicherung und Loeschung nach Discord und den Rechten auf dem jeweiligen Server.',
-              'Nutzer sollten nur Webhook-URLs eingeben, die sie verwenden duerfen. Wurde eine Webhook-URL versehentlich offengelegt, sollte sie in den Discord-Kanaleinstellungen geloescht oder neu erstellt werden.'
+              'Der Inhalt einer Webhook-Nachricht, ein neuer Thread-Name, eine bestehende Thread-ID und Tag-IDs koennen an Discord uebertragen werden, weil Discord die Nachricht annimmt und veroeffentlicht. Danach richten sich Speicherung und Loeschung nach Discord und den Rechten auf dem jeweiligen Server.',
+              'Nutzer sollten nur Webhook-URLs eingeben, die sie verwenden duerfen. Wurde eine Webhook-URL versehentlich offengelegt, sollte sie in den Discord-Kanaleinstellungen geloescht oder neu erstellt werden.',
+              'Die Speicher-Ansicht des Webhook-Editors kann benannte lokale Speicherungen in localStorage ablegen. Diese Speicherungen koennen Nachrichtentexte, Embed-Daten, Components V2, den Speichernamen, Webhook-Profilnamen, Avatar und die Webhook-URL enthalten, wenn der Nutzer sie im Editor belassen hat.',
+              'Eine .corehook-Uebertragungsdatei ist ein kodierter Export der Editor-Einstellungen fuer den Import in einem anderen Browser. Sie ist kein kryptografischer Schutz und sollte nicht an Dritte weitergegeben werden, wenn sie eine private Webhook-URL oder nicht oeffentliche Inhalte enthaelt.'
             ]
           },
           {
@@ -437,7 +449,7 @@
             heading: '7. Cookies, localStorage und Analyse',
             body: [
               'Die Core-Website verwendet keine eigenen Werbe-Cookies, erstellt kein Werbeprofil und verkauft keine Daten an Werbenetzwerke.',
-              'Die lokale Speicherung beschraenkt sich im Wesentlichen auf technische Oberflaechen-Einstellungen wie die Sprache. Diese Daten bleiben im Browser und koennen dort geloescht werden.',
+              'Die lokale Speicherung beschraenkt sich im Wesentlichen auf technische Oberflaechen-Einstellungen wie die Sprache und auf Webhook-Editor-Speicherungen, wenn der Nutzer sie ausdruecklich speichert. Diese Daten bleiben im Browser und koennen dort geloescht werden.',
               'Falls kuenftig Analytik hinzugefuegt wird, muss dieses Dokument vor der vollstaendigen Nutzung aktualisiert und der Zweck separat beschrieben werden.'
             ]
           },
@@ -452,7 +464,7 @@
           {
             heading: '9. Aufbewahrung',
             body: [
-              'Lokale Website-Einstellungen bleiben im Browser, bis localStorage geleert, der Browser gewechselt, Website-Daten geloescht oder das Browserprofil zurueckgesetzt wird.',
+              'Lokale Website-Einstellungen und lokale Webhook-Editor-Speicherungen bleiben im Browser, bis localStorage geleert, der Browser gewechselt, Website-Daten geloescht, die Speicherung manuell entfernt oder das Browserprofil zurueckgesetzt wird.',
               'Oeffentliche Vorlagendaten bleiben verfuegbar, bis die jeweilige Vorlage im Core-System entfernt oder aktualisiert wird.',
               'Technische Protokolle externer Anbieter werden nach deren Regeln gespeichert. Core kann Protokolle von GitHub, Google, Discord, Browseranbietern oder Internetanbietern nicht manuell loeschen.'
             ]
@@ -460,7 +472,7 @@
           {
             heading: '10. Kontrolle durch Nutzer',
             body: [
-              'Nutzer koennen localStorage und Cookies in den Browsereinstellungen loeschen, um lokale Sprachwahl und andere lokale Spuren der Oberflaeche zu entfernen.',
+              'Nutzer koennen localStorage und Cookies in den Browsereinstellungen loeschen, um lokale Sprachwahl, Webhook-Editor-Speicherungen und andere lokale Spuren der Oberflaeche zu entfernen.',
               'Nutzer koennen den Webhook-Editor vermeiden, wenn sie keine Nachricht direkt ueber einen Webhook an Discord senden wollen.',
               'Nutzer koennen einen Webhook in Discord loeschen oder neu erstellen, wenn der Link kompromittiert, versehentlich genutzt oder nicht mehr benoetigt wird.',
               'Fragen zu oeffentlichen Vorlagen, strittigen Inhalten oder Katalogdaten sollten ueber den offiziellen Core-Server gestellt werden.'
@@ -526,9 +538,12 @@
             heading: '4. Webhook-редактор',
             body: [
               'Пользователь может использовать webhook-редактор только для webhook URL, которыми он вправе управлять или пользоваться с разрешения владельца канала или сервера.',
-              'Пользователь несет ответственность за содержимое сообщений, embed, Components V2, ссылки, изображения, упоминания, кнопки-ссылки и любые действия, которые выполняются через указанный webhook.',
+              'Пользователь несет ответственность за содержимое сообщений, embed, Components V2, ссылки, изображения, упоминания, кнопки-ссылки, названия веток, ID существующих веток, ID форумных тегов и любые действия, которые выполняются через указанный webhook.',
               'Запрещено использовать webhook-редактор для спама, фишинга, вредоносных ссылок, массовых нежелательных сообщений, обхода блокировок, выдачи себя за других людей, обмана, публикации чужих данных или нарушения правил Discord.',
-              'Если сообщение отправлено через webhook, отмена публикации, удаление сообщения или изменение webhook выполняются средствами Discord и зависят от прав пользователя на сервере.'
+              'Если сообщение отправлено через webhook, отмена публикации, удаление сообщения или изменение webhook выполняются средствами Discord и зависят от прав пользователя на сервере.',
+              'Именованные сохранения в редакторе предназначены только для удобства работы пользователя в его браузере. Пользователь сам решает, что сохранять, как называть сохранение, когда удалять его из localStorage и кому передавать экспортированный файл.',
+              'Закодированный файл переноса предназначен для импорта настроек редактора между браузерами и устройствами. Перед передачей такого файла пользователь обязан проверить, нет ли в нем webhook URL, закрытых ссылок, данных веток, внутренних текстов сервера или других сведений, которые не должны попасть к третьим лицам.',
+              'Инструменты timestamp, цветного ANSI-текста и Markdown только подготавливают текстовые фрагменты. Пользователь обязан самостоятельно проверить, как они отображаются в текущем клиенте Discord перед публикацией.'
             ]
           },
           {
@@ -631,9 +646,12 @@
             heading: '4. Webhook editor',
             body: [
               'Users may use the webhook editor only with webhook URLs they are allowed to control or use with permission from the channel or server owner.',
-              'The user is responsible for message content, embeds, Components V2, links, images, mentions, link buttons and any action performed through the supplied webhook.',
+              'The user is responsible for message content, embeds, Components V2, links, images, mentions, link buttons, thread names, existing thread IDs, forum tag IDs and any action performed through the supplied webhook.',
               'The webhook editor must not be used for spam, phishing, malicious links, unwanted mass messages, evading blocks, impersonation, deception, publishing other people data or violating Discord rules.',
-              'After a message is sent through a webhook, deletion, editing or webhook changes are handled in Discord and depend on server permissions.'
+              'After a message is sent through a webhook, deletion, editing or webhook changes are handled in Discord and depend on server permissions.',
+              'Named saves in the editor are provided only for the user convenience in their browser. The user decides what to save, how to name a save, when to remove it from localStorage and who may receive an exported file.',
+              'The encoded transfer file is intended for importing editor settings between browsers and devices. Before sharing such a file, the user must check whether it contains webhook URLs, private links, thread data, internal server text or other information that should not reach third parties.',
+              'Timestamp, ANSI colored text and Markdown tools only prepare text fragments. The user remains responsible for verifying how those fragments render in the current Discord client before publishing them.'
             ]
           },
           {
@@ -736,9 +754,12 @@
             heading: '4. Webhook-редактор',
             body: [
               'Користувач може використовувати webhook-редактор тільки для webhook URL, якими має право керувати або користуватися з дозволу власника каналу чи сервера.',
-              'Користувач відповідає за вміст повідомлень, embed, Components V2, посилання, зображення, згадки, кнопки-посилання та будь-які дії, виконані через вказаний webhook.',
+              'Користувач відповідає за вміст повідомлень, embed, Components V2, посилання, зображення, згадки, кнопки-посилання, назви гілок, ID наявних гілок, ID форумних тегів та будь-які дії, виконані через вказаний webhook.',
               'Заборонено використовувати webhook-редактор для спаму, фішингу, шкідливих посилань, масових небажаних повідомлень, обходу блокувань, видавання себе за інших, обману, публікації чужих даних або порушення правил Discord.',
-              'Якщо повідомлення надіслано через webhook, скасування публікації, видалення повідомлення або зміна webhook виконуються засобами Discord і залежать від прав користувача на сервері.'
+              'Якщо повідомлення надіслано через webhook, скасування публікації, видалення повідомлення або зміна webhook виконуються засобами Discord і залежать від прав користувача на сервері.',
+              'Іменовані збереження в редакторі призначені тільки для зручності користувача в його браузері. Користувач сам вирішує, що зберігати, як називати збереження, коли видаляти його з localStorage і кому передавати експортований файл.',
+              'Закодований файл перенесення призначений для імпорту налаштувань редактора між браузерами та пристроями. Перед передаванням такого файла користувач має перевірити, чи немає в ньому webhook URL, закритих посилань, даних гілок, внутрішніх текстів сервера або інших даних, які не мають потрапити до третіх осіб.',
+              'Інструменти timestamp, кольорового ANSI-тексту та Markdown тільки готують текстові фрагменти. Користувач має самостійно перевірити, як вони відображаються в поточному клієнті Discord перед публікацією.'
             ]
           },
           {
@@ -841,9 +862,12 @@
             heading: '4. Webhook-Editor',
             body: [
               'Nutzer duerfen den Webhook-Editor nur mit Webhook-URLs verwenden, die sie verwalten duerfen oder mit Erlaubnis des Kanal- oder Serverbetreibers nutzen duerfen.',
-              'Der Nutzer ist fuer Nachrichtentexte, Embeds, Components V2, Links, Bilder, Erwähnungen, Link-Buttons und jede Aktion ueber den angegebenen Webhook verantwortlich.',
+              'Der Nutzer ist fuer Nachrichtentexte, Embeds, Components V2, Links, Bilder, Erwähnungen, Link-Buttons, Thread-Namen, bestehende Thread-IDs, Forum-Tag-IDs und jede Aktion ueber den angegebenen Webhook verantwortlich.',
               'Der Editor darf nicht fuer Spam, Phishing, schädliche Links, unerwuenschte Massennachrichten, Umgehung von Sperren, Identitaetstaeuschung, Betrug, Veroeffentlichung fremder Daten oder Discord-Regelverstoesse genutzt werden.',
-              'Nach dem Senden ueber einen Webhook erfolgen Loeschung, Bearbeitung oder Webhook-Aenderungen in Discord und haengen von den Serverrechten ab.'
+              'Nach dem Senden ueber einen Webhook erfolgen Loeschung, Bearbeitung oder Webhook-Aenderungen in Discord und haengen von den Serverrechten ab.',
+              'Benannte Speicherungen im Editor dienen nur der Bequemlichkeit des Nutzers in seinem Browser. Der Nutzer entscheidet selbst, was gespeichert wird, wie die Speicherung heisst, wann sie aus localStorage entfernt wird und wer eine exportierte Datei erhalten darf.',
+              'Die kodierte Uebertragungsdatei dient dem Import von Editor-Einstellungen zwischen Browsern und Geraeten. Vor einer Weitergabe muss der Nutzer pruefen, ob sie Webhook-URLs, private Links, Thread-Daten, interne Servertexte oder andere Informationen enthaelt, die nicht an Dritte gelangen sollen.',
+              'Timestamp-, ANSI-Farbtext- und Markdown-Werkzeuge bereiten nur Textbausteine vor. Der Nutzer muss selbst pruefen, wie sie im aktuellen Discord-Client vor der Veroeffentlichung dargestellt werden.'
             ]
           },
           {
@@ -925,7 +949,8 @@
             body: [
               'Эта политика относится к Discord-боту Core, его публичным командам, контекстным действиям, системам шаблонов, уровням, автомодерации, откату, уведомлениям, предложениям, фидбеку и служебным каналам Core.',
               'Core является сторонним Discord-ботом. Он не является официальным продуктом Discord Inc. и работает поверх Discord API в рамках выданных сервером прав.',
-              'Обработка данных зависит от того, на каких серверах добавлен бот, какие права ему выданы, какие команды запускают пользователи и какие функции включены владельцем или администрацией сервера.'
+              'Обработка данных зависит от того, на каких серверах добавлен бот, какие права ему выданы, какие команды запускают пользователи и какие функции включены владельцем или администрацией сервера.',
+              'Локальные сохранения webhook-редактора сайта Core не передаются боту автоматически. Бот получает такие данные только если пользователь сам отправит их через Discord, команду, вложение, webhook или другой явный канал передачи.'
             ]
           },
           {
@@ -1050,7 +1075,8 @@
             body: [
               'This policy applies to the Core Discord bot, its public commands, context actions, template systems, levels, automoderation, rollback, notifications, suggestions, feedback and Core service channels.',
               'Core is a third-party Discord bot. It is not an official Discord Inc. product and operates through the Discord API under permissions granted on a server.',
-              'Data handling depends on the servers where the bot is installed, the permissions granted, commands used by users and features enabled by the owner or server administration.'
+              'Data handling depends on the servers where the bot is installed, the permissions granted, commands used by users and features enabled by the owner or server administration.',
+              'Local saves from the Core website webhook editor are not sent to the bot automatically. The bot receives that data only if a user deliberately sends it through Discord, a command, an attachment, a webhook or another explicit transfer channel.'
             ]
           },
           {
@@ -1175,7 +1201,8 @@
             body: [
               'Ця політика стосується Discord-бота Core, його публічних команд, контекстних дій, систем шаблонів, рівнів, автомодерації, відкату, сповіщень, пропозицій, фідбеку та службових каналів Core.',
               'Core є стороннім Discord-ботом. Він не є офіційним продуктом Discord Inc. і працює через Discord API у межах прав, виданих на сервері.',
-              'Обробка даних залежить від серверів, де додано бота, виданих прав, команд, які запускають користувачі, і функцій, увімкнених власником або адміністрацією сервера.'
+              'Обробка даних залежить від серверів, де додано бота, виданих прав, команд, які запускають користувачі, і функцій, увімкнених власником або адміністрацією сервера.',
+              'Локальні збереження webhook-редактора сайту Core не передаються боту автоматично. Бот отримує такі дані тільки якщо користувач сам надішле їх через Discord, команду, вкладення, webhook або інший явний канал передавання.'
             ]
           },
           {
@@ -1300,7 +1327,8 @@
             body: [
               'Diese Richtlinie gilt fuer den Core Discord-Bot, seine oeffentlichen Befehle, Kontextaktionen, Vorlagensysteme, Level, Automoderation, Rollback, Benachrichtigungen, Vorschlaege, Feedback und Core-Servicekanaele.',
               'Core ist ein Drittanbieter-Discord-Bot. Er ist kein offizielles Produkt von Discord Inc. und arbeitet ueber die Discord API im Rahmen der auf einem Server erteilten Berechtigungen.',
-              'Die Datenverarbeitung haengt davon ab, auf welchen Servern der Bot installiert ist, welche Rechte er hat, welche Befehle Nutzer ausfuehren und welche Funktionen vom Besitzer oder der Administration aktiviert wurden.'
+              'Die Datenverarbeitung haengt davon ab, auf welchen Servern der Bot installiert ist, welche Rechte er hat, welche Befehle Nutzer ausfuehren und welche Funktionen vom Besitzer oder der Administration aktiviert wurden.',
+              'Lokale Speicherungen aus dem Core-Website-Webhook-Editor werden nicht automatisch an den Bot gesendet. Der Bot erhaelt solche Daten nur, wenn ein Nutzer sie bewusst ueber Discord, einen Befehl, einen Anhang, einen Webhook oder einen anderen ausdruecklichen Uebertragungskanal sendet.'
             ]
           },
           {
@@ -1427,7 +1455,8 @@
             body: [
               'Добавляя Core на сервер, используя команды бота или разрешая другим участникам использовать его функции, пользователь и владелец сервера соглашаются с этими условиями и политикой конфиденциальности бота.',
               'Если пользователь не согласен с условиями, он не должен добавлять бота, запускать команды, применять шаблоны, отправлять предложения или использовать функции Core.',
-              'Использование Core также требует соблюдения условий Discord, правил Discord Developer Platform, правил конкретного сервера и применимого законодательства.'
+              'Использование Core также требует соблюдения условий Discord, правил Discord Developer Platform, правил конкретного сервера и применимого законодательства.',
+              'Если пользователь переносит данные из инструментов сайта Core в бота, Discord или webhook, он отвечает за проверку содержимого файла, прав на публикацию и отсутствие приватных webhook URL или внутренних материалов в передаваемых данных.'
             ]
           },
           {
@@ -1567,7 +1596,8 @@
             body: [
               'By adding Core to a server, using bot commands or allowing other members to use its features, the user and server owner agree to these terms and the bot privacy policy.',
               'If the user does not agree, they must not add the bot, run commands, apply templates, send suggestions or use Core features.',
-              'Using Core also requires compliance with Discord terms, Discord Developer Platform rules, the rules of the specific server and applicable law.'
+              'Using Core also requires compliance with Discord terms, Discord Developer Platform rules, the rules of the specific server and applicable law.',
+              'If a user moves data from Core website tools into the bot, Discord or a webhook, the user is responsible for checking the file content, publication permissions and the absence of private webhook URLs or internal material in the transferred data.'
             ]
           },
           {
@@ -1707,7 +1737,8 @@
             body: [
               'Додаючи Core на сервер, використовуючи команди бота або дозволяючи іншим учасникам використовувати його функції, користувач і власник сервера погоджуються з цими умовами та політикою конфіденційності бота.',
               'Якщо користувач не погоджується з умовами, він не повинен додавати бота, запускати команди, застосовувати шаблони, надсилати пропозиції або використовувати функції Core.',
-              'Використання Core також потребує дотримання умов Discord, правил Discord Developer Platform, правил конкретного сервера і застосовного законодавства.'
+              'Використання Core також потребує дотримання умов Discord, правил Discord Developer Platform, правил конкретного сервера і застосовного законодавства.',
+              'Якщо користувач переносить дані з інструментів сайту Core у бота, Discord або webhook, він відповідає за перевірку вмісту файла, прав на публікацію та відсутність приватних webhook URL або внутрішніх матеріалів у переданих даних.'
             ]
           },
           {
@@ -1847,7 +1878,8 @@
             body: [
               'Durch Hinzufuegen von Core zu einem Server, Nutzung von Befehlen oder Erlaubnis fuer andere Mitglieder, Funktionen zu nutzen, akzeptieren Nutzer und Serverbesitzer diese Bedingungen und die Bot-Datenschutzrichtlinie.',
               'Wer nicht zustimmt, darf den Bot nicht hinzufuegen, keine Befehle ausfuehren, keine Vorlagen anwenden, keine Vorschlaege senden und keine Core-Funktionen nutzen.',
-              'Die Nutzung von Core erfordert auch Einhaltung der Discord-Bedingungen, Discord Developer Platform-Regeln, Regeln des konkreten Servers und geltenden Rechts.'
+              'Die Nutzung von Core erfordert auch Einhaltung der Discord-Bedingungen, Discord Developer Platform-Regeln, Regeln des konkreten Servers und geltenden Rechts.',
+              'Wenn ein Nutzer Daten aus Core-Website-Werkzeugen in den Bot, Discord oder einen Webhook uebertraegt, ist er fuer die Pruefung des Dateiinhalts, der Veroeffentlichungsrechte und das Fehlen privater Webhook-URLs oder interner Materialien verantwortlich.'
             ]
           },
           {

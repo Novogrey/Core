@@ -22,6 +22,45 @@
   };
 
   const instances = new WeakMap();
+  const WEBHOOK_STORAGE_KEY = 'core-webhook-editor-saves-v1';
+  const WEBHOOK_TRANSFER_PREFIX = 'CORE_WEBHOOK_EDITOR_V1.';
+  const DEFAULT_CORE_IMAGE_URL = 'https://cdn.discordapp.com/attachments/1452039397435244677/1458169510447153255/ChatGPT_Image_20_._2025_._17_38_56_1.png?ex=6a0963ee&is=6a08126e&hm=8328eb6055d24a95673ecceb0833dd74f26a819f5a9bfc6ce50918515dc4e70d&';
+  const TIMESTAMP_STYLES = ['t', 'T', 'd', 'D', 'f', 'F', 'R'];
+  const ANSI_COLORS = [
+    ['', 'Default', 39],
+    ['gray', 'Gray', 30],
+    ['red', 'Red', 31],
+    ['green', 'Green', 32],
+    ['yellow', 'Yellow', 33],
+    ['blue', 'Blue', 34],
+    ['pink', 'Pink', 35],
+    ['cyan', 'Cyan', 36],
+    ['white', 'White', 37]
+  ];
+  const ANSI_BACKGROUNDS = [
+    ['', 'Default', 49],
+    ['dark-blue', 'Dark blue', 40],
+    ['orange', 'Orange', 41],
+    ['gray', 'Gray', 42],
+    ['blue-gray', 'Blue gray', 43],
+    ['light-gray', 'Light gray', 44],
+    ['indigo', 'Indigo', 45],
+    ['light-gray-2', 'Light gray 2', 46],
+    ['white', 'White', 47]
+  ];
+  const MARKDOWN_SNIPPETS = [
+    ['**Bold text**', '**Bold text**'],
+    ['*Italic text*', '*Italic text*'],
+    ['__Underlined text__', '__Underlined text__'],
+    ['~~Strikethrough~~', '~~Strikethrough~~'],
+    ['||Spoiler||', '||Spoiler||'],
+    ['> Quote', '> Quote'],
+    ['# Heading', '# Heading'],
+    ['[Link](https://example.com)', '[Link](https://example.com)'],
+    ['`Inline code`', '`Inline code`'],
+    ['```js\nconsole.log(\"Core\");\n```', '```js\nconsole.log(\"Core\");\n```']
+  ];
+
   const EDITOR_TEXT = {
     ru: {
       ready: 'Готово',
@@ -69,7 +108,34 @@
       imageUrl: 'URL изображения',
       footer: 'Нижний текст',
       footerIcon: 'Иконка нижнего текста',
-      timestampIso: 'Время ISO',
+      timestampIso: 'Время',
+      timestampDate: 'Дата',
+      timestampTime: 'Время',
+      timestampNow: 'Сейчас',
+      timestampClear: 'Очистить время',
+      webhookThreadTitle: 'Ветка',
+      webhookThreadName: 'Название новой ветки',
+      webhookThreadId: 'ID существующей ветки',
+      webhookTags: 'ID тегов форума',
+      webhookThreadHint: 'Для форумных и media-каналов можно создать новую ветку. Для существующей ветки укажите её ID. Теги перечисляйте через запятую.',
+      editorTools: 'Инструменты',
+      closeTools: 'Закрыть инструменты',
+      timestampTool: 'Timestamp',
+      colorTool: 'Цветной текст',
+      markdownTool: 'Markdown',
+      timestampStyle: 'Формат',
+      timestampOutput: 'Код Discord',
+      copyToolValue: 'Скопировать',
+      insertToolValue: 'Вставить',
+      colorText: 'Текст',
+      colorForeground: 'Цвет текста',
+      colorBackground: 'Фон',
+      colorBold: 'Жирный',
+      colorUnderline: 'Подчёркнутый',
+      noColor: 'Без цвета',
+      markdownSnippets: 'Готовые фрагменты',
+      toolCopied: 'Скопировано.',
+      toolInsertHint: 'Вставка попадёт в активное текстовое поле редактора.',
       fields: 'Поля',
       addField: 'Добавить поле',
       fieldName: 'Название',
@@ -220,7 +286,34 @@
       imageUrl: 'Image URL',
       footer: 'Footer',
       footerIcon: 'Footer icon',
-      timestampIso: 'Timestamp ISO',
+      timestampIso: 'Time',
+      timestampDate: 'Date',
+      timestampTime: 'Time',
+      timestampNow: 'Now',
+      timestampClear: 'Clear time',
+      webhookThreadTitle: 'Thread',
+      webhookThreadName: 'New thread name',
+      webhookThreadId: 'Existing thread ID',
+      webhookTags: 'Forum tag IDs',
+      webhookThreadHint: 'Forum and media channels can create a new thread. To post into an existing thread, enter its ID. Separate tag IDs with commas.',
+      editorTools: 'Tools',
+      closeTools: 'Close tools',
+      timestampTool: 'Timestamp',
+      colorTool: 'Colored text',
+      markdownTool: 'Markdown',
+      timestampStyle: 'Format',
+      timestampOutput: 'Discord code',
+      copyToolValue: 'Copy',
+      insertToolValue: 'Insert',
+      colorText: 'Text',
+      colorForeground: 'Text color',
+      colorBackground: 'Background',
+      colorBold: 'Bold',
+      colorUnderline: 'Underline',
+      noColor: 'No color',
+      markdownSnippets: 'Ready snippets',
+      toolCopied: 'Copied.',
+      toolInsertHint: 'Insert sends the value into the active editor text field.',
       fields: 'Fields',
       addField: 'Add field',
       fieldName: 'Name',
@@ -371,7 +464,34 @@
       imageUrl: 'URL зображення',
       footer: 'Нижній текст',
       footerIcon: 'Іконка нижнього тексту',
-      timestampIso: 'Час ISO',
+      timestampIso: 'Час',
+      timestampDate: 'Дата',
+      timestampTime: 'Час',
+      timestampNow: 'Зараз',
+      timestampClear: 'Очистити час',
+      webhookThreadTitle: 'Гілка',
+      webhookThreadName: 'Назва нової гілки',
+      webhookThreadId: 'ID наявної гілки',
+      webhookTags: 'ID тегів форуму',
+      webhookThreadHint: 'Для форумних і media-каналів можна створити нову гілку. Для наявної гілки вкажіть її ID. Теги перелічуйте через кому.',
+      editorTools: 'Інструменти',
+      closeTools: 'Закрити інструменти',
+      timestampTool: 'Timestamp',
+      colorTool: 'Кольоровий текст',
+      markdownTool: 'Markdown',
+      timestampStyle: 'Формат',
+      timestampOutput: 'Код Discord',
+      copyToolValue: 'Скопіювати',
+      insertToolValue: 'Вставити',
+      colorText: 'Текст',
+      colorForeground: 'Колір тексту',
+      colorBackground: 'Фон',
+      colorBold: 'Жирний',
+      colorUnderline: 'Підкреслений',
+      noColor: 'Без кольору',
+      markdownSnippets: 'Готові фрагменти',
+      toolCopied: 'Скопійовано.',
+      toolInsertHint: 'Вставка потрапить в активне текстове поле редактора.',
       fields: 'Поля',
       addField: 'Додати поле',
       fieldName: 'Назва',
@@ -522,7 +642,34 @@
       imageUrl: 'Bild-URL',
       footer: 'Fußzeile',
       footerIcon: 'Fußzeilen-Icon',
-      timestampIso: 'Zeit ISO',
+      timestampIso: 'Zeit',
+      timestampDate: 'Datum',
+      timestampTime: 'Uhrzeit',
+      timestampNow: 'Jetzt',
+      timestampClear: 'Zeit leeren',
+      webhookThreadTitle: 'Thread',
+      webhookThreadName: 'Neuer Thread-Name',
+      webhookThreadId: 'Bestehende Thread-ID',
+      webhookTags: 'Forum-Tag-IDs',
+      webhookThreadHint: 'Forum- und Media-Kanaele koennen einen neuen Thread erstellen. Fuer einen bestehenden Thread die ID eintragen. Tag-IDs mit Kommas trennen.',
+      editorTools: 'Werkzeuge',
+      closeTools: 'Werkzeuge schliessen',
+      timestampTool: 'Timestamp',
+      colorTool: 'Farbiger Text',
+      markdownTool: 'Markdown',
+      timestampStyle: 'Format',
+      timestampOutput: 'Discord-Code',
+      copyToolValue: 'Kopieren',
+      insertToolValue: 'Einfuegen',
+      colorText: 'Text',
+      colorForeground: 'Textfarbe',
+      colorBackground: 'Hintergrund',
+      colorBold: 'Fett',
+      colorUnderline: 'Unterstrichen',
+      noColor: 'Keine Farbe',
+      markdownSnippets: 'Fertige Bausteine',
+      toolCopied: 'Kopiert.',
+      toolInsertHint: 'Einfuegen schreibt den Wert in das aktive Textfeld des Editors.',
       fields: 'Felder',
       addField: 'Feld hinzufügen',
       fieldName: 'Name',
@@ -629,6 +776,137 @@
     }
   };
 
+  const STORAGE_TEXT = {
+    ru: {
+      settingsTab: 'Webhook',
+      savesTab: 'Сохранения',
+      storageTitle: 'Локальные сохранения',
+      storageKicker: 'localStorage',
+      storageNotice: 'Сохранения остаются только в этом браузере через localStorage. На другом устройстве или в другом браузере их, скорее всего, не будет. Для переноса используйте закодированный экспорт и импорт.',
+      storageFileNotice: 'Закодированный файл содержит все настройки текущего редактора, включая сообщения, Components V2, имя вебхука, аватар и webhook URL, если он заполнен.',
+      closeSaves: 'Закрыть сохранения',
+      saveName: 'Название сохранения',
+      saveNamePlaceholder: 'Например: правила, анонс, приветствие',
+      saveCurrent: 'Сохранить текущее',
+      exportCurrentEncoded: 'Экспорт текущего',
+      exportAllEncoded: 'Экспорт всех',
+      importEncoded: 'Импорт файла',
+      loadSave: 'Загрузить',
+      exportSave: 'Экспорт',
+      deleteSave: 'Удалить',
+      noSaves: 'Сохранений пока нет.',
+      savedAt: 'Сохранено',
+      updatedAt: 'Обновлено',
+      storageSaved: 'Сохранение добавлено локально.',
+      storageLoaded: 'Сохранение загружено.',
+      storageDeleted: 'Сохранение удалено.',
+      storageExported: 'Закодированный файл создан.',
+      storageImported: 'Импорт завершен.',
+      storageImportFailed: 'Не удалось импортировать закодированный файл.',
+      storageUnavailable: 'localStorage недоступен в этом браузере.',
+      importMissingMessages: 'Файл не содержит сообщений редактора.',
+      encodedOnly: 'Выберите файл, экспортированный из этой вкладки.',
+      savedCountOne: 'сообщение',
+      savedCountMany: 'сообщений'
+    },
+    en: {
+      settingsTab: 'Webhook',
+      savesTab: 'Saves',
+      storageTitle: 'Local saves',
+      storageKicker: 'localStorage',
+      storageNotice: 'Saves stay only in this browser through localStorage. They will probably not exist on another device or in another browser. Use encoded export and import to move them.',
+      storageFileNotice: 'The encoded file contains all current editor settings, including messages, Components V2, webhook name, avatar and webhook URL if filled.',
+      closeSaves: 'Close saves',
+      saveName: 'Save name',
+      saveNamePlaceholder: 'For example: rules, announcement, welcome',
+      saveCurrent: 'Save current',
+      exportCurrentEncoded: 'Export current',
+      exportAllEncoded: 'Export all',
+      importEncoded: 'Import file',
+      loadSave: 'Load',
+      exportSave: 'Export',
+      deleteSave: 'Delete',
+      noSaves: 'No saves yet.',
+      savedAt: 'Saved',
+      updatedAt: 'Updated',
+      storageSaved: 'Save added locally.',
+      storageLoaded: 'Save loaded.',
+      storageDeleted: 'Save deleted.',
+      storageExported: 'Encoded file created.',
+      storageImported: 'Import completed.',
+      storageImportFailed: 'Failed to import encoded file.',
+      storageUnavailable: 'localStorage is not available in this browser.',
+      importMissingMessages: 'The file does not contain editor messages.',
+      encodedOnly: 'Choose a file exported from this tab.',
+      savedCountOne: 'message',
+      savedCountMany: 'messages'
+    },
+    ua: {
+      settingsTab: 'Webhook',
+      savesTab: 'Збереження',
+      storageTitle: 'Локальні збереження',
+      storageKicker: 'localStorage',
+      storageNotice: 'Збереження залишаються тільки в цьому браузері через localStorage. На іншому пристрої або в іншому браузері їх, найімовірніше, не буде. Для перенесення використовуйте закодований експорт та імпорт.',
+      storageFileNotice: 'Закодований файл містить усі налаштування поточного редактора, включно з повідомленнями, Components V2, іменем вебхука, аватаром і webhook URL, якщо він заповнений.',
+      closeSaves: 'Закрити збереження',
+      saveName: 'Назва збереження',
+      saveNamePlaceholder: 'Наприклад: правила, анонс, привітання',
+      saveCurrent: 'Зберегти поточне',
+      exportCurrentEncoded: 'Експорт поточного',
+      exportAllEncoded: 'Експорт усіх',
+      importEncoded: 'Імпорт файла',
+      loadSave: 'Завантажити',
+      exportSave: 'Експорт',
+      deleteSave: 'Видалити',
+      noSaves: 'Збережень поки немає.',
+      savedAt: 'Збережено',
+      updatedAt: 'Оновлено',
+      storageSaved: 'Збереження додано локально.',
+      storageLoaded: 'Збереження завантажено.',
+      storageDeleted: 'Збереження видалено.',
+      storageExported: 'Закодований файл створено.',
+      storageImported: 'Імпорт завершено.',
+      storageImportFailed: 'Не вдалося імпортувати закодований файл.',
+      storageUnavailable: 'localStorage недоступний у цьому браузері.',
+      importMissingMessages: 'Файл не містить повідомлень редактора.',
+      encodedOnly: 'Виберіть файл, експортований з цієї вкладки.',
+      savedCountOne: 'повідомлення',
+      savedCountMany: 'повідомлень'
+    },
+    de: {
+      settingsTab: 'Webhook',
+      savesTab: 'Speicher',
+      storageTitle: 'Lokale Speicherungen',
+      storageKicker: 'localStorage',
+      storageNotice: 'Speicherungen bleiben nur in diesem Browser ueber localStorage. Auf einem anderen Geraet oder in einem anderen Browser sind sie wahrscheinlich nicht vorhanden. Nutzen Sie kodierten Export und Import zum Uebertragen.',
+      storageFileNotice: 'Die kodierte Datei enthaelt alle aktuellen Editor-Einstellungen, einschliesslich Nachrichten, Components V2, Webhook-Name, Avatar und Webhook-URL, wenn sie ausgefuellt ist.',
+      closeSaves: 'Speicherungen schliessen',
+      saveName: 'Name der Speicherung',
+      saveNamePlaceholder: 'Zum Beispiel: Regeln, Ankuendigung, Begruessung',
+      saveCurrent: 'Aktuelles speichern',
+      exportCurrentEncoded: 'Aktuelles exportieren',
+      exportAllEncoded: 'Alle exportieren',
+      importEncoded: 'Datei importieren',
+      loadSave: 'Laden',
+      exportSave: 'Export',
+      deleteSave: 'Loeschen',
+      noSaves: 'Noch keine Speicherungen.',
+      savedAt: 'Gespeichert',
+      updatedAt: 'Aktualisiert',
+      storageSaved: 'Speicherung lokal hinzugefuegt.',
+      storageLoaded: 'Speicherung geladen.',
+      storageDeleted: 'Speicherung geloescht.',
+      storageExported: 'Kodierte Datei erstellt.',
+      storageImported: 'Import abgeschlossen.',
+      storageImportFailed: 'Kodierte Datei konnte nicht importiert werden.',
+      storageUnavailable: 'localStorage ist in diesem Browser nicht verfuegbar.',
+      importMissingMessages: 'Die Datei enthaelt keine Editor-Nachrichten.',
+      encodedOnly: 'Waehlen Sie eine Datei, die aus dieser Registerkarte exportiert wurde.',
+      savedCountOne: 'Nachricht',
+      savedCountMany: 'Nachrichten'
+    }
+  };
+
   function editorLanguage() {
     const saved = localStorage.getItem('core-site-language');
     if (EDITOR_TEXT[saved]) return saved;
@@ -641,6 +919,11 @@
   function et(key) {
     const language = editorLanguage();
     return EDITOR_TEXT[language]?.[key] || EDITOR_TEXT.ru[key] || key;
+  }
+
+  function st(key) {
+    const language = editorLanguage();
+    return STORAGE_TEXT[language]?.[key] || STORAGE_TEXT.en[key] || key;
   }
 
   function escapeHtml(value) {
@@ -676,6 +959,68 @@
     return JSON.parse(JSON.stringify(value));
   }
 
+  function readWebhookSaves() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(WEBHOOK_STORAGE_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed.filter((item) => item && typeof item === 'object') : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeWebhookSaves(items) {
+    try {
+      localStorage.setItem(WEBHOOK_STORAGE_KEY, JSON.stringify(items.slice(0, 40)));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function makeSaveId() {
+    return `save-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  function slugFilePart(value, fallback = 'webhook') {
+    const slug = String(value || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9а-яёіїєґäöüß]+/gi, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 64);
+    return slug || fallback;
+  }
+
+  function encodeTransferPayload(payload) {
+    const json = JSON.stringify(payload);
+    const bytes = new TextEncoder().encode(json);
+    let binary = '';
+    bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+    return `${WEBHOOK_TRANSFER_PREFIX}${btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')}`;
+  }
+
+  function decodeTransferPayload(text) {
+    const raw = String(text || '').trim();
+    if (!raw.startsWith(WEBHOOK_TRANSFER_PREFIX)) throw new Error(st('encodedOnly'));
+    const encoded = raw.slice(WEBHOOK_TRANSFER_PREFIX.length).replace(/-/g, '+').replace(/_/g, '/');
+    const padded = encoded.padEnd(Math.ceil(encoded.length / 4) * 4, '=');
+    const binary = atob(padded);
+    const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+
+  function downloadTextFile(filename, content, type = 'text/plain') {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
   function clampText(value, max) {
     return String(value || '').slice(0, max);
   }
@@ -691,6 +1036,37 @@
 
   function colorToInt(value) {
     return Number.parseInt(normalizeHexColor(value).slice(1), 16);
+  }
+
+  function padTimePart(value) {
+    return String(value).padStart(2, '0');
+  }
+
+  function dateToLocalInput(value) {
+    const date = value ? new Date(value) : new Date();
+    if (Number.isNaN(date.getTime())) return '';
+    return `${date.getFullYear()}-${padTimePart(date.getMonth() + 1)}-${padTimePart(date.getDate())}`;
+  }
+
+  function dateToTimeInput(value) {
+    const date = value ? new Date(value) : new Date();
+    if (Number.isNaN(date.getTime())) return '';
+    return `${padTimePart(date.getHours())}:${padTimePart(date.getMinutes())}`;
+  }
+
+  function localInputsToIso(dateValue, timeValue) {
+    if (!dateValue) return '';
+    const [year, month, day] = String(dateValue).split('-').map(Number);
+    const [hour = 0, minute = 0] = String(timeValue || '00:00').split(':').map(Number);
+    const date = new Date(year, month - 1, day, hour, minute, 0, 0);
+    return Number.isNaN(date.getTime()) ? '' : date.toISOString();
+  }
+
+  function discordTimestampCode(dateValue, timeValue, style = 'F') {
+    const iso = localInputsToIso(dateValue, timeValue);
+    if (!iso) return '';
+    const unix = Math.floor(new Date(iso).getTime() / 1000);
+    return `<t:${unix}:${style || 'F'}>`;
   }
 
   function normalizeUrl(value, required = false) {
@@ -792,14 +1168,14 @@
     };
   }
 
-  function defaultEmbed() {
+  function defaultEmbed(useDefaultThumbnail = true) {
     return {
       color: '#44b8de',
       author: { name: '', url: '', icon_url: '' },
       title: '',
       url: '',
       description: '',
-      thumbnail: { url: '' },
+      thumbnail: { url: useDefaultThumbnail ? DEFAULT_CORE_IMAGE_URL : '' },
       image: { url: '' },
       fields: [],
       footer: { text: '', icon_url: '' },
@@ -822,6 +1198,7 @@
         kind: 'container',
         accent: '#44b8de',
         text: et('defaultComponentRules'),
+        thumbnail: DEFAULT_CORE_IMAGE_URL,
         media: '',
         buttonLabel: '',
         buttonUrl: '',
@@ -831,7 +1208,7 @@
   }
 
   function normalizeIncomingEmbed(embed = {}) {
-    const normalized = defaultEmbed();
+    const normalized = defaultEmbed(false);
     normalized.color = normalizeHexColor(embed.color, '#44b8de');
     normalized.author = {
       name: clampText(embed.author?.name, LIMITS.embedAuthor),
@@ -1253,50 +1630,185 @@
     return normalized;
   }
 
-  function buildWebhookPayload(state, message) {
+  function parseSnowflakeList(value) {
+    return String(value || '')
+      .split(/[,\s]+/)
+      .map((item) => item.trim())
+      .filter((item) => /^\d{10,32}$/.test(item))
+      .slice(0, 5);
+  }
+
+  function buildWebhookPayload(state, message, options = {}) {
     const payload = {
       allowed_mentions: { parse: [] },
       ...buildRuleMessage(message)
     };
     if (state.username) payload.username = clampText(state.username, 80);
     if (normalizeUrl(state.avatarUrl)) payload.avatar_url = normalizeUrl(state.avatarUrl);
+    if (options.includeThreadName && state.threadName) payload.thread_name = clampText(state.threadName, 100);
+    const appliedTags = options.includeThreadName ? parseSnowflakeList(state.appliedTags) : [];
+    if (appliedTags.length) payload.applied_tags = appliedTags;
     return payload;
   }
 
-  function renderEditorShell() {
+  function buildWebhookRequestUrl(baseUrl, threadId = '') {
+    const url = new URL(baseUrl);
+    url.searchParams.set('wait', 'true');
+    if (/^\d{10,32}$/.test(String(threadId || '').trim())) {
+      url.searchParams.set('thread_id', String(threadId).trim());
+    }
+    return url.toString();
+  }
+
+  function formatStorageDate(value) {
+    const date = new Date(value || 0);
+    if (Number.isNaN(date.getTime())) return '';
+    try {
+      return new Intl.DateTimeFormat(editorLanguage() === 'ua' ? 'uk' : editorLanguage(), {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date);
+    } catch {
+      return date.toLocaleString();
+    }
+  }
+
+  function renderWebhookStoragePanel() {
+    const saves = readWebhookSaves();
+    const list = saves.length
+      ? saves.map((item) => {
+        const messages = item.snapshot?.messages?.length || 0;
+        const countLabel = messages === 1 ? st('savedCountOne') : st('savedCountMany');
+        return `
+          <article class="webhook-save-card">
+            <div>
+              <strong>${escapeHtml(item.name || 'Webhook')}</strong>
+              <span>${escapeHtml(st('updatedAt'))}: ${escapeHtml(formatStorageDate(item.updatedAt || item.createdAt))}</span>
+              <small>${messages} ${escapeHtml(countLabel)}</small>
+            </div>
+            <div class="webhook-save-actions">
+              <button type="button" data-load-webhook-save="${escapeHtml(item.id)}">${escapeHtml(st('loadSave'))}</button>
+              <button type="button" data-export-webhook-save="${escapeHtml(item.id)}">${escapeHtml(st('exportSave'))}</button>
+              <button type="button" data-delete-webhook-save="${escapeHtml(item.id)}">${escapeHtml(st('deleteSave'))}</button>
+            </div>
+          </article>
+        `;
+      }).join('')
+      : `<div class="webhook-save-empty">${escapeHtml(st('noSaves'))}</div>`;
+
+    return `
+      <button type="button" class="webhook-storage-backdrop" data-storage-tab="settings" aria-label="${escapeHtml(st('closeSaves'))}"></button>
+      <div class="webhook-storage-dialog" role="dialog" aria-modal="true" aria-labelledby="webhook-storage-title">
+        <div class="webhook-storage-header">
+          <div>
+            <span>${escapeHtml(st('storageKicker'))}</span>
+            <h2 id="webhook-storage-title">${escapeHtml(st('storageTitle'))}</h2>
+          </div>
+          <button type="button" class="webhook-storage-close" data-storage-tab="settings" aria-label="${escapeHtml(st('closeSaves'))}">&times;</button>
+        </div>
+        <div class="webhook-storage-panel">
+          <section class="webhook-storage-copy">
+            <strong>${escapeHtml(st('storageTitle'))}</strong>
+            <p>${escapeHtml(st('storageNotice'))}</p>
+            <p>${escapeHtml(st('storageFileNotice'))}</p>
+          </section>
+          <section class="webhook-storage-create">
+            <label class="rules-field">
+              <span>${escapeHtml(st('saveName'))}</span>
+              <input type="text" data-webhook-save-name maxlength="80" placeholder="${escapeHtml(st('saveNamePlaceholder'))}">
+            </label>
+            <div class="rules-actions webhook-storage-actions">
+              <button type="button" class="button primary" data-save-webhook-current>${escapeHtml(st('saveCurrent'))}</button>
+              <button type="button" class="button secondary" data-export-webhook-current>${escapeHtml(st('exportCurrentEncoded'))}</button>
+              <button type="button" class="button secondary" data-export-webhook-all>${escapeHtml(st('exportAllEncoded'))}</button>
+              <label class="button secondary rules-file-button">
+                ${escapeHtml(st('importEncoded'))}
+                <input type="file" data-webhook-storage-import accept=".corehook,.txt,.json,application/json,text/plain">
+              </label>
+            </div>
+            <div class="webhook-storage-status" data-webhook-storage-status></div>
+          </section>
+          <section class="webhook-save-list-wrap">
+            <div class="webhook-save-list" data-webhook-save-list>
+              ${list}
+            </div>
+          </section>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderEditorShell(state = {}) {
+    const hasStorage = state.kind === 'webhook';
+    const activeTab = hasStorage && state.storageTab === 'saves' ? 'saves' : 'settings';
+    const storageTabs = hasStorage
+      ? `
+        <div class="rules-storage-tabs" role="tablist" aria-label="Webhook editor sections">
+          <button type="button" class="${activeTab === 'settings' ? 'is-active' : ''}" data-storage-tab="settings">${escapeHtml(st('settingsTab'))}</button>
+          <button type="button" class="${activeTab === 'saves' ? 'is-active' : ''}" data-storage-tab="saves" aria-haspopup="dialog">${escapeHtml(st('savesTab'))}</button>
+        </div>
+      `
+      : '';
     return `
       <div class="rules-editor">
         <div class="rules-left-column">
           <div class="rules-panel rules-settings">
-            <div class="rules-panel-heading">
-              <span>Webhook</span>
-              <strong data-editor-status>${escapeHtml(et('ready'))}</strong>
-            </div>
-            <label class="rules-field">
-              <span>${escapeHtml(et('webhookUrl'))}</span>
-              <input type="url" data-setting="webhookUrl" placeholder="https://discord.com/api/webhooks/...">
-            </label>
-            <div class="rules-two">
+            ${storageTabs}
+            <div data-storage-section="settings">
+              <div class="rules-panel-heading">
+                <span>Webhook</span>
+                <strong data-editor-status>${escapeHtml(et('ready'))}</strong>
+              </div>
               <label class="rules-field">
-                <span>${escapeHtml(et('webhookName'))}</span>
-                <input type="text" data-setting="username" maxlength="80" placeholder="Core">
+                <span>${escapeHtml(et('webhookUrl'))}</span>
+                <input type="url" data-setting="webhookUrl" placeholder="https://discord.com/api/webhooks/...">
               </label>
-              <label class="rules-field">
-                <span>${escapeHtml(et('webhookAvatar'))}</span>
-                <input type="url" data-setting="avatarUrl" placeholder="https://...">
-              </label>
+              <div class="rules-two">
+                <label class="rules-field">
+                  <span>${escapeHtml(et('webhookName'))}</span>
+                  <input type="text" data-setting="username" maxlength="80" placeholder="Core">
+                </label>
+                <label class="rules-field">
+                  <span>${escapeHtml(et('webhookAvatar'))}</span>
+                  <input type="url" data-setting="avatarUrl" placeholder="https://...">
+                </label>
+              </div>
+              <div class="webhook-thread-settings">
+                <div class="rules-panel-heading">
+                  <span>${escapeHtml(et('webhookThreadTitle'))}</span>
+                </div>
+                <label class="rules-field">
+                  <span>${escapeHtml(et('webhookThreadName'))}</span>
+                  <input type="text" data-setting="threadName" maxlength="100" placeholder="updates">
+                </label>
+                <div class="rules-two">
+                  <label class="rules-field">
+                    <span>${escapeHtml(et('webhookThreadId'))}</span>
+                    <input type="text" data-setting="threadId" maxlength="32" inputmode="numeric" placeholder="123456789012345678">
+                  </label>
+                  <label class="rules-field">
+                    <span>${escapeHtml(et('webhookTags'))}</span>
+                    <input type="text" data-setting="appliedTags" placeholder="123, 456">
+                  </label>
+                </div>
+                <p class="editor-muted">${escapeHtml(et('webhookThreadHint'))}</p>
+              </div>
+              <div class="rules-actions">
+                <button type="button" class="button primary" data-editor-send>${escapeHtml(et('send'))}</button>
+                <button type="button" class="button secondary" data-editor-export>${escapeHtml(et('exportJson'))}</button>
+                <button type="button" class="button secondary" data-editor-copy>${escapeHtml(et('copyJson'))}</button>
+                ${hasStorage ? `<button type="button" class="button secondary" data-editor-tools-open>${escapeHtml(et('editorTools'))}</button>` : ''}
+                <label class="button secondary rules-file-button">
+                  ${escapeHtml(et('importJson'))}
+                  <input type="file" data-editor-import accept="application/json,.json">
+                </label>
+              </div>
+              <div class="rules-limit-list" data-editor-limits></div>
+              <div class="rules-alert" data-editor-alert hidden></div>
             </div>
-            <div class="rules-actions">
-              <button type="button" class="button primary" data-editor-send>${escapeHtml(et('send'))}</button>
-              <button type="button" class="button secondary" data-editor-export>${escapeHtml(et('exportJson'))}</button>
-              <button type="button" class="button secondary" data-editor-copy>${escapeHtml(et('copyJson'))}</button>
-              <label class="button secondary rules-file-button">
-                ${escapeHtml(et('importJson'))}
-                <input type="file" data-editor-import accept="application/json,.json">
-              </label>
-            </div>
-            <div class="rules-limit-list" data-editor-limits></div>
-            <div class="rules-alert" data-editor-alert hidden></div>
           </div>
 
           <div class="rules-panel rules-message-list">
@@ -1412,10 +1924,25 @@
             <input type="url" data-embed-path="footer.icon_url" value="${escapeHtml(embed.footer?.icon_url)}" placeholder="https://...">
           </label>
         </div>
-        <label class="rules-field">
-          <span>${escapeHtml(et('timestampIso'))}</span>
-          <input type="text" data-embed-path="timestamp" value="${escapeHtml(embed.timestamp)}" placeholder="2026-05-06T18:00:00.000Z">
-        </label>
+        <div class="embed-time-picker">
+          <div class="rules-panel-heading">
+            <span>${escapeHtml(et('timestampIso'))}</span>
+            <div class="rules-mini-actions">
+              <button type="button" data-embed-timestamp-now>${escapeHtml(et('timestampNow'))}</button>
+              <button type="button" data-embed-timestamp-clear>${escapeHtml(et('timestampClear'))}</button>
+            </div>
+          </div>
+          <div class="rules-two">
+            <label class="rules-field">
+              <span>${escapeHtml(et('timestampDate'))}</span>
+              <input type="date" data-embed-timestamp-date value="${escapeHtml(embed.timestamp ? dateToLocalInput(embed.timestamp) : '')}">
+            </label>
+            <label class="rules-field">
+              <span>${escapeHtml(et('timestampTime'))}</span>
+              <input type="time" data-embed-timestamp-time value="${escapeHtml(embed.timestamp ? dateToTimeInput(embed.timestamp) : '')}">
+            </label>
+          </div>
+        </div>
         <div class="embed-fields">
           <div class="rules-panel-heading">
             <span>${escapeHtml(et('fields'))}</span>
@@ -2125,9 +2652,9 @@
     };
     }
     if (kind === 'section') {
-      return { kind, content: et('defaultSectionText'), accessoryType: 'thumbnail', accessoryUrl: '', buttonLabel: et('defaultButtonLabel'), buttonUrl: '' };
+      return { kind, content: et('defaultSectionText'), accessoryType: 'thumbnail', accessoryUrl: DEFAULT_CORE_IMAGE_URL, buttonLabel: et('defaultButtonLabel'), buttonUrl: '' };
     }
-    return { kind: 'container', accent: '#44b8de', text: et('defaultContainerText'), thumbnail: '', media: '', buttonLabel: '', buttonUrl: '', spoiler: false };
+    return { kind: 'container', accent: '#44b8de', text: et('defaultContainerText'), thumbnail: DEFAULT_CORE_IMAGE_URL, media: '', buttonLabel: '', buttonUrl: '', spoiler: false };
   }
 
   function createState(root, options = {}) {
@@ -2143,9 +2670,14 @@
       active: 0,
       webhookUrl: '',
       username: options.username || 'Core',
-      avatarUrl: '',
+      avatarUrl: options.avatarUrl || DEFAULT_CORE_IMAGE_URL,
+      threadName: '',
+      threadId: '',
+      appliedTags: '',
+      toolsOpen: false,
       kind: options.kind || root.dataset.editorKind || 'rules',
       title: options.title || root.dataset.editorTitle || et('defaultTitle'),
+      storageTab: 'settings',
       messages: normalizeMessages(initialMessages)
     };
   }
@@ -2153,6 +2685,9 @@
   function init(root, options = {}) {
     if (!root || instances.has(root)) return instances.get(root);
 
+    let storagePortal = null;
+    let toolsPortal = null;
+    let lastTextTarget = null;
     const state = createState(root, options);
     root.classList.add('message-editor-root');
 
@@ -2174,9 +2709,436 @@
         kind: state.kind === 'webhook' ? 'webhook-messages' : 'rules',
         version: 2,
         createdAt: new Date().toISOString(),
+        webhook: state.kind === 'webhook' ? {
+          username: state.username || '',
+          avatarUrl: state.avatarUrl || '',
+          threadName: state.threadName || '',
+          threadId: state.threadId || '',
+          appliedTags: state.appliedTags || ''
+        } : undefined,
         messages,
         message: messages[0] || { content: '', embeds: [] }
       };
+    }
+
+    function buildWebhookSnapshot() {
+      const exported = buildExportJson();
+      return {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        webhookUrl: state.webhookUrl || '',
+        username: state.username || '',
+        avatarUrl: state.avatarUrl || '',
+        threadName: state.threadName || '',
+        threadId: state.threadId || '',
+        appliedTags: state.appliedTags || '',
+        messages: exported.messages
+      };
+    }
+
+    function applyWebhookSnapshot(snapshot = {}) {
+      const messages = Array.isArray(snapshot.messages)
+        ? snapshot.messages
+        : snapshot.message
+          ? [snapshot.message]
+          : [];
+      if (!messages.length) throw new Error(st('importMissingMessages'));
+      state.webhookUrl = String(snapshot.webhookUrl || '');
+      state.username = String(snapshot.username || 'Core');
+      state.avatarUrl = String(snapshot.avatarUrl || DEFAULT_CORE_IMAGE_URL);
+      state.threadName = String(snapshot.threadName || snapshot.webhook?.threadName || '');
+      state.threadId = String(snapshot.threadId || snapshot.webhook?.threadId || '');
+      state.appliedTags = String(snapshot.appliedTags || snapshot.webhook?.appliedTags || '');
+      state.messages = normalizeMessages(messages);
+      state.active = 0;
+    }
+
+    function queryEditor(selector) {
+      return root.querySelector(selector) || storagePortal?.querySelector(selector) || null;
+    }
+
+    function setStorageStatus(message, tone = 'success') {
+      const status = queryEditor('[data-webhook-storage-status]');
+      if (!status) return;
+      status.textContent = message || '';
+      status.dataset.tone = tone;
+    }
+
+    function saveCurrentWebhook() {
+      const input = queryEditor('[data-webhook-save-name]');
+      const now = new Date().toISOString();
+      const fallbackName = `${st('savedAt')} ${formatStorageDate(now)}`;
+      const item = {
+        id: makeSaveId(),
+        name: String(input?.value || '').trim() || fallbackName,
+        createdAt: now,
+        updatedAt: now,
+        snapshot: buildWebhookSnapshot()
+      };
+      const saves = [item, ...readWebhookSaves()];
+      if (!writeWebhookSaves(saves)) {
+        setStorageStatus(st('storageUnavailable'), 'error');
+        return;
+      }
+      state.storageTab = 'saves';
+      render();
+      setStorageStatus(st('storageSaved'));
+    }
+
+    function findWebhookSave(id) {
+      return readWebhookSaves().find((item) => item.id === id);
+    }
+
+    function loadWebhookSave(id) {
+      const item = findWebhookSave(id);
+      if (!item?.snapshot) return;
+      try {
+        applyWebhookSnapshot(item.snapshot);
+        state.storageTab = 'saves';
+        render();
+        setStorageStatus(st('storageLoaded'));
+      } catch (error) {
+        setStorageStatus(error.message || st('storageImportFailed'), 'error');
+      }
+    }
+
+    function deleteWebhookSave(id) {
+      const saves = readWebhookSaves().filter((item) => item.id !== id);
+      if (!writeWebhookSaves(saves)) {
+        setStorageStatus(st('storageUnavailable'), 'error');
+        return;
+      }
+      state.storageTab = 'saves';
+      render();
+      setStorageStatus(st('storageDeleted'));
+    }
+
+    function exportEncodedPayload(filename, payload) {
+      downloadTextFile(filename, `${encodeTransferPayload(payload)}\n`, 'text/plain');
+      setStorageStatus(st('storageExported'));
+    }
+
+    function exportCurrentWebhook() {
+      const name = queryEditor('[data-webhook-save-name]')?.value || 'current';
+      exportEncodedPayload(`core-webhook-${slugFilePart(name, 'current')}.corehook`, {
+        kind: 'core-webhook-editor-snapshot',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        snapshot: buildWebhookSnapshot()
+      });
+    }
+
+    function exportWebhookSave(id) {
+      const item = findWebhookSave(id);
+      if (!item?.snapshot) return;
+      exportEncodedPayload(`core-webhook-${slugFilePart(item.name, 'save')}.corehook`, {
+        kind: 'core-webhook-editor-snapshot',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        save: {
+          id: item.id,
+          name: item.name,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt
+        },
+        snapshot: item.snapshot
+      });
+    }
+
+    function exportAllWebhookSaves() {
+      exportEncodedPayload('core-webhook-saves.corehook', {
+        kind: 'core-webhook-editor-saves',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        current: buildWebhookSnapshot(),
+        saves: readWebhookSaves()
+      });
+    }
+
+    function importEncodedWebhookFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        try {
+          const payload = decodeTransferPayload(reader.result);
+          if (payload.kind === 'core-webhook-editor-saves' && Array.isArray(payload.saves)) {
+            const existing = readWebhookSaves();
+            const imported = payload.saves
+              .filter((item) => item?.snapshot?.messages?.length)
+              .map((item) => ({
+                id: makeSaveId(),
+                name: String(item.name || 'Webhook').slice(0, 80),
+                createdAt: item.createdAt || new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                snapshot: item.snapshot
+              }));
+            if (!writeWebhookSaves([...imported, ...existing])) throw new Error(st('storageUnavailable'));
+            if (payload.current?.messages?.length) applyWebhookSnapshot(payload.current);
+            state.storageTab = 'saves';
+            render();
+            setStorageStatus(st('storageImported'));
+            return;
+          }
+
+          const snapshot = payload.snapshot || payload.current || payload;
+          applyWebhookSnapshot(snapshot);
+          state.storageTab = 'saves';
+          render();
+          setStorageStatus(st('storageImported'));
+        } catch (error) {
+          setStorageStatus(`${st('storageImportFailed')} ${error.message || ''}`.trim(), 'error');
+        }
+      });
+      reader.readAsText(file);
+    }
+
+    function ensureStoragePortal() {
+      if (storagePortal) return storagePortal;
+      storagePortal = document.createElement('div');
+      storagePortal.className = 'webhook-storage-portal';
+      storagePortal.hidden = true;
+      document.body.appendChild(storagePortal);
+      storagePortal.addEventListener('click', (event) => {
+        const target = event.target.closest('button, a, label');
+        if (target) handleStorageAction(target);
+      });
+      storagePortal.addEventListener('change', (event) => {
+        handleStorageChange(event);
+      });
+      return storagePortal;
+    }
+
+    function renderStoragePortal() {
+      const isOpen = state.kind === 'webhook' && state.storageTab === 'saves';
+      document.body.classList.toggle('is-webhook-storage-open', isOpen);
+      if (!isOpen) {
+        if (storagePortal) {
+          storagePortal.hidden = true;
+          storagePortal.innerHTML = '';
+        }
+        return;
+      }
+      const portal = ensureStoragePortal();
+      portal.hidden = false;
+      portal.innerHTML = `<div data-storage-section="saves">${renderWebhookStoragePanel()}</div>`;
+    }
+
+    function renderTimestampTool() {
+      const now = new Date();
+      return `
+        <section class="editor-tool-card">
+          <h3>${escapeHtml(et('timestampTool'))}</h3>
+          <div class="rules-two">
+            <label class="rules-field">
+              <span>${escapeHtml(et('timestampDate'))}</span>
+              <input type="date" data-tool-date value="${escapeHtml(dateToLocalInput(now))}">
+            </label>
+            <label class="rules-field">
+              <span>${escapeHtml(et('timestampTime'))}</span>
+              <input type="time" data-tool-time value="${escapeHtml(dateToTimeInput(now))}">
+            </label>
+          </div>
+          <label class="rules-field">
+            <span>${escapeHtml(et('timestampStyle'))}</span>
+            <select data-tool-timestamp-style>
+              ${TIMESTAMP_STYLES.map((style) => `<option value="${style}" ${style === 'F' ? 'selected' : ''}>&lt;t:unix:${style}&gt;</option>`).join('')}
+            </select>
+          </label>
+          <label class="rules-field">
+            <span>${escapeHtml(et('timestampOutput'))}</span>
+            <input type="text" data-tool-output="timestamp" readonly>
+          </label>
+          <div class="rules-actions">
+            <button type="button" class="button secondary" data-tool-copy="timestamp">${escapeHtml(et('copyToolValue'))}</button>
+            <button type="button" class="button primary" data-tool-insert="timestamp">${escapeHtml(et('insertToolValue'))}</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderColorOptions(items, active = '') {
+      return items.map(([key, label]) => `<option value="${escapeHtml(key)}" ${key === active ? 'selected' : ''}>${escapeHtml(key ? label : et('noColor'))}</option>`).join('');
+    }
+
+    function renderColorTool() {
+      return `
+        <section class="editor-tool-card">
+          <h3>${escapeHtml(et('colorTool'))}</h3>
+          <label class="rules-field">
+            <span>${escapeHtml(et('colorText'))}</span>
+            <textarea rows="4" data-tool-color-text>Core message</textarea>
+          </label>
+          <div class="rules-two">
+            <label class="rules-field">
+              <span>${escapeHtml(et('colorForeground'))}</span>
+              <select data-tool-color-fg>${renderColorOptions(ANSI_COLORS, 'cyan')}</select>
+            </label>
+            <label class="rules-field">
+              <span>${escapeHtml(et('colorBackground'))}</span>
+              <select data-tool-color-bg>${renderColorOptions(ANSI_BACKGROUNDS)}</select>
+            </label>
+          </div>
+          <div class="rules-two">
+            <label class="rules-check">
+              <input type="checkbox" data-tool-color-bold>
+              <span>${escapeHtml(et('colorBold'))}</span>
+            </label>
+            <label class="rules-check">
+              <input type="checkbox" data-tool-color-underline>
+              <span>${escapeHtml(et('colorUnderline'))}</span>
+            </label>
+          </div>
+          <label class="rules-field">
+            <span>${escapeHtml(et('timestampOutput'))}</span>
+            <textarea rows="4" data-tool-output="ansi" readonly></textarea>
+          </label>
+          <div class="rules-actions">
+            <button type="button" class="button secondary" data-tool-copy="ansi">${escapeHtml(et('copyToolValue'))}</button>
+            <button type="button" class="button primary" data-tool-insert="ansi">${escapeHtml(et('insertToolValue'))}</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderMarkdownTool() {
+      return `
+        <section class="editor-tool-card">
+          <h3>${escapeHtml(et('markdownTool'))}</h3>
+          <p class="editor-muted">${escapeHtml(et('toolInsertHint'))}</p>
+          <div class="markdown-snippet-grid">
+            ${MARKDOWN_SNIPPETS.map(([label, value]) => `
+              <button type="button" data-markdown-snippet="${escapeHtml(value)}">${escapeHtml(label).replace(/\n/g, '<br>')}</button>
+            `).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function ensureToolsPortal() {
+      if (toolsPortal) return toolsPortal;
+      toolsPortal = document.createElement('div');
+      toolsPortal.className = 'editor-tools-portal';
+      toolsPortal.hidden = true;
+      document.body.appendChild(toolsPortal);
+      toolsPortal.addEventListener('input', updateToolOutputs);
+      toolsPortal.addEventListener('change', updateToolOutputs);
+      toolsPortal.addEventListener('click', (event) => {
+        const target = event.target.closest('button');
+        if (target) handleToolAction(target);
+      });
+      return toolsPortal;
+    }
+
+    function renderToolsPortal() {
+      const isOpen = state.kind === 'webhook' && state.toolsOpen;
+      document.body.classList.toggle('is-editor-tools-open', isOpen);
+      if (!isOpen) {
+        if (toolsPortal) {
+          toolsPortal.hidden = true;
+          toolsPortal.innerHTML = '';
+        }
+        return;
+      }
+      const portal = ensureToolsPortal();
+      portal.hidden = false;
+      portal.innerHTML = `
+        <button type="button" class="editor-tools-backdrop" data-editor-tools-close aria-label="${escapeHtml(et('closeTools'))}"></button>
+        <aside class="editor-tools-drawer" aria-label="${escapeHtml(et('editorTools'))}">
+          <div class="webhook-storage-header">
+            <div>
+              <span>${escapeHtml(et('editorTools'))}</span>
+              <h2>${escapeHtml(et('editorTools'))}</h2>
+            </div>
+            <button type="button" class="webhook-storage-close" data-editor-tools-close aria-label="${escapeHtml(et('closeTools'))}">&times;</button>
+          </div>
+          <div class="editor-tools-body">
+            ${renderTimestampTool()}
+            ${renderColorTool()}
+            ${renderMarkdownTool()}
+          </div>
+        </aside>
+      `;
+      updateToolOutputs();
+    }
+
+    function findAnsiCode(items, key) {
+      return items.find((item) => item[0] === key)?.[2] || '';
+    }
+
+    function buildAnsiBlock() {
+      const text = toolsPortal?.querySelector('[data-tool-color-text]')?.value || '';
+      const fg = findAnsiCode(ANSI_COLORS, toolsPortal?.querySelector('[data-tool-color-fg]')?.value || '');
+      const bg = findAnsiCode(ANSI_BACKGROUNDS, toolsPortal?.querySelector('[data-tool-color-bg]')?.value || '');
+      const codes = [];
+      if (toolsPortal?.querySelector('[data-tool-color-bold]')?.checked) codes.push(1);
+      if (toolsPortal?.querySelector('[data-tool-color-underline]')?.checked) codes.push(4);
+      if (fg) codes.push(fg);
+      if (bg) codes.push(bg);
+      const prefix = codes.length ? `\u001b[${codes.join(';')}m` : '';
+      const body = `${prefix}${text || 'Core message'}${prefix ? '\u001b[0m' : ''}`;
+      return `\`\`\`ansi\n${body}\n\`\`\``;
+    }
+
+    function getToolOutput(kind) {
+      if (kind === 'timestamp') {
+        return discordTimestampCode(
+          toolsPortal?.querySelector('[data-tool-date]')?.value || '',
+          toolsPortal?.querySelector('[data-tool-time]')?.value || '',
+          toolsPortal?.querySelector('[data-tool-timestamp-style]')?.value || 'F'
+        );
+      }
+      if (kind === 'ansi') return buildAnsiBlock();
+      return '';
+    }
+
+    function updateToolOutputs() {
+      if (!toolsPortal || toolsPortal.hidden) return;
+      const timestamp = toolsPortal.querySelector('[data-tool-output="timestamp"]');
+      const ansi = toolsPortal.querySelector('[data-tool-output="ansi"]');
+      if (timestamp) timestamp.value = getToolOutput('timestamp');
+      if (ansi) ansi.value = getToolOutput('ansi');
+    }
+
+    function rememberTextTarget(target) {
+      if (!target?.matches?.('textarea, input[type="text"], input[type="url"]')) return;
+      if (target.readOnly || target.disabled) return;
+      lastTextTarget = target;
+    }
+
+    function insertIntoEditor(value) {
+      const target = lastTextTarget?.isConnected ? lastTextTarget : root.querySelector('[data-message-content], [data-embed-path="description"], [data-message-raw]');
+      if (!target) return;
+      const start = Number.isFinite(target.selectionStart) ? target.selectionStart : target.value.length;
+      const end = Number.isFinite(target.selectionEnd) ? target.selectionEnd : start;
+      target.value = `${target.value.slice(0, start)}${value}${target.value.slice(end)}`;
+      const next = start + value.length;
+      target.focus();
+      target.setSelectionRange?.(next, next);
+      target.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function handleToolAction(target) {
+      if (target.matches('[data-editor-tools-close]')) {
+        state.toolsOpen = false;
+        render();
+        return true;
+      }
+      if (target.dataset.markdownSnippet !== undefined) {
+        insertIntoEditor(target.dataset.markdownSnippet);
+        return true;
+      }
+      if (target.dataset.toolCopy) {
+        const value = getToolOutput(target.dataset.toolCopy);
+        navigator.clipboard?.writeText(value).catch(() => {});
+        target.textContent = et('toolCopied');
+        window.setTimeout(() => { target.textContent = et('copyToolValue'); }, 1400);
+        return true;
+      }
+      if (target.dataset.toolInsert) {
+        insertIntoEditor(getToolOutput(target.dataset.toolInsert));
+        return true;
+      }
+      return false;
     }
 
     function validatePayload() {
@@ -2375,16 +3337,24 @@
     }
 
     function render() {
-      root.innerHTML = renderEditorShell();
+      root.innerHTML = renderEditorShell(state);
       const webhook = root.querySelector('[data-setting="webhookUrl"]');
       const username = root.querySelector('[data-setting="username"]');
       const avatar = root.querySelector('[data-setting="avatarUrl"]');
+      const threadName = root.querySelector('[data-setting="threadName"]');
+      const threadId = root.querySelector('[data-setting="threadId"]');
+      const appliedTags = root.querySelector('[data-setting="appliedTags"]');
       if (webhook) webhook.value = state.webhookUrl;
       if (username) username.value = state.username;
       if (avatar) avatar.value = state.avatarUrl;
+      if (threadName) threadName.value = state.threadName || '';
+      if (threadId) threadId.value = state.threadId || '';
+      if (appliedTags) appliedTags.value = state.appliedTags || '';
       renderMessageList();
       renderEditorBody();
       refreshDynamic();
+      renderStoragePortal();
+      renderToolsPortal();
     }
 
     function updateSetting(target) {
@@ -2419,6 +3389,13 @@
       }
       if (target.dataset.embedPath) {
         setPath(embed(), target.dataset.embedPath, target.value);
+        return true;
+      }
+      if (target.matches('[data-embed-timestamp-date], [data-embed-timestamp-time]')) {
+        const box = target.closest('.embed-time-picker');
+        const dateValue = box?.querySelector('[data-embed-timestamp-date]')?.value || '';
+        const timeValue = box?.querySelector('[data-embed-timestamp-time]')?.value || '';
+        embed().timestamp = localInputsToIso(dateValue, timeValue);
         return true;
       }
       if (target.dataset.fieldName !== undefined) {
@@ -2463,6 +3440,13 @@
           const json = JSON.parse(String(reader.result || '{}'));
           const messages = Array.isArray(json.messages) ? json.messages : json.message ? [json.message] : [];
           if (!messages.length) throw new Error('JSON не содержит messages.');
+          if (state.kind === 'webhook' && json.webhook) {
+            state.username = String(json.webhook.username || state.username || 'Core');
+            state.avatarUrl = String(json.webhook.avatarUrl || state.avatarUrl || DEFAULT_CORE_IMAGE_URL);
+            state.threadName = String(json.webhook.threadName || '');
+            state.threadId = String(json.webhook.threadId || '');
+            state.appliedTags = String(json.webhook.appliedTags || '');
+          }
           state.messages = normalizeMessages(messages);
           state.active = 0;
           render();
@@ -2476,6 +3460,46 @@
         }
       });
       reader.readAsText(file);
+    }
+
+    function handleStorageChange(event) {
+      if (!event.target.matches('[data-webhook-storage-import]')) return false;
+      importEncodedWebhookFile(event.target.files?.[0]);
+      event.target.value = '';
+      return true;
+    }
+
+    function handleStorageAction(target) {
+      if (target.dataset.storageTab) {
+        state.storageTab = target.dataset.storageTab === 'saves' ? 'saves' : 'settings';
+        render();
+        return true;
+      }
+      if (target.matches('[data-save-webhook-current]')) {
+        saveCurrentWebhook();
+        return true;
+      }
+      if (target.matches('[data-export-webhook-current]')) {
+        exportCurrentWebhook();
+        return true;
+      }
+      if (target.matches('[data-export-webhook-all]')) {
+        exportAllWebhookSaves();
+        return true;
+      }
+      if (target.dataset.loadWebhookSave !== undefined) {
+        loadWebhookSave(target.dataset.loadWebhookSave);
+        return true;
+      }
+      if (target.dataset.exportWebhookSave !== undefined) {
+        exportWebhookSave(target.dataset.exportWebhookSave);
+        return true;
+      }
+      if (target.dataset.deleteWebhookSave !== undefined) {
+        deleteWebhookSave(target.dataset.deleteWebhookSave);
+        return true;
+      }
+      return false;
     }
 
     async function sendWebhook() {
@@ -2499,15 +3523,22 @@
       }
 
       try {
+        let createdThreadId = '';
         for (let index = 0; index < state.messages.length; index += 1) {
-          const response = await fetch(`${state.webhookUrl}?wait=true`, {
+          const useCreatedThread = createdThreadId || state.threadId;
+          const includeThreadName = Boolean(state.threadName && !useCreatedThread && index === 0);
+          const response = await fetch(buildWebhookRequestUrl(state.webhookUrl, useCreatedThread), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(buildWebhookPayload(state, state.messages[index]))
+            body: JSON.stringify(buildWebhookPayload(state, state.messages[index], { includeThreadName }))
           });
           if (!response.ok) {
             const text = await response.text().catch(() => '');
             throw new Error(`Discord отклонил сообщение ${index + 1}: ${response.status} ${text}`.slice(0, 700));
+          }
+          if (includeThreadName && state.messages.length > 1) {
+            const json = await response.json().catch(() => null);
+            if (json?.channel_id) createdThreadId = String(json.channel_id);
           }
         }
         if (alert) {
@@ -2528,12 +3559,18 @@
     }
 
     root.addEventListener('input', (event) => {
+      rememberTextTarget(event.target);
       if (updateSetting(event.target) || updateActiveInput(event.target)) {
         refreshDynamic();
       }
     });
 
+    root.addEventListener('focusin', (event) => {
+      rememberTextTarget(event.target);
+    });
+
     root.addEventListener('change', (event) => {
+      if (handleStorageChange(event)) return;
       if (event.target.matches('[data-editor-import]')) {
         importJson(event.target.files?.[0]);
         event.target.value = '';
@@ -2549,6 +3586,23 @@
       const target = event.target.closest('button, a, label');
       if (!target) return;
       const current = message();
+
+      if (handleStorageAction(target)) return;
+      if (target.matches('[data-editor-tools-open]')) {
+        state.toolsOpen = true;
+        render();
+        return;
+      }
+      if (target.matches('[data-embed-timestamp-now]')) {
+        embed().timestamp = new Date().toISOString();
+        render();
+        return;
+      }
+      if (target.matches('[data-embed-timestamp-clear]')) {
+        embed().timestamp = '';
+        render();
+        return;
+      }
 
       if (target.dataset.selectMessage !== undefined) {
         state.active = Number(target.dataset.selectMessage);

@@ -1,4 +1,4 @@
-const INVITE_URL = 'https://discord.com/oauth2/authorize?client_id=1499785495264104688&permissions=8&integration_type=0&scope=bot+applications.commands';
+const INVITE_URL = 'https://discord.com/oauth2/authorize?client_id=1499785495264104688&permissions=8&integration_type=0&scope=bot&response_type=code&redirect_uri=https%3A%2F%2Fnovogrey.github.io%2FCore%2Fadded%2F';
 const OFFICIAL_SERVER_URL = 'https://discord.gg/FjfZkHEuyv';
 const CONFIGURED_TEMPLATE_API_URL = String(window.CORE_TEMPLATES_API_URL || '').trim();
 const TEMPLATE_API_URL = CONFIGURED_TEMPLATE_API_URL && !CONFIGURED_TEMPLATE_API_URL.includes('PASTE_GOOGLE_APPS_SCRIPT')
@@ -23,6 +23,9 @@ const translations = {
       symbols: 'Символы',
       emoji: 'Emoji',
       webhooks: 'Вебхуки',
+      timestamps: 'Timestamp',
+      colorText: 'Цветной текст',
+      markdown: 'Markdown',
       help: 'Справка',
       benefits: 'Возможности',
       preview: 'Превью',
@@ -376,6 +379,9 @@ const translations = {
       symbols: 'Symbols',
       emoji: 'Emoji',
       webhooks: 'Webhooks',
+      timestamps: 'Timestamp',
+      colorText: 'Colored text',
+      markdown: 'Markdown',
       help: 'Help',
       benefits: 'Features',
       preview: 'Preview',
@@ -729,6 +735,9 @@ const translations = {
       symbols: 'Символи',
       emoji: 'Emoji',
       webhooks: 'Вебхуки',
+      timestamps: 'Timestamp',
+      colorText: 'Кольоровий текст',
+      markdown: 'Markdown',
       help: 'Довідка',
       benefits: 'Можливості',
       preview: 'Превью',
@@ -1082,6 +1091,9 @@ const translations = {
       symbols: 'Symbole',
       emoji: 'Emoji',
       webhooks: 'Webhooks',
+      timestamps: 'Timestamp',
+      colorText: 'Farbiger Text',
+      markdown: 'Markdown',
       help: 'Hilfe',
       benefits: 'Funktionen',
       preview: 'Vorschau',
@@ -3277,6 +3289,9 @@ function ensureFullNavigationMenu() {
         <li><a class="dropdown-link" href="${prefix}symbols/" data-i18n="nav.symbols">Символы</a></li>
         <li><a class="dropdown-link" href="${prefix}emoji/" data-i18n="nav.emoji">Emoji</a></li>
         <li><a class="dropdown-link" href="${prefix}webhooks/" data-i18n="nav.webhooks">Вебхуки</a></li>
+        <li><a class="dropdown-link" href="${prefix}timestamp/" data-i18n="nav.timestamps">Timestamp</a></li>
+        <li><a class="dropdown-link" href="${prefix}color-text/" data-i18n="nav.colorText">Цветной текст</a></li>
+        <li><a class="dropdown-link" href="${prefix}markdown/" data-i18n="nav.markdown">Markdown</a></li>
       </ul>
     </li>
     <li class="nav-item has-dropdown">
@@ -3401,6 +3416,34 @@ function initNavigation() {
 }
 
 ensureFullNavigationMenu();
+
+function ensureToolNavigationLinks() {
+  const prefix = getRelativeRootPrefix();
+  const currentPath = window.location.pathname.replace(/\/index\.html$/, '/');
+  const toolToggle = [...document.querySelectorAll('.dropdown-toggle')]
+    .find((button) => button.querySelector('[data-i18n="nav.tools"]'));
+  const menu = toolToggle?.closest('.nav-item')?.querySelector('.dropdown-menu');
+  if (!menu) return;
+
+  [
+    ['timestamp/', 'nav.timestamps', 'Timestamp'],
+    ['color-text/', 'nav.colorText', 'Цветной текст'],
+    ['markdown/', 'nav.markdown', 'Markdown']
+  ].forEach(([href, key, fallback]) => {
+    let link = menu.querySelector(`a[href$="${href}"]`);
+    if (!link) {
+      const item = document.createElement('li');
+      item.innerHTML = `<a class="dropdown-link" href="${prefix}${href}" data-i18n="${key}">${fallback}</a>`;
+      menu.appendChild(item);
+      link = item.querySelector('a');
+    }
+    const normalizedHref = new URL(link.getAttribute('href'), window.location.href).pathname.replace(/\/index\.html$/, '/');
+    link.classList.toggle('is-active', currentPath.endsWith(normalizedHref));
+    if (link.classList.contains('is-active')) toolToggle.classList.add('is-active');
+  });
+}
+
+ensureToolNavigationLinks();
 
 document.querySelectorAll('a[href*="discord.com/oauth2/authorize"]').forEach((link) => {
   link.href = INVITE_URL;
