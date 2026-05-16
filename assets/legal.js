@@ -942,12 +942,12 @@
     botPrivacy: {
       ru: {
         title: 'Политика конфиденциальности бота Core',
-        description: 'Подробно о том, какие Discord-данные обрабатывает бот Core для команд, шаблонов, уровней, модерации, отката, обратной связи и служебных функций.',
+        description: 'Подробно о том, какие Discord-данные обрабатывает бот Core для команд, шаблонов, уровней, модерации, отката, поддержки, обратной связи и служебных функций.',
         sections: [
           {
             heading: '1. Область действия',
             body: [
-              'Эта политика относится к Discord-боту Core, его публичным командам, контекстным действиям, системам шаблонов, уровням, автомодерации, откату, уведомлениям, предложениям, фидбеку и служебным каналам Core.',
+              'Эта политика относится к Discord-боту Core, его публичным командам, контекстным действиям, системам шаблонов, уровням, автомодерации, откату, поддержке через личные сообщения, уведомлениям, предложениям, фидбеку и служебным каналам Core.',
               'Core является сторонним Discord-ботом. Он не является официальным продуктом Discord Inc. и работает поверх Discord API в рамках выданных сервером прав.',
               'Обработка данных зависит от того, на каких серверах добавлен бот, какие права ему выданы, какие команды запускают пользователи и какие функции включены владельцем или администрацией сервера.',
               'Локальные сохранения webhook-редактора сайта Core не передаются боту автоматически. Бот получает такие данные только если пользователь сам отправит их через Discord, команду, вложение, webhook или другой явный канал передачи.'
@@ -959,6 +959,7 @@
               'Бот может обрабатывать Discord ID пользователя, сервера, канала, роли, сообщения, webhook, участника, команды, взаимодействия, кнопки, меню, вложения и другие идентификаторы, которые Discord передает через API.',
               'Бот может обрабатывать публичные сведения Discord-профиля, доступные через API: имя пользователя, глобальное имя, аватар, язык взаимодействия, сведения об участнике на сервере, роли и базовые timestamps событий.',
               'Бот может обрабатывать структуру сервера: название сервера, иконку, каналы, категории, роли, порядок, цвета ролей, права, темы каналов, slowmode, NSFW-флаги, разрешения каналов и похожие настройки.',
+              'Если пользователь обращается в поддержку через личные сообщения боту, Core может обрабатывать текст обращения, вложения, ID пользователя, Discord tag, статус тикета, сообщения команды поддержки, ID приватной ветки, служебные действия закрытия, заморозки и повторного открытия, а также HTML-транскрипцию после закрытия.',
               'Бот не получает пароль Discord пользователя, платежные данные Discord, список личных сообщений пользователя вне событий бота или доступ к аккаунту Discord за пределами разрешений API.'
             ]
           },
@@ -1008,6 +1009,7 @@
             heading: '8. Фидбек, предложения и сообщения пользователей',
             body: [
               'Команды фидбека и предложений передают текст пользователя, вложения, ID пользователя, ID сервера и служебные сведения в канал, предназначенный для просмотра разработчиком Core.',
+              'Система поддержки через личные сообщения пересылает обращение пользователя в приватную ветку поддержки и может пересылать ответы команды обратно пользователю в ЛС. Если пользователь заблокирован для тикетов, бот может хранить запись блокировки по Discord ID.',
               'Если пользователь отправляет предложение шаблона, он понимает, что содержимое будет просмотрено владельцем проекта и может быть принято, отклонено, отредактировано или опубликовано в переработанном виде.',
               'Не следует отправлять через фидбек пароли, токены, приватные ключи, чужие персональные данные, закрытые материалы сервера или сведения, которые нельзя показывать владельцу Core.'
             ]
@@ -1023,7 +1025,7 @@
           {
             heading: '10. База данных и хранение',
             body: [
-              'Core может хранить часть данных в MongoDB: настройки серверов, уровни, публичные шаблоны, рейтинги, служебные записи, временные снимки отката, состояния публикаций, предложения и связанные технические данные.',
+              'Core может хранить часть данных в MongoDB: настройки серверов, уровни, публичные шаблоны, рейтинги, служебные записи, временные снимки отката, состояния публикаций, предложения, тикеты поддержки, сообщения тикетов, блокировки поддержки и связанные технические данные.',
               'Срок хранения зависит от функции. Временные снимки отката удаляются по истечении окна отката, публичные шаблоны хранятся до удаления или обновления, настройки сервера хранятся пока нужны для работы функций или до удаления по обоснованному запросу.',
               'Зашифрованные данные остаются зашифрованными при передаче в MongoDB, если конкретная функция реализована через шифрование. Метаданные, нужные для поиска и работы команд, могут храниться отдельно в незашифрованном или частично структурированном виде.',
               'Удаление бота с сервера прекращает дальнейшую обработку новых событий этого сервера, но не всегда автоматически удаляет уже сохраненные служебные записи, публичные шаблоны, рейтинги или логи, если они нужны для безопасности, истории публикаций или обработки запроса.'
@@ -1068,12 +1070,12 @@
       },
       en: {
         title: 'Core Bot Privacy Policy',
-        description: 'A detailed explanation of what Discord data the Core bot handles for commands, templates, levels, moderation, rollback, feedback and service features.',
+        description: 'A detailed explanation of what Discord data the Core bot handles for commands, templates, levels, moderation, rollback, support, feedback and service features.',
         sections: [
           {
             heading: '1. Scope',
             body: [
-              'This policy applies to the Core Discord bot, its public commands, context actions, template systems, levels, automoderation, rollback, notifications, suggestions, feedback and Core service channels.',
+              'This policy applies to the Core Discord bot, its public commands, context actions, template systems, levels, automoderation, rollback, direct-message support, notifications, suggestions, feedback and Core service channels.',
               'Core is a third-party Discord bot. It is not an official Discord Inc. product and operates through the Discord API under permissions granted on a server.',
               'Data handling depends on the servers where the bot is installed, the permissions granted, commands used by users and features enabled by the owner or server administration.',
               'Local saves from the Core website webhook editor are not sent to the bot automatically. The bot receives that data only if a user deliberately sends it through Discord, a command, an attachment, a webhook or another explicit transfer channel.'
@@ -1085,6 +1087,7 @@
               'The bot may process Discord IDs of users, servers, channels, roles, messages, webhooks, members, commands, interactions, buttons, menus, attachments and other identifiers provided by the Discord API.',
               'The bot may process public Discord profile information available through the API: username, global name, avatar, interaction locale, member information, roles and basic event timestamps.',
               'The bot may process server structure: server name, icon, channels, categories, roles, order, role colors, permissions, channel topics, slowmode, NSFW flags, channel overwrites and similar settings.',
+              'If a user contacts support through direct messages to the bot, Core may process the request text, attachments, user ID, Discord tag, ticket status, support team messages, private thread ID, close, freeze and reopen actions, and an HTML transcript after closure.',
               'The bot does not receive a user Discord password, Discord payment data, user direct messages outside bot events or access to a Discord account beyond API permissions.'
             ]
           },
@@ -1134,6 +1137,7 @@
             heading: '8. Feedback, suggestions and user messages',
             body: [
               'Feedback and suggestion commands forward user text, attachments, user ID, server ID and service details to a channel intended for review by the Core developer.',
+              'The direct-message support system forwards the user request into a private support thread and may relay team replies back to the user in DMs. If a user is blocked from tickets, the bot may store a block record by Discord ID.',
               'If a user submits a template suggestion, the user understands that the content will be reviewed by the project owner and may be accepted, rejected, edited or published in modified form.',
               'Users should not send passwords, tokens, private keys, other people personal data, private server materials or information that cannot be shown to the Core owner through feedback.'
             ]
@@ -1149,7 +1153,7 @@
           {
             heading: '10. Database and retention',
             body: [
-              'Core may store some data in MongoDB: server settings, levels, public templates, ratings, service records, temporary rollback snapshots, publication states, suggestions and related technical data.',
+              'Core may store some data in MongoDB: server settings, levels, public templates, ratings, service records, temporary rollback snapshots, publication states, suggestions, support tickets, ticket messages, support blocks and related technical data.',
               'Retention depends on the feature. Temporary rollback snapshots are deleted after the rollback window, public templates remain until removal or update, and server settings remain while needed for features or until deletion is handled after a valid request.',
               'Encrypted data remains encrypted when transmitted to MongoDB if the specific feature is implemented with encryption. Metadata needed for lookup and command operation may be stored separately in unencrypted or structured form.',
               'Removing the bot from a server stops future event processing for that server, but may not automatically delete already stored service records, public templates, ratings or logs if they are needed for security, publication history or request handling.'
@@ -1194,12 +1198,12 @@
       },
       ua: {
         title: 'Політика конфіденційності бота Core',
-        description: 'Докладно про те, які Discord-дані обробляє бот Core для команд, шаблонів, рівнів, модерації, відкату, фідбеку та службових функцій.',
+        description: 'Докладно про те, які Discord-дані обробляє бот Core для команд, шаблонів, рівнів, модерації, відкату, підтримки, фідбеку та службових функцій.',
         sections: [
           {
             heading: '1. Сфера дії',
             body: [
-              'Ця політика стосується Discord-бота Core, його публічних команд, контекстних дій, систем шаблонів, рівнів, автомодерації, відкату, сповіщень, пропозицій, фідбеку та службових каналів Core.',
+              'Ця політика стосується Discord-бота Core, його публічних команд, контекстних дій, систем шаблонів, рівнів, автомодерації, відкату, підтримки через особисті повідомлення, сповіщень, пропозицій, фідбеку та службових каналів Core.',
               'Core є стороннім Discord-ботом. Він не є офіційним продуктом Discord Inc. і працює через Discord API у межах прав, виданих на сервері.',
               'Обробка даних залежить від серверів, де додано бота, виданих прав, команд, які запускають користувачі, і функцій, увімкнених власником або адміністрацією сервера.',
               'Локальні збереження webhook-редактора сайту Core не передаються боту автоматично. Бот отримує такі дані тільки якщо користувач сам надішле їх через Discord, команду, вкладення, webhook або інший явний канал передавання.'
@@ -1211,6 +1215,7 @@
               'Бот може обробляти Discord ID користувача, сервера, каналу, ролі, повідомлення, webhook, учасника, команди, взаємодії, кнопки, меню, вкладення та інші ідентифікатори, які Discord передає через API.',
               'Бот може обробляти публічні дані Discord-профілю, доступні через API: імʼя користувача, глобальне імʼя, аватар, мову взаємодії, відомості про учасника на сервері, ролі та базові timestamps подій.',
               'Бот може обробляти структуру сервера: назву сервера, іконку, канали, категорії, ролі, порядок, кольори ролей, права, теми каналів, slowmode, NSFW-позначки, дозволи каналів і схожі налаштування.',
+              'Якщо користувач звертається до підтримки через особисті повідомлення боту, Core може обробляти текст звернення, вкладення, ID користувача, Discord tag, статус тікета, повідомлення команди підтримки, ID приватної гілки, службові дії закриття, заморозки й повторного відкриття, а також HTML-транскрипцію після закриття.',
               'Бот не отримує пароль Discord користувача, платіжні дані Discord, список особистих повідомлень користувача поза подіями бота або доступ до Discord-акаунта за межами дозволів API.'
             ]
           },
@@ -1260,6 +1265,7 @@
             heading: '8. Фідбек, пропозиції та повідомлення користувачів',
             body: [
               'Команди фідбеку і пропозицій передають текст користувача, вкладення, ID користувача, ID сервера і службові дані в канал, призначений для перегляду розробником Core.',
+              'Система підтримки через особисті повідомлення пересилає звернення користувача в приватну гілку підтримки та може пересилати відповіді команди назад користувачу в ЛС. Якщо користувача заблоковано для тікетів, бот може зберігати запис блокування за Discord ID.',
               'Якщо користувач надсилає пропозицію шаблону, він розуміє, що вміст буде переглянутий власником проєкту і може бути прийнятий, відхилений, відредагований або опублікований у переробленому вигляді.',
               'Не слід надсилати через фідбек паролі, токени, приватні ключі, чужі персональні дані, закриті матеріали сервера або відомості, які не можна показувати власнику Core.'
             ]
@@ -1275,7 +1281,7 @@
           {
             heading: '10. База даних і зберігання',
             body: [
-              'Core може зберігати частину даних у MongoDB: налаштування серверів, рівні, публічні шаблони, рейтинги, службові записи, тимчасові знімки відкату, стани публікацій, пропозиції та повʼязані технічні дані.',
+              'Core може зберігати частину даних у MongoDB: налаштування серверів, рівні, публічні шаблони, рейтинги, службові записи, тимчасові знімки відкату, стани публікацій, пропозиції, тікети підтримки, повідомлення тікетів, блокування підтримки та повʼязані технічні дані.',
               'Строк зберігання залежить від функції. Тимчасові знімки відкату видаляються після вікна відкату, публічні шаблони зберігаються до видалення або оновлення, налаштування сервера зберігаються доки потрібні для роботи функцій або до видалення за обґрунтованим запитом.',
               'Зашифровані дані залишаються зашифрованими під час передавання в MongoDB, якщо конкретна функція реалізована через шифрування. Метадані, потрібні для пошуку і роботи команд, можуть зберігатися окремо в незашифрованому або частково структурованому вигляді.',
               'Видалення бота з сервера припиняє подальшу обробку нових подій цього сервера, але не завжди автоматично видаляє вже збережені службові записи, публічні шаблони, рейтинги або логи, якщо вони потрібні для безпеки, історії публікацій або обробки запиту.'
@@ -1320,12 +1326,12 @@
       },
       de: {
         title: 'Core Bot-Datenschutzrichtlinie',
-        description: 'Ausfuehrlich dazu, welche Discord-Daten der Core-Bot fuer Befehle, Vorlagen, Level, Moderation, Rollback, Feedback und Dienstfunktionen verarbeitet.',
+        description: 'Ausfuehrlich dazu, welche Discord-Daten der Core-Bot fuer Befehle, Vorlagen, Level, Moderation, Rollback, Support, Feedback und Dienstfunktionen verarbeitet.',
         sections: [
           {
             heading: '1. Geltungsbereich',
             body: [
-              'Diese Richtlinie gilt fuer den Core Discord-Bot, seine oeffentlichen Befehle, Kontextaktionen, Vorlagensysteme, Level, Automoderation, Rollback, Benachrichtigungen, Vorschlaege, Feedback und Core-Servicekanaele.',
+              'Diese Richtlinie gilt fuer den Core Discord-Bot, seine oeffentlichen Befehle, Kontextaktionen, Vorlagensysteme, Level, Automoderation, Rollback, Support ueber Direktnachrichten, Benachrichtigungen, Vorschlaege, Feedback und Core-Servicekanaele.',
               'Core ist ein Drittanbieter-Discord-Bot. Er ist kein offizielles Produkt von Discord Inc. und arbeitet ueber die Discord API im Rahmen der auf einem Server erteilten Berechtigungen.',
               'Die Datenverarbeitung haengt davon ab, auf welchen Servern der Bot installiert ist, welche Rechte er hat, welche Befehle Nutzer ausfuehren und welche Funktionen vom Besitzer oder der Administration aktiviert wurden.',
               'Lokale Speicherungen aus dem Core-Website-Webhook-Editor werden nicht automatisch an den Bot gesendet. Der Bot erhaelt solche Daten nur, wenn ein Nutzer sie bewusst ueber Discord, einen Befehl, einen Anhang, einen Webhook oder einen anderen ausdruecklichen Uebertragungskanal sendet.'
@@ -1337,6 +1343,7 @@
               'Der Bot kann Discord-IDs von Nutzern, Servern, Kanaelen, Rollen, Nachrichten, Webhooks, Mitgliedern, Befehlen, Interaktionen, Buttons, Menues, Anhaengen und anderen von Discord API gelieferten Kennungen verarbeiten.',
               'Der Bot kann oeffentliche Discord-Profildaten verarbeiten: Benutzername, globaler Name, Avatar, Interaktionssprache, Mitgliedsinformationen, Rollen und grundlegende Zeitstempel von Ereignissen.',
               'Der Bot kann Serverstruktur verarbeiten: Servername, Icon, Kanaele, Kategorien, Rollen, Reihenfolge, Rollenfarben, Rechte, Kanalthemen, Slowmode, NSFW-Flags, Kanalberechtigungen und aehnliche Einstellungen.',
+              'Wenn ein Nutzer Support ueber Direktnachrichten an den Bot kontaktiert, kann Core den Anfrage-Text, Anhaenge, Nutzer-ID, Discord-Tag, Ticketstatus, Nachrichten des Support-Teams, private Thread-ID, Aktionen zum Schliessen, Einfrieren und Wiedereroeffnen sowie ein HTML-Transkript nach dem Schliessen verarbeiten.',
               'Der Bot erhaelt kein Discord-Passwort, keine Discord-Zahlungsdaten, keine Direktnachrichten ausserhalb von Bot-Ereignissen und keinen Zugriff auf ein Discord-Konto ausserhalb der API-Berechtigungen.'
             ]
           },
@@ -1386,6 +1393,7 @@
             heading: '8. Feedback, Vorschlaege und Nutzernachrichten',
             body: [
               'Feedback- und Vorschlagsbefehle leiten Nutzertext, Anhaenge, Nutzer-ID, Server-ID und technische Angaben an einen Kanal zur Pruefung durch den Core-Entwickler weiter.',
+              'Das Support-System ueber Direktnachrichten leitet die Nutzeranfrage in einen privaten Support-Thread weiter und kann Teamantworten per DM an den Nutzer zuruecksenden. Wenn ein Nutzer fuer Tickets gesperrt ist, kann der Bot einen Sperrdatensatz nach Discord-ID speichern.',
               'Sendet ein Nutzer einen Vorlagenvorschlag, versteht er, dass der Inhalt vom Projektbesitzer geprueft und angenommen, abgelehnt, bearbeitet oder in geaenderter Form veroeffentlicht werden kann.',
               'Ueber Feedback sollten keine Passwoerter, Tokens, privaten Schluessel, personenbezogenen Daten Dritter, privaten Servermaterialien oder Informationen gesendet werden, die der Core-Besitzer nicht sehen darf.'
             ]
@@ -1401,7 +1409,7 @@
           {
             heading: '10. Datenbank und Aufbewahrung',
             body: [
-              'Core kann Daten in MongoDB speichern: Servereinstellungen, Level, oeffentliche Vorlagen, Bewertungen, Dienstaufzeichnungen, temporaere Rollback-Snapshots, Publikationsstatus, Vorschlaege und technische Daten.',
+              'Core kann Daten in MongoDB speichern: Servereinstellungen, Level, oeffentliche Vorlagen, Bewertungen, Dienstaufzeichnungen, temporaere Rollback-Snapshots, Publikationsstatus, Vorschlaege, Support-Tickets, Ticketnachrichten, Support-Sperren und technische Daten.',
               'Die Aufbewahrung haengt von der Funktion ab. Temporaere Rollback-Snapshots werden nach dem Rollback-Fenster geloescht, oeffentliche Vorlagen bleiben bis Entfernung oder Aktualisierung, Servereinstellungen bleiben solange sie fuer Funktionen noetig sind oder bis Loeschung nach gueltiger Anfrage erfolgt.',
               'Verschluesselte Daten bleiben bei Uebertragung an MongoDB verschluesselt, wenn die konkrete Funktion Verschluesselung nutzt. Metadaten fuer Suche und Befehlsbetrieb koennen separat unverschluesselt oder strukturiert gespeichert werden.',
               'Das Entfernen des Bots stoppt kuenftige Ereignisverarbeitung fuer den Server, loescht aber nicht zwingend bereits gespeicherte Dienstaufzeichnungen, oeffentliche Vorlagen, Bewertungen oder Logs, wenn sie fuer Sicherheit, Publikationshistorie oder Anfragen noetig sind.'
@@ -1448,13 +1456,13 @@
     botTerms: {
       ru: {
         title: 'Условия использования бота Core',
-        description: 'Подробные правила использования Discord-бота Core на серверах, в командах импорта, шаблонах, модерации, AI-функциях и публичных предложениях.',
+        description: 'Подробные правила использования Discord-бота Core на серверах, в командах импорта, шаблонах, модерации, поддержке, AI-функциях и публичных предложениях.',
         sections: [
           {
             heading: '1. Принятие условий',
             body: [
               'Добавляя Core на сервер, используя команды бота или разрешая другим участникам использовать его функции, пользователь и владелец сервера соглашаются с этими условиями и политикой конфиденциальности бота.',
-              'Если пользователь не согласен с условиями, он не должен добавлять бота, запускать команды, применять шаблоны, отправлять предложения или использовать функции Core.',
+              'Если пользователь не согласен с условиями, он не должен добавлять бота, запускать команды, применять шаблоны, отправлять предложения, обращаться в поддержку через бота или использовать функции Core.',
               'Использование Core также требует соблюдения условий Discord, правил Discord Developer Platform, правил конкретного сервера и применимого законодательства.',
               'Если пользователь переносит данные из инструментов сайта Core в бота, Discord или webhook, он отвечает за проверку содержимого файла, прав на публикацию и отсутствие приватных webhook URL или внутренних материалов в передаваемых данных.'
             ]
@@ -1531,7 +1539,8 @@
           {
             heading: '10. Модерация, уровни и уведомления',
             body: [
-              'Функции автомодерации, уровней, приветствий, логов и уведомлений должны настраиваться с учетом правил конкретного сервера и ожиданий участников.',
+              'Функции автомодерации, уровней, приветствий, логов, уведомлений и поддержки через личные сообщения должны настраиваться с учетом правил конкретного сервера и ожиданий участников.',
+              'Обращение в поддержку через личные сообщения создает приватный тикет, где сообщения пользователя и команды могут сохраняться для обработки обращения, контроля злоупотреблений и HTML-транскрипции после закрытия.',
               'Администрация сервера отвечает за информирование участников о правилах, модерации, системе уровней, возможных личных сообщениях и каналах обратной связи, если это требуется правилами сообщества или законом.',
               'Core может удалять сообщения, выдавать предупреждения, отправлять логи или выполнять другие действия только в пределах выданных прав и настроек. Ошибки прав, конфликт ролей или ограничения Discord могут помешать выполнению.'
             ]
@@ -1539,7 +1548,7 @@
           {
             heading: '11. Запрещенное использование бота',
             body: [
-              'Запрещено использовать Core для спама, рейдов, фишинга, публикации вредоносных ссылок, массовых нежелательных сообщений, обхода банов, преследования, угроз, доксинга или нарушения правил Discord.',
+              'Запрещено использовать Core для спама, рейдов, фишинга, публикации вредоносных ссылок, массовых нежелательных сообщений, обхода банов, преследования, угроз, доксинга, злоупотребления системой поддержки или нарушения правил Discord.',
               'Запрещено использовать Core для сбора данных без законного основания, публикации чужих приватных данных, создания обманных серверов, имитации официальных сервисов или введения пользователей в заблуждение.',
               'Запрещено пытаться получить доступ к токену бота, базе данных, ключам шифрования, служебным каналам, закрытым командам разработчика или чужим приватным шаблонам.',
               'Core может ограничить доступ, отказать в выполнении команды, удалить шаблон или сообщить о нарушении, если использование создает риск для проекта, Discord, серверов или пользователей.'
@@ -1589,13 +1598,13 @@
       },
       en: {
         title: 'Core Bot Terms of Use',
-        description: 'Detailed rules for using the Core Discord bot on servers, in import commands, templates, moderation, AI features and public suggestions.',
+        description: 'Detailed rules for using the Core Discord bot on servers, in import commands, templates, moderation, support, AI features and public suggestions.',
         sections: [
           {
             heading: '1. Acceptance',
             body: [
               'By adding Core to a server, using bot commands or allowing other members to use its features, the user and server owner agree to these terms and the bot privacy policy.',
-              'If the user does not agree, they must not add the bot, run commands, apply templates, send suggestions or use Core features.',
+              'If the user does not agree, they must not add the bot, run commands, apply templates, send suggestions, contact support through the bot or use Core features.',
               'Using Core also requires compliance with Discord terms, Discord Developer Platform rules, the rules of the specific server and applicable law.',
               'If a user moves data from Core website tools into the bot, Discord or a webhook, the user is responsible for checking the file content, publication permissions and the absence of private webhook URLs or internal material in the transferred data.'
             ]
@@ -1672,7 +1681,8 @@
           {
             heading: '10. Moderation, levels and notifications',
             body: [
-              'Automoderation, levels, welcome messages, logs and notifications should be configured with the rules of the specific server and member expectations in mind.',
+              'Automoderation, levels, welcome messages, logs, notifications and direct-message support should be configured with the rules of the specific server and member expectations in mind.',
+              'Contacting support through direct messages creates a private ticket where user and team messages may be retained for handling the request, abuse control and an HTML transcript after closure.',
               'Server administration is responsible for informing members about rules, moderation, level systems, possible direct messages and feedback channels where required by community rules or law.',
               'Core may delete messages, issue warnings, send logs or perform other actions only within granted permissions and settings. Permission errors, role conflicts or Discord limits may prevent execution.'
             ]
@@ -1680,7 +1690,7 @@
           {
             heading: '11. Prohibited bot use',
             body: [
-              'Core must not be used for spam, raids, phishing, malicious links, unwanted mass messages, ban evasion, harassment, threats, doxxing or Discord rule violations.',
+              'Core must not be used for spam, raids, phishing, malicious links, unwanted mass messages, ban evasion, harassment, threats, doxxing, support system abuse or Discord rule violations.',
               'Core must not be used to collect data without a lawful basis, publish other people private data, create deceptive servers, imitate official services or mislead users.',
               'Users must not attempt to access the bot token, database, encryption keys, service channels, developer-only commands or other people private templates.',
               'Core may restrict access, refuse a command, remove a template or report abuse if use creates risk for the project, Discord, servers or users.'
@@ -1730,13 +1740,13 @@
       },
       ua: {
         title: 'Умови використання бота Core',
-        description: 'Докладні правила використання Discord-бота Core на серверах, у командах імпорту, шаблонах, модерації, AI-функціях і публічних пропозиціях.',
+        description: 'Докладні правила використання Discord-бота Core на серверах, у командах імпорту, шаблонах, модерації, підтримці, AI-функціях і публічних пропозиціях.',
         sections: [
           {
             heading: '1. Прийняття умов',
             body: [
               'Додаючи Core на сервер, використовуючи команди бота або дозволяючи іншим учасникам використовувати його функції, користувач і власник сервера погоджуються з цими умовами та політикою конфіденційності бота.',
-              'Якщо користувач не погоджується з умовами, він не повинен додавати бота, запускати команди, застосовувати шаблони, надсилати пропозиції або використовувати функції Core.',
+              'Якщо користувач не погоджується з умовами, він не повинен додавати бота, запускати команди, застосовувати шаблони, надсилати пропозиції, звертатися до підтримки через бота або використовувати функції Core.',
               'Використання Core також потребує дотримання умов Discord, правил Discord Developer Platform, правил конкретного сервера і застосовного законодавства.',
               'Якщо користувач переносить дані з інструментів сайту Core у бота, Discord або webhook, він відповідає за перевірку вмісту файла, прав на публікацію та відсутність приватних webhook URL або внутрішніх матеріалів у переданих даних.'
             ]
@@ -1813,7 +1823,8 @@
           {
             heading: '10. Модерація, рівні і сповіщення',
             body: [
-              'Функції автомодерації, рівнів, привітань, логів і сповіщень повинні налаштовуватися з урахуванням правил конкретного сервера й очікувань учасників.',
+              'Функції автомодерації, рівнів, привітань, логів, сповіщень і підтримки через особисті повідомлення повинні налаштовуватися з урахуванням правил конкретного сервера й очікувань учасників.',
+              'Звернення до підтримки через особисті повідомлення створює приватний тікет, де повідомлення користувача й команди можуть зберігатися для обробки звернення, контролю зловживань і HTML-транскрипції після закриття.',
               'Адміністрація сервера відповідає за інформування учасників про правила, модерацію, систему рівнів, можливі особисті повідомлення і канали зворотного звʼязку, якщо це потрібно правилами спільноти або законом.',
               'Core може видаляти повідомлення, видавати попередження, надсилати логи або виконувати інші дії тільки в межах виданих прав і налаштувань. Помилки прав, конфлікт ролей або обмеження Discord можуть завадити виконанню.'
             ]
@@ -1821,7 +1832,7 @@
           {
             heading: '11. Заборонене використання бота',
             body: [
-              'Заборонено використовувати Core для спаму, рейдів, фішингу, публікації шкідливих посилань, масових небажаних повідомлень, обходу банів, переслідування, погроз, доксингу або порушення правил Discord.',
+              'Заборонено використовувати Core для спаму, рейдів, фішингу, публікації шкідливих посилань, масових небажаних повідомлень, обходу банів, переслідування, погроз, доксингу, зловживання системою підтримки або порушення правил Discord.',
               'Заборонено використовувати Core для збору даних без законної підстави, публікації чужих приватних даних, створення оманливих серверів, імітації офіційних сервісів або введення користувачів в оману.',
               'Заборонено намагатися отримати доступ до токена бота, бази даних, ключів шифрування, службових каналів, закритих команд розробника або чужих приватних шаблонів.',
               'Core може обмежити доступ, відмовити у виконанні команди, видалити шаблон або повідомити про порушення, якщо використання створює ризик для проєкту, Discord, серверів або користувачів.'
@@ -1871,13 +1882,13 @@
       },
       de: {
         title: 'Core Bot-Nutzungsbedingungen',
-        description: 'Ausfuehrliche Regeln fuer die Nutzung des Core Discord-Bots auf Servern, in Importbefehlen, Vorlagen, Moderation, AI-Funktionen und oeffentlichen Vorschlaegen.',
+        description: 'Ausfuehrliche Regeln fuer die Nutzung des Core Discord-Bots auf Servern, in Importbefehlen, Vorlagen, Moderation, Support, AI-Funktionen und oeffentlichen Vorschlaegen.',
         sections: [
           {
             heading: '1. Annahme',
             body: [
               'Durch Hinzufuegen von Core zu einem Server, Nutzung von Befehlen oder Erlaubnis fuer andere Mitglieder, Funktionen zu nutzen, akzeptieren Nutzer und Serverbesitzer diese Bedingungen und die Bot-Datenschutzrichtlinie.',
-              'Wer nicht zustimmt, darf den Bot nicht hinzufuegen, keine Befehle ausfuehren, keine Vorlagen anwenden, keine Vorschlaege senden und keine Core-Funktionen nutzen.',
+              'Wer nicht zustimmt, darf den Bot nicht hinzufuegen, keine Befehle ausfuehren, keine Vorlagen anwenden, keine Vorschlaege senden, keinen Support ueber den Bot kontaktieren und keine Core-Funktionen nutzen.',
               'Die Nutzung von Core erfordert auch Einhaltung der Discord-Bedingungen, Discord Developer Platform-Regeln, Regeln des konkreten Servers und geltenden Rechts.',
               'Wenn ein Nutzer Daten aus Core-Website-Werkzeugen in den Bot, Discord oder einen Webhook uebertraegt, ist er fuer die Pruefung des Dateiinhalts, der Veroeffentlichungsrechte und das Fehlen privater Webhook-URLs oder interner Materialien verantwortlich.'
             ]
@@ -1954,7 +1965,8 @@
           {
             heading: '10. Moderation, Level und Hinweise',
             body: [
-              'Automoderation, Level, Begruessungen, Logs und Hinweise sollten mit Blick auf Regeln des Servers und Erwartungen der Mitglieder konfiguriert werden.',
+              'Automoderation, Level, Begruessungen, Logs, Hinweise und Support ueber Direktnachrichten sollten mit Blick auf Regeln des Servers und Erwartungen der Mitglieder konfiguriert werden.',
+              'Supportkontakt ueber Direktnachrichten erstellt ein privates Ticket, in dem Nachrichten von Nutzer und Team fuer Bearbeitung, Missbrauchskontrolle und ein HTML-Transkript nach dem Schliessen gespeichert werden koennen.',
               'Die Serveradministration ist verantwortlich, Mitglieder ueber Regeln, Moderation, Levelsysteme, moegliche Direktnachrichten und Feedback-Kanaele zu informieren, wenn Community-Regeln oder Recht dies erfordern.',
               'Core kann Nachrichten loeschen, Warnungen ausgeben, Logs senden oder andere Aktionen nur im Rahmen der Rechte und Einstellungen ausfuehren. Rechtefehler, Rollenkonflikte oder Discord-Grenzen koennen die Ausfuehrung verhindern.'
             ]
@@ -1962,7 +1974,7 @@
           {
             heading: '11. Verbotene Bot-Nutzung',
             body: [
-              'Core darf nicht fuer Spam, Raids, Phishing, schädliche Links, unerwuenschte Massennachrichten, Ban-Umgehung, Belaestigung, Drohungen, Doxxing oder Discord-Regelverstoesse genutzt werden.',
+              'Core darf nicht fuer Spam, Raids, Phishing, schädliche Links, unerwuenschte Massennachrichten, Ban-Umgehung, Belaestigung, Drohungen, Doxxing, Missbrauch des Support-Systems oder Discord-Regelverstoesse genutzt werden.',
               'Core darf nicht genutzt werden, um Daten ohne Rechtsgrundlage zu sammeln, private Daten Dritter zu veroeffentlichen, taeuschende Server zu erstellen, offizielle Dienste zu imitieren oder Nutzer irrezufuehren.',
               'Es ist verboten, Zugriff auf Bot-Token, Datenbank, Verschluesselungsschluessel, Servicekanaele, Entwicklerbefehle oder private Vorlagen anderer zu versuchen.',
               'Core kann Zugriff beschraenken, Befehle verweigern, Vorlagen entfernen oder Missbrauch melden, wenn Nutzung Risiken fuer Projekt, Discord, Server oder Nutzer erzeugt.'

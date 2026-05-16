@@ -210,6 +210,21 @@
           artifact: { type: 'messages', rows: ['Пользователь', 'Сервер', 'Сообщение'] },
           steps: ['Принимает текст', 'Добавляет контекст', 'Отправляет разработчику']
         },
+        supportDm: {
+          category: 'support',
+          command: 'ЛС боту Core',
+          label: 'Поддержка',
+          title: 'Открывает приватный тикет через личные сообщения',
+          summary: 'Пользователь пишет боту в ЛС, подтверждает обращение, а Core создает приватную ветку поддержки и пересылает сообщения между сторонами.',
+          access: 'Доступно пользователям, которые могут написать боту в личные сообщения. Заблокированные пользователи не могут создавать тикеты.',
+          usage: ['Открыть ЛС с Core -> написать вопрос -> нажать "Связаться"'],
+          params: ['Текст первого сообщения становится началом тикета.'],
+          result: 'Команда поддержки отвечает из приватной ветки, пользователь получает ответы в ЛС, а после закрытия сохраняется HTML-транскрипция.',
+          previewKind: 'support',
+          previewCopy: 'Core спрашивает подтверждение, открывает приватную ветку и показывает кнопки закрытия, заморозки и повторного открытия.',
+          artifact: { type: 'messages', rows: ['ЛС пользователя', 'Приватная ветка', 'HTML transcript'] },
+          steps: ['Получает сообщение в ЛС', 'Создает приватную ветку', 'Пересылает ответы между пользователем и поддержкой']
+        },
         help: {
           category: 'support',
           command: '/help command:server-import',
@@ -362,6 +377,7 @@
         templateRate: ['Template rating', 'Rates a public template', 'Lets users rate server, role or rules templates from 1 to 5 stars.', 'Available to every server member.', 'The rating updates and appears on the template site.'],
         templateSuggest: ['Suggest template', 'Sends a server or role template for review', 'Accepts JSON, name and description, then sends the suggestion to Core.', 'Available to every server member.', 'The review channel receives a summary and encoded JSON.'],
         feedback: ['Feedback', 'Sends a message to the developer', 'Privately forwards feedback, bugs or ideas to the Core feedback channel.', 'Available to every server member.', 'The developer sees the message, author and source server.'],
+        supportDm: ['Support DMs', 'Opens a private support ticket', 'A user messages Core in DMs, confirms the request, and Core relays the conversation through a private support thread.', 'Available to users who can DM the bot. Blocked users cannot create tickets.', 'Support replies from the private thread, the user receives answers in DMs, and an HTML transcript is saved after close.'],
         help: ['Help', 'Shows help inside Discord', 'Opens the public command list or a detailed card for one command.', 'Available to every server member.', 'The user receives Components V2 help directly in Discord.']
       },
       ua: {
@@ -377,6 +393,7 @@
         templateRate: ['Оцінка шаблонів', 'Ставить зірки публічному шаблону', 'Дозволяє оцінити серверний, рольовий або правиловий шаблон від 1 до 5.', 'Доступно всім учасникам сервера.', 'Рейтинг оновлюється та показується на сайті.'],
         templateSuggest: ['Запропонувати шаблон', 'Надсилає серверний або рольовий шаблон на розгляд', 'Приймає JSON, назву й опис, потім надсилає пропозицію Core.', 'Доступно всім учасникам сервера.', 'Канал перевірки отримує зведення та закодований JSON.'],
         feedback: ['Фідбек', 'Надсилає повідомлення розробнику', 'Передає відгук, помилку або ідею в канал зворотного звʼязку Core.', 'Доступно всім учасникам сервера.', 'Розробник бачить повідомлення, автора й сервер.'],
+        supportDm: ['Підтримка в ЛС', 'Відкриває приватний тікет підтримки', 'Користувач пише Core в ЛС, підтверджує звернення, а бот пересилає розмову через приватну гілку підтримки.', 'Доступно користувачам, які можуть написати боту в ЛС. Заблоковані користувачі не можуть створювати тікети.', 'Підтримка відповідає з приватної гілки, користувач отримує відповіді в ЛС, після закриття зберігається HTML-транскрипція.'],
         help: ['Допомога', 'Показує довідку в Discord', 'Відкриває список публічних команд або детальну картку команди.', 'Доступно всім учасникам сервера.', 'Користувач отримує Components V2 довідку прямо в Discord.']
       },
       de: {
@@ -392,6 +409,7 @@
         templateRate: ['Vorlagenbewertung', 'Bewertet eine öffentliche Vorlage', 'Bewertet Server-, Rollen- oder Regelvorlagen mit 1 bis 5 Sternen.', 'Für alle Servermitglieder verfügbar.', 'Die Bewertung wird aktualisiert und auf der Website angezeigt.'],
         templateSuggest: ['Vorlage vorschlagen', 'Sendet Server- oder Rollenvorlage zur Prüfung', 'Nimmt JSON, Namen und Beschreibung an und sendet den Vorschlag an Core.', 'Für alle Servermitglieder verfügbar.', 'Der Prüfkanal erhält Zusammenfassung und codiertes JSON.'],
         feedback: ['Feedback', 'Sendet eine Nachricht an den Entwickler', 'Leitet Feedback, Fehler oder Ideen an den Core-Feedbackkanal weiter.', 'Für alle Servermitglieder verfügbar.', 'Der Entwickler sieht Nachricht, Autor und Server.'],
+        supportDm: ['Support per DM', 'Öffnet ein privates Support-Ticket', 'Ein Nutzer schreibt Core per DM, bestätigt die Anfrage, und Core leitet die Unterhaltung über einen privaten Support-Thread weiter.', 'Für Nutzer verfügbar, die dem Bot DMs senden können. Gesperrte Nutzer können keine Tickets erstellen.', 'Support antwortet aus dem privaten Thread, der Nutzer erhält DMs, und nach dem Schließen wird ein HTML-Transkript gespeichert.'],
         help: ['Hilfe', 'Zeigt Hilfe in Discord', 'Öffnet die öffentliche Befehlsliste oder eine Detailkarte.', 'Für alle Servermitglieder verfügbar.', 'Der Nutzer erhält Components V2 Hilfe direkt in Discord.']
       }
     };
@@ -426,6 +444,7 @@
           templateRate: ['type - template type.', 'name - template key.', 'stars - rating from 1 to 5.'],
           templateSuggest: ['server/roles - suggestion type.', 'file - template JSON.', 'name - display name.', 'description - public description.'],
           feedback: ['message - text for the Core developer.'],
+          supportDm: ['The first DM text becomes the ticket opening message.'],
           help: ['command - optional command key.']
         },
         steps: {
@@ -441,6 +460,7 @@
           templateRate: ['Finds the template', 'Checks rating', 'Updates average score'],
           templateSuggest: ['Accepts JSON', 'Counts summary stats', 'Sends for review'],
           feedback: ['Accepts text', 'Adds context', 'Sends to developer'],
+          supportDm: ['Receives a DM', 'Creates private thread', 'Relays answers both ways'],
           help: ['Opens help', 'Groups commands', 'Shows details']
         },
         preview: {
@@ -456,6 +476,7 @@
           templateRate: 'Core stores the user rating and recalculates the average score.',
           templateSuggest: 'Core counts roles/channels and attaches the file for review.',
           feedback: 'Core formats feedback into a separate developer card.',
+          supportDm: 'Core asks for confirmation, opens a private thread and shows close, freeze and reopen buttons.',
           help: 'Core shows command categories and link buttons for bot/server.'
         },
         artifactRows: {
@@ -467,6 +488,7 @@
           rulesImport: ['Server rules', 'Account safety', 'Moderation and appeals'],
           ruleSuggest: ['Name', 'Description', 'Encoded file'],
           feedback: ['User', 'Server', 'Message'],
+          supportDm: ['User DM', 'Private thread', 'HTML transcript'],
           help: ['Templates', 'Server transfer', 'Roles and rules']
         }
       },
@@ -485,6 +507,7 @@
           templateRate: ['type - тип шаблону.', 'name - ключ шаблону.', 'stars - оцінка від 1 до 5.'],
           templateSuggest: ['server/roles - тип пропозиції.', 'file - JSON шаблону.', 'name - назва.', 'description - опис.'],
           feedback: ['message - текст для розробника Core.'],
+          supportDm: ['Текст першого повідомлення в ЛС стає початком тікета.'],
           help: ['command - необовʼязковий ключ команди.']
         },
         steps: {
@@ -500,6 +523,7 @@
           templateRate: ['Знаходить шаблон', 'Перевіряє оцінку', 'Оновлює рейтинг'],
           templateSuggest: ['Приймає JSON', 'Рахує короткі цифри', 'Надсилає на перевірку'],
           feedback: ['Приймає текст', 'Додає контекст', 'Надсилає розробнику'],
+          supportDm: ['Отримує ЛС', 'Створює приватну гілку', 'Пересилає відповіді в обидва боки'],
           help: ['Відкриває довідник', 'Групує команди', 'Показує деталі']
         },
         preview: {
@@ -515,6 +539,7 @@
           templateRate: 'Core зберігає оцінку користувача та перераховує середній рейтинг.',
           templateSuggest: 'Core рахує ролі/канали та прикріплює файл для перевірки.',
           feedback: 'Core оформлює фідбек в окрему картку для розробника.',
+          supportDm: 'Core просить підтвердження, відкриває приватну гілку та показує кнопки закриття, заморозки й повторного відкриття.',
           help: 'Core показує категорії команд і кнопки-посилання на бота та сервер.'
         },
         artifactRows: {
@@ -526,6 +551,7 @@
           rulesImport: ['Правила сервера', 'Безпека акаунта', 'Модерація та апеляції'],
           ruleSuggest: ['Назва', 'Опис', 'Закодований файл'],
           feedback: ['Користувач', 'Сервер', 'Повідомлення'],
+          supportDm: ['ЛС користувача', 'Приватна гілка', 'HTML-транскрипція'],
           help: ['Шаблони', 'Перенесення сервера', 'Ролі та правила']
         }
       },
@@ -544,6 +570,7 @@
           templateRate: ['type - Vorlagentyp.', 'name - Vorlagenschlüssel.', 'stars - Bewertung von 1 bis 5.'],
           templateSuggest: ['server/roles - Vorschlagstyp.', 'file - Vorlagen-JSON.', 'name - Anzeigename.', 'description - Beschreibung.'],
           feedback: ['message - Text für den Core-Entwickler.'],
+          supportDm: ['Der erste DM-Text wird zur Eröffnungsnachricht des Tickets.'],
           help: ['command - optionaler Befehlsschlüssel.']
         },
         steps: {
@@ -559,6 +586,7 @@
           templateRate: ['Findet Vorlage', 'Prüft Bewertung', 'Aktualisiert Durchschnitt'],
           templateSuggest: ['Nimmt JSON an', 'Zählt Zusammenfassung', 'Sendet zur Prüfung'],
           feedback: ['Nimmt Text an', 'Fügt Kontext hinzu', 'Sendet an Entwickler'],
+          supportDm: ['Empfängt eine DM', 'Erstellt privaten Thread', 'Leitet Antworten beidseitig weiter'],
           help: ['Öffnet Hilfe', 'Gruppiert Befehle', 'Zeigt Details']
         },
         preview: {
@@ -574,6 +602,7 @@
           templateRate: 'Core speichert die Nutzerbewertung und berechnet den Durchschnitt neu.',
           templateSuggest: 'Core zählt Rollen/Kanäle und hängt die Datei zur Prüfung an.',
           feedback: 'Core formatiert Feedback als separate Entwicklerkarte.',
+          supportDm: 'Core fragt nach Bestätigung, öffnet einen privaten Thread und zeigt Buttons zum Schließen, Einfrieren und Wiederöffnen.',
           help: 'Core zeigt Befehlskategorien und Link-Buttons für Bot und Server.'
         },
         artifactRows: {
@@ -585,6 +614,7 @@
           rulesImport: ['Serverregeln', 'Kontosicherheit', 'Moderation und Einsprüche'],
           ruleSuggest: ['Name', 'Beschreibung', 'Codierte Datei'],
           feedback: ['Nutzer', 'Server', 'Nachricht'],
+          supportDm: ['Nutzer-DM', 'Privater Thread', 'HTML-Transkript'],
           help: ['Vorlagen', 'Servertransfer', 'Rollen und Regeln']
         }
       }

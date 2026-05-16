@@ -26,6 +26,10 @@
   const WEBHOOK_TRANSFER_PREFIX = 'CORE_WEBHOOK_EDITOR_V1.';
   const DEFAULT_CORE_IMAGE_URL = 'https://cdn.discordapp.com/attachments/1452039397435244677/1458169510447153255/ChatGPT_Image_20_._2025_._17_38_56_1.png?ex=6a0963ee&is=6a08126e&hm=8328eb6055d24a95673ecceb0833dd74f26a819f5a9bfc6ce50918515dc4e70d&';
   const TIMESTAMP_STYLES = ['t', 'T', 'd', 'D', 'f', 'F', 'R'];
+  const USER_TIME_ZONE = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const SUPPORTED_TIME_ZONES = typeof Intl.supportedValuesOf === 'function'
+    ? Intl.supportedValuesOf('timeZone')
+    : ['UTC', USER_TIME_ZONE, 'Europe/Berlin', 'Europe/Kyiv', 'Europe/London', 'America/New_York', 'America/Los_Angeles', 'Asia/Tokyo'];
   const ANSI_COLORS = [
     ['', 'Default', 39],
     ['gray', 'Gray', 30],
@@ -48,6 +52,22 @@
     ['light-gray-2', 'Light gray 2', 46],
     ['white', 'White', 47]
   ];
+  const ANSI_LABEL_KEYS = {
+    Gray: 'ansiGray',
+    Red: 'ansiRed',
+    Green: 'ansiGreen',
+    Yellow: 'ansiYellow',
+    Blue: 'ansiBlue',
+    Pink: 'ansiPink',
+    Cyan: 'ansiCyan',
+    White: 'ansiWhite',
+    'Dark blue': 'ansiDarkBlue',
+    Orange: 'ansiOrange',
+    'Blue gray': 'ansiBlueGray',
+    'Light gray': 'ansiLightGray',
+    Indigo: 'ansiIndigo',
+    'Light gray 2': 'ansiLightGray2'
+  };
   const MARKDOWN_SNIPPETS = [
     ['**Bold text**', '**Bold text**'],
     ['*Italic text*', '*Italic text*'],
@@ -60,6 +80,44 @@
     ['`Inline code`', '`Inline code`'],
     ['```js\nconsole.log(\"Core\");\n```', '```js\nconsole.log(\"Core\");\n```']
   ];
+  const MARKDOWN_SNIPPETS_BY_LANGUAGE = {
+    ru: [
+      ['**Жирный текст**', '**Жирный текст**'],
+      ['*Курсив*', '*Курсив*'],
+      ['__Подчеркнутый текст__', '__Подчеркнутый текст__'],
+      ['~~Зачеркнутый~~', '~~Зачеркнутый~~'],
+      ['||Спойлер||', '||Спойлер||'],
+      ['> Цитата', '> Цитата'],
+      ['# Заголовок', '# Заголовок'],
+      ['[Ссылка](https://example.com)', '[Ссылка](https://example.com)'],
+      ['`Код в строке`', '`Код в строке`'],
+      ['```js\nconsole.log(\"Core\");\n```', '```js\nconsole.log(\"Core\");\n```']
+    ],
+    ua: [
+      ['**Жирний текст**', '**Жирний текст**'],
+      ['*Курсив*', '*Курсив*'],
+      ['__Підкреслений текст__', '__Підкреслений текст__'],
+      ['~~Закреслений~~', '~~Закреслений~~'],
+      ['||Спойлер||', '||Спойлер||'],
+      ['> Цитата', '> Цитата'],
+      ['# Заголовок', '# Заголовок'],
+      ['[Посилання](https://example.com)', '[Посилання](https://example.com)'],
+      ['`Код у рядку`', '`Код у рядку`'],
+      ['```js\nconsole.log(\"Core\");\n```', '```js\nconsole.log(\"Core\");\n```']
+    ],
+    de: [
+      ['**Fetter Text**', '**Fetter Text**'],
+      ['*Kursiv*', '*Kursiv*'],
+      ['__Unterstrichener Text__', '__Unterstrichener Text__'],
+      ['~~Durchgestrichen~~', '~~Durchgestrichen~~'],
+      ['||Spoiler||', '||Spoiler||'],
+      ['> Zitat', '> Zitat'],
+      ['# Ueberschrift', '# Ueberschrift'],
+      ['[Link](https://example.com)', '[Link](https://example.com)'],
+      ['`Inline-Code`', '`Inline-Code`'],
+      ['```js\nconsole.log(\"Core\");\n```', '```js\nconsole.log(\"Core\");\n```']
+    ]
+  };
 
   const EDITOR_TEXT = {
     ru: {
@@ -123,6 +181,7 @@
       timestampTool: 'Timestamp',
       colorTool: 'Цветной текст',
       markdownTool: 'Markdown',
+      timestampTimezone: 'Часовой пояс',
       timestampStyle: 'Формат',
       timestampOutput: 'Код Discord',
       copyToolValue: 'Скопировать',
@@ -133,6 +192,20 @@
       colorBold: 'Жирный',
       colorUnderline: 'Подчёркнутый',
       noColor: 'Без цвета',
+      ansiGray: 'Серый',
+      ansiRed: 'Красный',
+      ansiGreen: 'Зеленый',
+      ansiYellow: 'Желтый',
+      ansiBlue: 'Синий',
+      ansiPink: 'Розовый',
+      ansiCyan: 'Голубой',
+      ansiWhite: 'Белый',
+      ansiDarkBlue: 'Темно-синий',
+      ansiOrange: 'Оранжевый',
+      ansiBlueGray: 'Сине-серый',
+      ansiLightGray: 'Светло-серый',
+      ansiIndigo: 'Индиго',
+      ansiLightGray2: 'Светло-серый 2',
       markdownSnippets: 'Готовые фрагменты',
       toolCopied: 'Скопировано.',
       toolInsertHint: 'Вставка попадёт в активное текстовое поле редактора.',
@@ -301,6 +374,7 @@
       timestampTool: 'Timestamp',
       colorTool: 'Colored text',
       markdownTool: 'Markdown',
+      timestampTimezone: 'Time zone',
       timestampStyle: 'Format',
       timestampOutput: 'Discord code',
       copyToolValue: 'Copy',
@@ -311,6 +385,20 @@
       colorBold: 'Bold',
       colorUnderline: 'Underline',
       noColor: 'No color',
+      ansiGray: 'Gray',
+      ansiRed: 'Red',
+      ansiGreen: 'Green',
+      ansiYellow: 'Yellow',
+      ansiBlue: 'Blue',
+      ansiPink: 'Pink',
+      ansiCyan: 'Cyan',
+      ansiWhite: 'White',
+      ansiDarkBlue: 'Dark blue',
+      ansiOrange: 'Orange',
+      ansiBlueGray: 'Blue gray',
+      ansiLightGray: 'Light gray',
+      ansiIndigo: 'Indigo',
+      ansiLightGray2: 'Light gray 2',
       markdownSnippets: 'Ready snippets',
       toolCopied: 'Copied.',
       toolInsertHint: 'Insert sends the value into the active editor text field.',
@@ -479,6 +567,7 @@
       timestampTool: 'Timestamp',
       colorTool: 'Кольоровий текст',
       markdownTool: 'Markdown',
+      timestampTimezone: 'Часовий пояс',
       timestampStyle: 'Формат',
       timestampOutput: 'Код Discord',
       copyToolValue: 'Скопіювати',
@@ -489,6 +578,20 @@
       colorBold: 'Жирний',
       colorUnderline: 'Підкреслений',
       noColor: 'Без кольору',
+      ansiGray: 'Сірий',
+      ansiRed: 'Червоний',
+      ansiGreen: 'Зелений',
+      ansiYellow: 'Жовтий',
+      ansiBlue: 'Синій',
+      ansiPink: 'Рожевий',
+      ansiCyan: 'Блакитний',
+      ansiWhite: 'Білий',
+      ansiDarkBlue: 'Темно-синій',
+      ansiOrange: 'Помаранчевий',
+      ansiBlueGray: 'Синьо-сірий',
+      ansiLightGray: 'Світло-сірий',
+      ansiIndigo: 'Індиго',
+      ansiLightGray2: 'Світло-сірий 2',
       markdownSnippets: 'Готові фрагменти',
       toolCopied: 'Скопійовано.',
       toolInsertHint: 'Вставка потрапить в активне текстове поле редактора.',
@@ -657,6 +760,7 @@
       timestampTool: 'Timestamp',
       colorTool: 'Farbiger Text',
       markdownTool: 'Markdown',
+      timestampTimezone: 'Zeitzone',
       timestampStyle: 'Format',
       timestampOutput: 'Discord-Code',
       copyToolValue: 'Kopieren',
@@ -667,6 +771,20 @@
       colorBold: 'Fett',
       colorUnderline: 'Unterstrichen',
       noColor: 'Keine Farbe',
+      ansiGray: 'Grau',
+      ansiRed: 'Rot',
+      ansiGreen: 'Gruen',
+      ansiYellow: 'Gelb',
+      ansiBlue: 'Blau',
+      ansiPink: 'Rosa',
+      ansiCyan: 'Cyan',
+      ansiWhite: 'Weiss',
+      ansiDarkBlue: 'Dunkelblau',
+      ansiOrange: 'Orange',
+      ansiBlueGray: 'Blaugrau',
+      ansiLightGray: 'Hellgrau',
+      ansiIndigo: 'Indigo',
+      ansiLightGray2: 'Hellgrau 2',
       markdownSnippets: 'Fertige Bausteine',
       toolCopied: 'Kopiert.',
       toolInsertHint: 'Einfuegen schreibt den Wert in das aktive Textfeld des Editors.',
@@ -1062,10 +1180,39 @@
     return Number.isNaN(date.getTime()) ? '' : date.toISOString();
   }
 
-  function discordTimestampCode(dateValue, timeValue, style = 'F') {
-    const iso = localInputsToIso(dateValue, timeValue);
-    if (!iso) return '';
-    const unix = Math.floor(new Date(iso).getTime() / 1000);
+  function getTimeZoneOffsetMs(date, timeZone) {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).formatToParts(date).reduce((acc, part) => {
+      if (part.type !== 'literal') acc[part.type] = Number(part.value);
+      return acc;
+    }, {});
+    const hour = parts.hour === 24 ? 0 : parts.hour;
+    return Date.UTC(parts.year, parts.month - 1, parts.day, hour, parts.minute, parts.second) - date.getTime();
+  }
+
+  function zonedTimeToUnix(dateValue, timeValue, timeZone = USER_TIME_ZONE) {
+    if (!dateValue) return null;
+    const [year, month, day] = String(dateValue).split('-').map(Number);
+    const [hour = 0, minute = 0] = String(timeValue || '00:00').split(':').map(Number);
+    if (![year, month, day, hour, minute].every(Number.isFinite)) return null;
+    const utcGuess = new Date(Date.UTC(year, month - 1, day, hour, minute, 0, 0));
+    const offset = getTimeZoneOffsetMs(utcGuess, timeZone);
+    const shifted = new Date(utcGuess.getTime() - offset);
+    const correctedOffset = getTimeZoneOffsetMs(shifted, timeZone);
+    return Math.floor((utcGuess.getTime() - correctedOffset) / 1000);
+  }
+
+  function discordTimestampCode(dateValue, timeValue, style = 'F', timeZone = USER_TIME_ZONE) {
+    const unix = zonedTimeToUnix(dateValue, timeValue, timeZone);
+    if (!Number.isFinite(unix)) return '';
     return `<t:${unix}:${style || 'F'}>`;
   }
 
@@ -1179,7 +1326,8 @@
       image: { url: '' },
       fields: [],
       footer: { text: '', icon_url: '' },
-      timestamp: ''
+      timestamp: '',
+      collapsed: false
     };
   }
 
@@ -1202,7 +1350,8 @@
         media: '',
         buttonLabel: '',
         buttonUrl: '',
-        spoiler: false
+        spoiler: false,
+        collapsed: false
       }]
     };
   }
@@ -1225,6 +1374,7 @@
       icon_url: normalizeUrl(embed.footer?.icon_url || embed.footer?.iconURL)
     };
     normalized.timestamp = String(embed.timestamp || '').slice(0, 64);
+    normalized.collapsed = Boolean(embed.collapsed);
     normalized.fields = Array.isArray(embed.fields)
       ? embed.fields.slice(0, LIMITS.embedFields).map((field) => ({
         name: clampText(field.name, LIMITS.embedFieldName),
@@ -1867,8 +2017,9 @@
     const embed = message.embeds[message.activeEmbed] || defaultEmbed();
     return `
       ${renderEmbedList(message)}
-      <div class="embed-editor">
+      <div class="embed-editor${embed.collapsed ? ' is-collapsed' : ''}">
         <div class="rules-mini-actions">
+          <button type="button" data-toggle-embed-collapse>${embed.collapsed ? '+' : '-'}</button>
           <button type="button" data-duplicate-embed ${message.embeds.length >= LIMITS.embeds ? 'disabled' : ''}>${escapeHtml(et('duplicateEmbed'))}</button>
           <button type="button" data-delete-embed ${message.embeds.length <= 1 ? 'disabled' : ''}>${escapeHtml(et('deleteEmbed'))}</button>
         </div>
@@ -1990,6 +2141,7 @@
       : `data-component-index="${index}"`;
     const controls = isNested ? `
       <div class="component-block-actions">
+        <button type="button" class="component-collapse-btn" data-toggle-container-component data-container-index="${parentIndex}" data-child-index="${index}">${block.collapsed ? '+' : '-'}</button>
         <button type="button" data-move-container-component data-container-index="${parentIndex}" data-child-index="${index}" data-direction="-1" title="${escapeHtml(et('moveUp'))}" aria-label="${escapeHtml(et('moveUp'))}" ${index === 0 ? 'disabled' : ''}>↑</button>
         <button type="button" data-move-container-component data-container-index="${parentIndex}" data-child-index="${index}" data-direction="1" title="${escapeHtml(et('moveDown'))}" aria-label="${escapeHtml(et('moveDown'))}" ${isLast ? 'disabled' : ''}>↓</button>
         <button type="button" data-duplicate-container-component data-container-index="${parentIndex}" data-child-index="${index}">${escapeHtml(et('duplicate'))}</button>
@@ -1997,6 +2149,7 @@
       </div>
     ` : `
       <div class="component-block-actions">
+        <button type="button" class="component-collapse-btn" data-toggle-component="${index}">${block.collapsed ? '+' : '-'}</button>
         <button type="button" data-move-component="${index}" data-direction="-1" title="${escapeHtml(et('moveUp'))}" aria-label="${escapeHtml(et('moveUp'))}" ${index === 0 ? 'disabled' : ''}>↑</button>
         <button type="button" data-move-component="${index}" data-direction="1" title="${escapeHtml(et('moveDown'))}" aria-label="${escapeHtml(et('moveDown'))}" ${isLast ? 'disabled' : ''}>↓</button>
         <button type="button" data-duplicate-component="${index}">${escapeHtml(et('duplicate'))}</button>
@@ -2006,7 +2159,7 @@
 
     if (block.kind === 'text') {
       return `
-        <article class="component-block">
+        <article class="component-block${block.collapsed ? ' is-collapsed' : ''}">
           <div class="component-block-heading"><strong>${escapeHtml(et('componentText'))}</strong>${controls}</div>
           <label class="rules-field">
             <span>${escapeHtml(et('markdownText'))}</span>
@@ -2018,7 +2171,7 @@
 
     if (block.kind === 'separator') {
       return `
-        <article class="component-block">
+        <article class="component-block${block.collapsed ? ' is-collapsed' : ''}">
           <div class="component-block-heading"><strong>${escapeHtml(et('componentSeparator'))}</strong>${controls}</div>
           <label class="rules-check">
             <input type="checkbox" data-component-field="divider" ${fieldAttrs} ${block.divider !== false ? 'checked' : ''}>
@@ -2037,7 +2190,7 @@
 
     if (block.kind === 'gallery') {
       return `
-        <article class="component-block">
+        <article class="component-block${block.collapsed ? ' is-collapsed' : ''}">
           <div class="component-block-heading"><strong>${escapeHtml(et('componentGallery'))}</strong>${controls}</div>
           <label class="rules-field">
             <span>${escapeHtml(et('mediaUrls'))}</span>
@@ -2049,7 +2202,7 @@
 
     if (block.kind === 'file') {
       return `
-        <article class="component-block">
+        <article class="component-block${block.collapsed ? ' is-collapsed' : ''}">
           <div class="component-block-heading"><strong>${escapeHtml(et('componentFile'))}</strong>${controls}</div>
           <label class="rules-field">
             <span>${escapeHtml(et('attachmentUrl'))}</span>
@@ -2065,7 +2218,7 @@
 
     if (block.kind === 'button') {
       return `
-        <article class="component-block">
+        <article class="component-block${block.collapsed ? ' is-collapsed' : ''}">
           <div class="component-block-heading"><strong>${escapeHtml(et('componentButton'))}</strong>${controls}</div>
           <div class="rules-two">
             <label class="rules-field">
@@ -2108,7 +2261,7 @@
 
     if (block.kind === 'select') {
       return `
-        <article class="component-block">
+        <article class="component-block${block.collapsed ? ' is-collapsed' : ''}">
           <div class="component-block-heading"><strong>${escapeHtml(et('componentSelect'))}</strong>${controls}</div>
           <div class="rules-two">
             <label class="rules-field">
@@ -2154,7 +2307,7 @@
 
     if (block.kind === 'section') {
       return `
-        <article class="component-block">
+        <article class="component-block${block.collapsed ? ' is-collapsed' : ''}">
           <div class="component-block-heading"><strong>${escapeHtml(et('componentSection'))}</strong>${controls}</div>
           <label class="rules-field">
             <span>${escapeHtml(et('sectionText'))}</span>
@@ -2186,7 +2339,7 @@
     if (block.kind === 'container') {
       const children = normalizeContainerChildren(block);
       return `
-        <article class="component-block component-container-block">
+        <article class="component-block component-container-block${block.collapsed ? ' is-collapsed' : ''}">
           <div class="component-block-heading"><strong>${escapeHtml(et('componentContainer'))}</strong>${controls}</div>
           <div class="rules-two">
             <label class="rules-field">
@@ -2218,7 +2371,7 @@
     }
 
     return `
-      <article class="component-block">
+      <article class="component-block${block.collapsed ? ' is-collapsed' : ''}">
         <div class="component-block-heading"><strong>${escapeHtml(et('componentUnknown'))}</strong>${controls}</div>
         <div class="rules-two">
           <label class="rules-field">
@@ -2624,11 +2777,11 @@
   }
 
   function createBlock(kind) {
-    if (kind === 'text') return { kind, content: et('defaultText') };
-    if (kind === 'separator') return { kind, divider: true, spacing: 1 };
-    if (kind === 'gallery') return { kind, media: '' };
-    if (kind === 'file') return { kind, fileName: 'attachment://file.pdf', spoiler: false };
-    if (kind === 'button') return { kind, label: et('defaultButtonLabel'), emoji: '', style: 5, url: '', customId: '', disabled: false };
+    if (kind === 'text') return { kind, content: et('defaultText'), collapsed: false };
+    if (kind === 'separator') return { kind, divider: true, spacing: 1, collapsed: false };
+    if (kind === 'gallery') return { kind, media: '', collapsed: false };
+    if (kind === 'file') return { kind, fileName: 'attachment://file.pdf', spoiler: false, collapsed: false };
+    if (kind === 'button') return { kind, label: et('defaultButtonLabel'), emoji: '', style: 5, url: '', customId: '', disabled: false, collapsed: false };
     if (kind === 'select') {
       return {
         kind,
@@ -2638,7 +2791,8 @@
         minValues: 0,
         maxValues: 1,
         options: et('defaultSelectOptions'),
-        disabled: false
+        disabled: false,
+        collapsed: false
       };
     }
     if (kind === 'container') {
@@ -2648,13 +2802,14 @@
       children: [
         { kind: 'text', content: et('defaultContainerText') }
       ],
-      spoiler: false
+      spoiler: false,
+      collapsed: false
     };
     }
     if (kind === 'section') {
-      return { kind, content: et('defaultSectionText'), accessoryType: 'thumbnail', accessoryUrl: DEFAULT_CORE_IMAGE_URL, buttonLabel: et('defaultButtonLabel'), buttonUrl: '' };
+      return { kind, content: et('defaultSectionText'), accessoryType: 'thumbnail', accessoryUrl: DEFAULT_CORE_IMAGE_URL, buttonLabel: et('defaultButtonLabel'), buttonUrl: '', collapsed: false };
     }
-    return { kind: 'container', accent: '#44b8de', text: et('defaultContainerText'), thumbnail: DEFAULT_CORE_IMAGE_URL, media: '', buttonLabel: '', buttonUrl: '', spoiler: false };
+    return { kind: 'container', accent: '#44b8de', text: et('defaultContainerText'), thumbnail: DEFAULT_CORE_IMAGE_URL, media: '', buttonLabel: '', buttonUrl: '', spoiler: false, collapsed: false };
   }
 
   function createState(root, options = {}) {
@@ -2939,6 +3094,12 @@
             </label>
           </div>
           <label class="rules-field">
+            <span>${escapeHtml(et('timestampTimezone'))}</span>
+            <select data-tool-timezone>
+              ${renderTimezoneOptions(USER_TIME_ZONE)}
+            </select>
+          </label>
+          <label class="rules-field">
             <span>${escapeHtml(et('timestampStyle'))}</span>
             <select data-tool-timestamp-style>
               ${TIMESTAMP_STYLES.map((style) => `<option value="${style}" ${style === 'F' ? 'selected' : ''}>&lt;t:unix:${style}&gt;</option>`).join('')}
@@ -2956,8 +3117,17 @@
       `;
     }
 
+    function renderTimezoneOptions(active = USER_TIME_ZONE) {
+      const zones = Array.from(new Set(['UTC', USER_TIME_ZONE, ...SUPPORTED_TIME_ZONES])).filter(Boolean);
+      return zones.map((zone) => `<option value="${escapeHtml(zone)}" ${zone === active ? 'selected' : ''}>${escapeHtml(zone)}</option>`).join('');
+    }
+
     function renderColorOptions(items, active = '') {
-      return items.map(([key, label]) => `<option value="${escapeHtml(key)}" ${key === active ? 'selected' : ''}>${escapeHtml(key ? label : et('noColor'))}</option>`).join('');
+      return items.map(([key, label]) => {
+        const labelKey = ANSI_LABEL_KEYS[label];
+        const text = key ? (labelKey ? et(labelKey) : label) : et('noColor');
+        return `<option value="${escapeHtml(key)}" ${key === active ? 'selected' : ''}>${escapeHtml(text)}</option>`;
+      }).join('');
     }
 
     function renderColorTool() {
@@ -3001,12 +3171,13 @@
     }
 
     function renderMarkdownTool() {
+      const snippets = MARKDOWN_SNIPPETS_BY_LANGUAGE[editorLanguage()] || MARKDOWN_SNIPPETS;
       return `
         <section class="editor-tool-card">
           <h3>${escapeHtml(et('markdownTool'))}</h3>
           <p class="editor-muted">${escapeHtml(et('toolInsertHint'))}</p>
           <div class="markdown-snippet-grid">
-            ${MARKDOWN_SNIPPETS.map(([label, value]) => `
+            ${snippets.map(([label, value]) => `
               <button type="button" data-markdown-snippet="${escapeHtml(value)}">${escapeHtml(label).replace(/\n/g, '<br>')}</button>
             `).join('')}
           </div>
@@ -3084,7 +3255,8 @@
         return discordTimestampCode(
           toolsPortal?.querySelector('[data-tool-date]')?.value || '',
           toolsPortal?.querySelector('[data-tool-time]')?.value || '',
-          toolsPortal?.querySelector('[data-tool-timestamp-style]')?.value || 'F'
+          toolsPortal?.querySelector('[data-tool-timestamp-style]')?.value || 'F',
+          toolsPortal?.querySelector('[data-tool-timezone]')?.value || USER_TIME_ZONE
         );
       }
       if (kind === 'ansi') return buildAnsiBlock();
@@ -3600,6 +3772,24 @@
       }
       if (target.matches('[data-embed-timestamp-clear]')) {
         embed().timestamp = '';
+        render();
+        return;
+      }
+      if (target.matches('[data-toggle-embed-collapse]')) {
+        embed().collapsed = !embed().collapsed;
+        render();
+        return;
+      }
+      if (target.dataset.toggleComponent !== undefined) {
+        const block = current.blocks[Number(target.dataset.toggleComponent)];
+        if (block) block.collapsed = !block.collapsed;
+        render();
+        return;
+      }
+      if (target.matches('[data-toggle-container-component]')) {
+        const children = getContainerChildren(current, target.dataset.containerIndex);
+        const block = children?.[Number(target.dataset.childIndex)];
+        if (block) block.collapsed = !block.collapsed;
         render();
         return;
       }

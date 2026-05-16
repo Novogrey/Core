@@ -1912,6 +1912,156 @@ select,
   white-space: pre-wrap;
 }
 
+.advanced-tool-grid {
+  grid-template-columns: minmax(320px, 0.86fr) minmax(420px, 1.14fr);
+}
+
+.tool-output-panel {
+  min-height: 100%;
+}
+
+.tool-output-panel h2 {
+  margin: 0;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.tool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.tool-actions.is-bottom {
+  align-self: end;
+}
+
+.tool-toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.tool-toggle-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.timestamp-card.is-active {
+  border-color: rgba(68, 184, 222, 0.7);
+  background: rgba(68, 184, 222, 0.1);
+}
+
+.timestamp-card code {
+  max-width: 54%;
+  overflow: hidden;
+  color: var(--text);
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.discord-color-preview,
+.discord-markdown-preview {
+  min-height: 180px;
+  padding: 18px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  color: #dcdee4;
+  background: #313338;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  line-height: 1.55;
+}
+
+.discord-color-preview span {
+  border-radius: 3px;
+  padding: 1px 2px;
+}
+
+.discord-markdown-preview h2,
+.discord-markdown-preview h3,
+.discord-markdown-preview h4 {
+  margin: 0 0 8px;
+  color: #f2f3f5;
+}
+
+.discord-markdown-preview blockquote {
+  margin: 6px 0;
+  padding-left: 12px;
+  border-left: 4px solid #4e5058;
+  color: #dbdee1;
+}
+
+.discord-markdown-preview code,
+.discord-markdown-preview pre {
+  border-radius: 4px;
+  background: #1e1f22;
+  font-family: "Cascadia Mono", "Consolas", monospace;
+}
+
+.discord-markdown-preview code {
+  padding: 2px 4px;
+}
+
+.discord-markdown-preview pre {
+  overflow: auto;
+  padding: 12px;
+  white-space: pre-wrap;
+}
+
+.discord-markdown-preview a {
+  color: #00a8fc;
+}
+
+.discord-spoiler {
+  border-radius: 3px;
+  color: transparent;
+  background: #111214;
+}
+
+.discord-spoiler:hover {
+  color: #dbdee1;
+  background: #3f4147;
+}
+
+.discord-list-line {
+  margin: 2px 0;
+}
+
+.markdown-toolbar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.markdown-toolbar button {
+  min-height: 38px;
+  border: 1px solid var(--line-soft);
+  border-radius: 7px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 850;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.markdown-toolbar button:hover {
+  border-color: rgba(68, 184, 222, 0.55);
+  background: rgba(68, 184, 222, 0.09);
+  transform: translateY(-1px);
+}
+
 .webhook-page .rules-editor {
   grid-template-columns: minmax(260px, 0.68fr) minmax(470px, 1.15fr) minmax(380px, 0.95fr);
 }
@@ -1969,6 +2119,18 @@ select,
 .editor-block-heading strong {
   color: var(--text);
   font-size: 1.02rem;
+}
+
+.embed-editor.is-collapsed > :not(.rules-mini-actions),
+.component-block.is-collapsed > :not(.component-block-heading) {
+  display: none !important;
+}
+
+.component-collapse-btn,
+[data-toggle-embed-collapse] {
+  min-width: 34px;
+  padding-inline: 0;
+  font-family: "Cascadia Mono", "Consolas", monospace;
 }
 
 .embed-list,

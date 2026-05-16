@@ -205,6 +205,18 @@ const translations = {
           ],
           result: 'Сообщение доходит до разработчика, не засоряя публичные каналы.'
         },
+        supportDm: {
+          command: 'ЛС боту Core',
+          label: 'Поддержка',
+          title: 'Открывает приватный тикет через личные сообщения',
+          description: 'Пользователь пишет боту в ЛС, подтверждает обращение, а Core создает приватную ветку поддержки и пересылает сообщения между пользователем и командой.',
+          steps: [
+            'Получает первое сообщение в ЛС',
+            'Создает приватную ветку поддержки',
+            'Сохраняет HTML-транскрипцию после закрытия'
+          ],
+          result: 'Обратиться в поддержку можно без входа на сервер Core: ответы будут приходить прямо в ЛС.'
+        },
         help: {
           command: '/help',
           label: 'Помощь',
@@ -560,6 +572,18 @@ const translations = {
             'Sends feedback to the developer'
           ],
           result: 'The message reaches the developer without cluttering public channels.'
+        },
+        supportDm: {
+          command: 'DM Core bot',
+          label: 'Support',
+          title: 'Opens a private ticket through direct messages',
+          description: 'A user messages the bot, confirms the request, and Core creates a private support thread while relaying messages both ways.',
+          steps: [
+            'Receives the first DM',
+            'Creates a private support thread',
+            'Saves an HTML transcript after close'
+          ],
+          result: 'Users can contact support without joining the Core server: replies arrive directly in DMs.'
         },
         help: {
           command: '/help',
